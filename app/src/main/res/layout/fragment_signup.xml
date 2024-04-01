@@ -20,7 +20,7 @@
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="50dp"/>
 
         <TextView
             android:id="@+id/textView1"
@@ -37,7 +37,9 @@
             android:hint="이름을 입력해주세요"
             android:inputType="text"
             android:textSize="16sp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="29dp"
+            android:background="@drawable/signup_edittext_design" />
 
         <TextView
             android:id="@+id/textView2"
@@ -54,6 +56,8 @@
             android:hint="이메일 입력을 입력해주세요"
             android:inputType="textEmailAddress"
             android:textSize="16sp"
+            android:background="@drawable/signup_edittext_design"
+            android:layout_marginTop="3dp"
             android:layout_marginBottom="0dp"/>
 
         <FrameLayout
@@ -85,7 +89,7 @@
             android:layout_height="wrap_content"
             android:text="비밀번호"
             android:textSize="17sp"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="26dp"/>
 
         <EditText
             android:id="@+id/inputPW"
@@ -95,6 +99,8 @@
             android:hint="비밀번호 설정(최소 8자리)"
             android:inputType="textPassword"
             android:textSize="16sp"
+            android:background="@drawable/signup_edittext_design"
+            android:layout_marginTop="3dp"
             android:layout_marginBottom="0dp"/>
 
 
@@ -105,7 +111,6 @@
                 android:id="@+id/X_PW"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:text="비밀번호는 8자리 이상으로 설정해주세요"
                 android:textColor="#ff0000"
                 android:textSize="16sp"
@@ -115,7 +120,6 @@
                 android:id="@+id/X_PW2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:text="특수문자, 알파벳, 숫자 중 2가지 이상 사용해야 합니다"
                 android:textColor="#ff0000"
                 android:textSize="16sp"
@@ -130,7 +134,7 @@
             android:layout_height="wrap_content"
             android:text="비밀번호 확인"
             android:textSize="17sp"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="5dp"
             />
 
         <EditText
@@ -141,6 +145,8 @@
             android:hint="비밀번호 재입력"
             android:inputType="textPassword"
             android:textSize="16sp"
+            android:background="@drawable/signup_edittext_design"
+            android:layout_marginTop="3dp"
             android:layout_marginBottom="0dp"/>
 
         <TextView
@@ -163,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:text="취소"
                 android:textSize="16sp"
-                android:background="@drawable/button_grey_version"
+                android:background="@drawable/signup_button_grey_version"
                 android:layout_weight="1"
                 />
             <TextView
@@ -179,7 +185,7 @@
                 android:layout_height="wrap_content"
                 android:text="가입하기"
                 android:textSize="16sp"
-                android:background="@drawable/button_grey_version"
+                android:background="@drawable/signup_button_grey_version"
                 android:clickable="false"
                 android:layout_weight="1"
                 />

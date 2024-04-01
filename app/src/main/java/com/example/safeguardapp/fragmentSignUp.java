@@ -10,11 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import java.util.regex.*;
-import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import android.content.res.Configuration;
+
 
 public class fragmentSignUp extends Fragment {
     private EditText inputName;
@@ -27,6 +28,7 @@ public class fragmentSignUp extends Fragment {
     private TextView X_PW_re;
     private TextView X_PW2;
     private Button signUp_btn;
+    private Button cancel_btn;
 
     // 각 조건에 대한 상태를 저장하는 변수 -> 회원가입 버튼 활성화
     private boolean isEmailValid = false;
@@ -49,6 +51,7 @@ public class fragmentSignUp extends Fragment {
         X_PW_re = view.findViewById(R.id.X_PW_re); // 비밀번호가 같지 않을 경우 visible
         X_PW2 = view.findViewById(R.id.X_PW2); // 비밀번호 생성 시 조건 충족(특수문자, 영문, 숫자)
         signUp_btn = view.findViewById(R.id.signUp_btn); // 회원가입 조건 만족 시킬 시 색변환 및 클릭 가능
+        cancel_btn = view.findViewById(R.id.cancel_btn); // 정보 저장 없이 뒤로가기 기능(로그인 화면으로 전환)
 
         // 이름의 입력이 변환될 때마다 확인할 수 있는 메서드
         inputName.addTextChangedListener(new TextWatcher() {
@@ -171,6 +174,35 @@ public class fragmentSignUp extends Fragment {
             }
         });
 
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                // 다크 테마를 사용 중
+                break;
+            case Configuration.UI_MODE_NIGHT_NO:
+                // 화이트 테마를 사용 중
+                break;
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                // 테마가 정의되지 않음
+                break;
+        }
+
+        // ---------- 취소 버튼 onclick 리스너 구현 해야됨 -----------*************
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        // ---------- 회원 가입 버튼을 누르면 모든 정보가 서버에 보내지면서 로그인 창으로 이동 -----------***************
+        signUp_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return view;
     }
 
@@ -189,7 +221,7 @@ public class fragmentSignUp extends Fragment {
     private void updateSignUpButtonState() {
         if (isEmailValid && isPasswordValid && isPasswordMatch && isNameValid) {
             signUp_btn.setEnabled(true);
-            signUp_btn.setBackground(getResources().getDrawable(R.drawable.button_blue_version));
+            signUp_btn.setBackground(getResources().getDrawable(R.drawable.signup_button_blue_version));
         } else {
             signUp_btn.setEnabled(false);
         }
