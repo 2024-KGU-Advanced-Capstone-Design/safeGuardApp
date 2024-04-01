@@ -174,19 +174,6 @@ public class fragmentSignUp extends Fragment {
             }
         });
 
-        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        switch (nightModeFlags) {
-            case Configuration.UI_MODE_NIGHT_YES:
-                // 다크 테마를 사용 중
-                break;
-            case Configuration.UI_MODE_NIGHT_NO:
-                // 화이트 테마를 사용 중
-                break;
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                // 테마가 정의되지 않음
-                break;
-        }
-
         // ---------- 취소 버튼 onclick 리스너 구현 해야됨 -----------*************
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,13 +204,14 @@ public class fragmentSignUp extends Fragment {
                 email.endsWith("@daum.net");
     }
 
-    // 모든 조건을 만족 할 때 회원가입 버튼 활성화
+    // 모든 조건을 만족 할 때 회원가입 버튼 활성화 및 만족 불충분 시 버튼 비활성
     private void updateSignUpButtonState() {
         if (isEmailValid && isPasswordValid && isPasswordMatch && isNameValid) {
             signUp_btn.setEnabled(true);
             signUp_btn.setBackground(getResources().getDrawable(R.drawable.signup_button_blue_version));
         } else {
             signUp_btn.setEnabled(false);
+            signUp_btn.setBackground(getResources().getDrawable(R.drawable.signup_button_grey_version));
         }
     }
 
