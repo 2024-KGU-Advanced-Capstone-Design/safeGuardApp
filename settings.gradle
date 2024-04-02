@@ -10,8 +10,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'https://naver.jfrog.io/artifactory/maven/' //네이버 지도 SDK
+        }
     }
 }
+
 
 rootProject.name = "safeGuardApp"
 include ':app'
