@@ -10,9 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 public class signUpFragment extends Fragment {
@@ -109,10 +112,13 @@ public class signUpFragment extends Fragment {
             }
         });
 
-        // 취소 버튼 클릭 시 로그인 화면으로 전환 --------- 미구현
+        // 취소 버튼 클릭 시 로그인 화면으로 전환
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new loginPageFragment());
+                transaction.commit();
             }
         });
 
@@ -149,4 +155,21 @@ public class signUpFragment extends Fragment {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
     }
+
+    // 뒤로가기 버튼 오류 해결 -> 뒤로 가기 눌렀을 때 어플이 꺼지는 것을 방지하고 이전 화면인 로그인 페이지로 넘어감
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로 가기 시 실행되는 코드
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new loginPageFragment());
+                transaction.commit();
+            }
+        });
+    }
+
 }
