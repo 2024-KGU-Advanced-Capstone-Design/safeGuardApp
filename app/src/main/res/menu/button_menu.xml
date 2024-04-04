@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/ic_map"
+        android:title="지도"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/group"
+        android:enabled="true"
+        android:icon="@drawable/ic_group"
+        android:title="그룹"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/setting"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
+        android:title="설정"
+        app:showAsAction="always"
+        />
+
+</menu>
