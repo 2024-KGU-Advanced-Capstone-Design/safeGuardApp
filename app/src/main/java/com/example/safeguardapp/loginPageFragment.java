@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 public class loginPageFragment extends Fragment {
@@ -46,7 +48,6 @@ public class loginPageFragment extends Fragment {
                 // 회원가입 버튼을 클릭했을 때 fragmentSignUp로 화면 전환
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_main, new signUpFragment());
-                transaction.addToBackStack(null); // 백 스택에 추가하여 뒤로가기 버튼 동작을 처리할 수 있도록 함
                 transaction.commit();
             }
         });
@@ -55,8 +56,12 @@ public class loginPageFragment extends Fragment {
         view.findViewById(R.id.buttonFindIDPW).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 아이디/비밀번호 찾기 기능을 실행하는 코드 추가
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new findPWFragment());
+                transaction.commit();
             }
         });
+
     }
+
 }
