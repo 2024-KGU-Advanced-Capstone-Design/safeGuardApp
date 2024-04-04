@@ -10,15 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.fragment.app.FragmentManager;
 
 public class loginPageFragment extends Fragment {
-    private MainActivity mainActivity;
+    private startScreenActivity startScreenActivity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_login_page, container, false);
+        return inflater.inflate(R.layout.login_page_fragment, container, false);
 
     }
 
@@ -46,7 +45,7 @@ public class loginPageFragment extends Fragment {
             public void onClick(View v) {
                 // 회원가입 버튼을 클릭했을 때 fragmentSignUp로 화면 전환
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new fragmentSignUp());
+                transaction.replace(R.id.activity_main, new signUpFragment());
                 transaction.addToBackStack(null); // 백 스택에 추가하여 뒤로가기 버튼 동작을 처리할 수 있도록 함
                 transaction.commit();
             }

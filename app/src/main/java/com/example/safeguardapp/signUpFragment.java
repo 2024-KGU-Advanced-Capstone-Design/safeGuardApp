@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 
-public class fragmentSignUp extends Fragment {
+public class signUpFragment extends Fragment {
     private EditText inputName, inputEmail, inputPW, inputPW_re;
     private TextView O_email, X_email, X_PW, X_PW_re, X_PW2;
     private Button signUp_btn, cancel_btn;
@@ -29,7 +29,7 @@ public class fragmentSignUp extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sign_up, container, false);
+        View view = inflater.inflate(R.layout.sign_up_fragment, container, false);
 
         initializeViews(view);
         setupListeners();
