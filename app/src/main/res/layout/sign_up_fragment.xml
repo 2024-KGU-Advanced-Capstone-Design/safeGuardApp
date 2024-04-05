@@ -43,6 +43,25 @@
             android:background="@drawable/signup_edittext_design" />
 
         <TextView
+            android:id="@+id/id_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="아이디"
+            android:textSize="17sp" />
+
+        <EditText
+            android:id="@+id/inputId"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:ems="10"
+            android:hint="아이디를 입력해주세요"
+            android:inputType="text"
+            android:textSize="16sp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="29dp"
+            android:background="@drawable/signup_edittext_design" />
+
+        <TextView
             android:id="@+id/email_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -90,7 +109,7 @@
             android:layout_height="wrap_content"
             android:text="비밀번호"
             android:textSize="17sp"
-            android:layout_marginTop="26dp"/>
+            android:layout_marginTop="5dp"/>
 
         <EditText
             android:id="@+id/inputPW"
