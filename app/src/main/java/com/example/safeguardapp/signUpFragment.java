@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 public class signUpFragment extends Fragment {
-    private EditText inputName, inputEmail, inputPW, inputPW_re;
+    private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
     private TextView O_email, X_email, X_PW, X_PW_re, X_PW2;
     private Button signUp_btn, cancel_btn;
 
@@ -42,6 +42,7 @@ public class signUpFragment extends Fragment {
 
     private void initializeViews(View view) {
         inputName = view.findViewById(R.id.inputName);
+        inputId = view.findViewById(R.id.inputId);
         inputEmail = view.findViewById(R.id.inputEmail);
         O_email = view.findViewById(R.id.O_email);
         X_email = view.findViewById(R.id.X_email);
@@ -58,6 +59,15 @@ public class signUpFragment extends Fragment {
 
         // 이름 입력 여부 확인
         inputName.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                isNameValid = editable.length() > 0;
+                updateSignUpButtonState();
+            }
+        });
+
+        // ID 입력 여부 확인
+        inputId.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 isNameValid = editable.length() > 0;
@@ -138,7 +148,7 @@ public class signUpFragment extends Fragment {
 
     // 유효한 이메일 주소
     private boolean isValidEmail(String email) {
-        return email.matches(".*@(naver\\.com|gmail\\.com|hanmail\\.net|daum\\.net)$");
+        return email.matches(".*@(naver\\.com|gmail\\.com|hanmail\\.net|daum\\.net|kyonggi\\.ac\\.kr)$");
     }
 
     // 비밀번호 입력 조건 (특수문자, 영문, 숫자 중 2가지 사용)
