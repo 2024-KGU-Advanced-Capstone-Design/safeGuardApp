@@ -55,25 +55,13 @@ public class loginPageFragment extends Fragment {
         });
 
         // 아이디 찾기 버튼에 대한 클릭 이벤트 처리
-        view.findViewById(R.id.buttonFindID).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.buttonFindIDPW).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new findPWFragment());
+                transaction.replace(R.id.activity_main, new findIDPWFragment());
                 transaction.commit();
             }
         });
-
-        // 비밀번호 찾기 버튼에 대한 클릭 이벤트 처리
-        view.findViewById(R.id.buttonFindPW).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new findPWFragment());
-                transaction.commit();
-            }
-        });
-
     }
-
 }
