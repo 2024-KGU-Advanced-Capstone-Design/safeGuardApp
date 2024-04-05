@@ -2,7 +2,6 @@ package com.example.safeguardapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
