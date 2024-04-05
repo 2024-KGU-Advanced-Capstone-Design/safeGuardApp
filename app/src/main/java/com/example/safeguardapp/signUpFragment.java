@@ -28,6 +28,7 @@ public class signUpFragment extends Fragment {
     private boolean isPasswordValid = false;
     private boolean isPasswordMatch = false;
     private boolean isNameValid = false;
+    private boolean isIDValid = false;
 
     @Nullable
     @Override
@@ -70,7 +71,7 @@ public class signUpFragment extends Fragment {
         inputId.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
-                isNameValid = editable.length() > 0;
+                isIDValid = editable.length() > 0;
                 updateSignUpButtonState();
             }
         });
@@ -145,7 +146,7 @@ public class signUpFragment extends Fragment {
 
     // 회원 가입 버튼 활성화 및 비활성화 메서드
     private void updateSignUpButtonState() {
-        signUp_btn.setEnabled(isEmailValid && isPasswordValid && isPasswordMatch && isNameValid);
+        signUp_btn.setEnabled(isEmailValid && isPasswordValid && isPasswordMatch && isNameValid && isIDValid);
         signUp_btn.setBackground(getResources().getDrawable(signUp_btn.isEnabled() ? R.drawable.signup_button_blue_version : R.drawable.signup_button_grey_version));
     }
 
