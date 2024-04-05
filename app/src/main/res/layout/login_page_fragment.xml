@@ -5,78 +5,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".loginPageFragment"
-    android:padding="24dp">
+    android:padding="24dp"
+    tools:context=".loginPageFragment">
 
     <TextView
         android:id="@+id/SafeGuard_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="180dp"
         android:text="SafeGuard"
-        android:textSize="48sp"
-        android:layout_gravity="center_horizontal"/>
+        android:textSize="48sp" />
 
     <EditText
         android:id="@+id/editTextID"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="64dp"
+        android:background="@drawable/signup_edittext_design"
         android:ems="10"
         android:hint="아이디"
-        android:inputType="text"/>
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextPW"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="12dp"
+        android:background="@drawable/signup_edittext_design"
         android:ems="10"
         android:hint="비밀번호"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <android.widget.Button
+        android:id="@+id/buttonLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#2196F3"
+        android:text="로그인" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="15dp">
 
         <android.widget.Button
             android:id="@+id/buttonRegister"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:backgroundTint="#602196F3"
-            android:layout_gravity="left"
-            android:layout_weight="0.7"
-            android:text="회원가입"/>
+            android:text="회원가입" />
+
 
         <android.widget.Button
-            android:id="@+id/buttonLogin"
-            android:layout_width="wrap_content"
+            android:id="@+id/buttonFindIDPW"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#2196F3"
-            android:layout_gravity="right"
-            android:layout_weight="0.7"
-            android:text="로그인"/>
+            android:layout_weight="1"
+            android:text="아이디/비밀번호 찾기" />
+
+
     </LinearLayout>
 
-
-    <Button
-        android:id="@+id/buttonFindID"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/transparent"
-        android:text="아이디 찾기"
-        android:textColor="@color/darkmode_textColor"/>
-
-    <Button
-        android:id="@+id/buttonFindPW"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/transparent"
-        android:text="비밀번호 찾기"
-        android:textColor="@color/darkmode_textColor" />
 
 </LinearLayout>

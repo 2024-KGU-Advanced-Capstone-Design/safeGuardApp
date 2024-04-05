@@ -7,18 +7,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class findPWFragment extends Fragment {
+public class findIDPWFragment extends Fragment {
     private EditText findPWToEmail;
     private Button cancel_btn, find_btn;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.find_pw_fragment, container, false);
+        View view = inflater.inflate(R.layout.find_idpw_fragment, container, false);
 
         initializeView(view);
         setupListeners();
@@ -48,6 +49,22 @@ public class findPWFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+    }
+
+    // 뒤로 가기 버튼 구현
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로 가기 시 실행되는 코드
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new loginPageFragment());
+                transaction.commit();
             }
         });
     }
