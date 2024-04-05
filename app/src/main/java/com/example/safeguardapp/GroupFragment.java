@@ -82,7 +82,7 @@ public class GroupFragment extends Fragment {
                 transaction.commit();
 
                 BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
-                navigationView.setSelectedItemId(R.id.home);
+                navigationView.setSelectedItemId(R.id.map);
             }
         });
     }

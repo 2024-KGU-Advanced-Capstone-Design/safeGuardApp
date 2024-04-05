@@ -11,6 +11,6 @@
         />
     <stroke
         android:width="2.5dp"
-        android:color="@color/signup_edittext"
+        android:color="@color/darkmode_textColor"
         />
 </shape>

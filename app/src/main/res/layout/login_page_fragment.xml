@@ -81,7 +81,7 @@
         android:background="@android:color/transparent"
         android:onClick="onClickButtonFindIDPW"
         android:text="아이디/비밀번호 찾기"
-        android:textColor="#80000000"
+        android:textColor="@color/darkmode_textColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"

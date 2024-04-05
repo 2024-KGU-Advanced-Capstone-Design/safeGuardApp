@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.home){
+                if (item.getItemId() == R.id.map){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
                     mapFragment.getMapAsync(MainActivity.this);
                     return true;
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.home); */
         if(mapFragment == null){
             mapFragment = MapFragment.newInstance();
-            fragmentManager.beginTransaction().add(R.id.home, mapFragment).commit();
+            fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
         }
 
         //getMapAsync 호출해 비동기로 onMapReady 콜백 메서드 호출
