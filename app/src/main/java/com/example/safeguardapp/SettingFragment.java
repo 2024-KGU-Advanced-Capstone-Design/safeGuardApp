@@ -2,11 +2,17 @@ package com.example.safeguardapp;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,5 +66,24 @@ public class SettingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_setting, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로 가기 시 실행되는 코드
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                // 이동 시에는 이미 생성된 mapFragment를 사용하여 교체
+                transaction.replace(R.id.containers, ((MainActivity) requireActivity()).mapFragment);
+                transaction.commit();
+
+                BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
+                navigationView.setSelectedItemId(R.id.home);
+            }
+        });
     }
 }
