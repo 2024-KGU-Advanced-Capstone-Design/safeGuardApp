@@ -17,6 +17,7 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import javax.net.ssl.HostnameVerifier;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     GroupFragment groupFragment;
     SettingFragment settingFragment;
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
         //  <----- BottomNavigationView 구현 중 ----->
         mapFragment = new MapFragment();
@@ -90,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource);
+
+        UiSettings uiSettings = naverMap.getUiSettings();
+        uiSettings.setLocationButtonEnabled(true);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
