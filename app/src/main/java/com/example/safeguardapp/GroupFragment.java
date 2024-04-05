@@ -83,9 +83,6 @@ public class GroupFragment extends Fragment {
 
                 BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
                 navigationView.setSelectedItemId(R.id.home);
-
-                // MapFragment로 돌아올 때 onMapReady() 메서드를 호출하여 내 위치를 표시
-                ((MainActivity) requireActivity()).mapFragment.getMapAsync((MainActivity) requireActivity());
             }
         });
     }
