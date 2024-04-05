@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.home){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
+                    mapFragment.getMapAsync(MainActivity.this);
                     return true;
                 }else if(item.getItemId() == R.id.setting){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
