@@ -24,6 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
         <meta-data
             android:exported="true"
             android:name="com.naver.maps.map.CLIENT_ID"

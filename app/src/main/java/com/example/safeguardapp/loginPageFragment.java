@@ -1,16 +1,15 @@
 package com.example.safeguardapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 public class loginPageFragment extends Fragment {
@@ -36,8 +35,11 @@ public class loginPageFragment extends Fragment {
 
                 EditText editTextPW = view.findViewById(R.id.editTextPW);
                 String pw = editTextPW.getText().toString();
+                // ------> 여기에 로그인 처리 코드 추가
 
-                // 여기에 로그인 처리 코드 추가
+                // 로그인 성공 했다 치고 startScreenActivity -> MainActivity로 이동 구현
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -52,7 +54,7 @@ public class loginPageFragment extends Fragment {
             }
         });
 
-        // 아이디/비밀번호 찾기 버튼에 대한 클릭 이벤트 처리
+        // 아이디 찾기 버튼에 대한 클릭 이벤트 처리
         view.findViewById(R.id.buttonFindID).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +64,7 @@ public class loginPageFragment extends Fragment {
             }
         });
 
+        // 비밀번호 찾기 버튼에 대한 클릭 이벤트 처리
         view.findViewById(R.id.buttonFindPW).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

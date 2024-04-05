@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.google.android.material.navigation.NavigationBarItemView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
@@ -19,8 +18,6 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
-
-import javax.net.ssl.HostnameVerifier;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     MapFragment mapFragment;
@@ -43,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
-        //  <----- BottomNavigationView 구현 중 ----->
+        // -----v----- BottomNavigationView 구현 -----v-----
         mapFragment = new MapFragment();
         groupFragment = new GroupFragment();
         settingFragment = new SettingFragment();
@@ -68,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return false;
             }
         });
-        // <----- BottomNavigationView 구현 중 ----->
+        // -----^----- BottomNavigationView 구현 -----^-----
 
         //지도 객체 생성
         FragmentManager fragmentManager = getSupportFragmentManager();
