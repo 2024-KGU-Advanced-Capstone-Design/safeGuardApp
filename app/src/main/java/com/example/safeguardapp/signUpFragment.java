@@ -136,6 +136,9 @@ public class signUpFragment extends Fragment {
         signUp_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new loginPageFragment());
+                transaction.commit();
             }
         });
     }
