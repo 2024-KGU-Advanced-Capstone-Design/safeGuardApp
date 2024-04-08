@@ -13,13 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class findIDPWFragment extends Fragment {
-    private EditText findPWToEmail;
+public class findIDFragment extends Fragment {
+    private EditText findIDToEmail;
     private Button cancel_btn, find_btn;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_find_idpw, container, false);
+        View view = inflater.inflate(R.layout.fragment_find_id, container, false);
 
         initializeView(view);
         setupListeners();
@@ -28,7 +28,7 @@ public class findIDPWFragment extends Fragment {
     }
 
     private void initializeView(View view) {
-        findPWToEmail = view.findViewById(R.id.findPWToEmail);
+        findIDToEmail = view.findViewById(R.id.findIDToEmail);
         cancel_btn = view.findViewById(R.id.cancel_btn);
         find_btn = view.findViewById(R.id.find_btn);
     }
@@ -44,11 +44,13 @@ public class findIDPWFragment extends Fragment {
             }
         });
 
-        // 비밀번호 찾기 버튼 클릭시 이메일을 통해서 비밀번호를 찾는 화면으로 전환 -------- 미구현
+        // 비밀번호 찾기 버튼 클릭시 이메일로 아이디 전송 및 로그인 화면으로 전환-------- 미구현
         find_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new loginPageFragment());
+                transaction.commit();
             }
         });
     }

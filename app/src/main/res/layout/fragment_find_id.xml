@@ -8,7 +8,7 @@
     android:padding="24dp">
 
     <EditText
-        android:id="@+id/findPWToEmail"
+        android:id="@+id/findIDToEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
@@ -17,19 +17,22 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
 
-        <Button
+        <android.widget.Button
             android:id="@+id/cancel_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="취소" />
+            android:text="취소"
+            android:layout_weight="1"/>
 
-        <Button
+        <android.widget.Button
             android:id="@+id/find_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="비밀번호 찾기" />
+            android:text="아이디 전송"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

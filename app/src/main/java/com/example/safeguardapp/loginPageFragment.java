@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,8 @@ public class loginPageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         return inflater.inflate(R.layout.fragment_login_page, container, false);
-
     }
 
     @Override
@@ -55,11 +56,20 @@ public class loginPageFragment extends Fragment {
         });
 
         // 아이디 찾기 버튼에 대한 클릭 이벤트 처리
-        view.findViewById(R.id.buttonFindIDPW).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.buttonFindID).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new findIDPWFragment());
+                transaction.replace(R.id.activity_main, new findIDFragment());
+                transaction.commit();
+            }
+        });
+
+        view.findViewById(R.id.buttonFindPW).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new findPWCertificationFragment());
                 transaction.commit();
             }
         });

@@ -92,20 +92,29 @@ public class signUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String password = editable.toString();
-                isPasswordValid = password.length() >= 8;
-                if (isPasswordValid){
+                if (password.length() >= 8){
                     X_PW.setVisibility(View.INVISIBLE);
                     if (PasswordValidFunc(password)){
                         X_PW2.setVisibility(View.INVISIBLE);
+                        isPasswordValid = true;
                     }
                     else {
                         X_PW2.setVisibility(View.VISIBLE);
+                        isPasswordValid = false;
                     }
                 }
                 else {
                     X_PW.setVisibility(View.VISIBLE);
                     X_PW2.setVisibility(View.INVISIBLE);
+                    isPasswordValid = false;
                 }
+                updateSignUpButtonState();
+
+                // 비밀번호를 다시 입력할 때 비밀번호 재입력칸 알림 메시지 수정
+                String pw = editable.toString();
+                String pwRe = inputPW_re.getText().toString();
+                isPasswordMatch = pwRe.equals(pw) && pw.equals(pwRe);
+                X_PW_re.setVisibility(isPasswordMatch ? View.INVISIBLE : View.VISIBLE);
                 updateSignUpButtonState();
             }
         });
@@ -116,7 +125,7 @@ public class signUpFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
                 String pw = inputPW.getText().toString();
                 String pwRe = editable.toString();
-                isPasswordMatch = pw.equals(pwRe);
+                isPasswordMatch = pw.equals(pwRe) && pwRe.equals(pw);
                 X_PW_re.setVisibility(isPasswordMatch ? View.INVISIBLE : View.VISIBLE);
                 updateSignUpButtonState();
             }
