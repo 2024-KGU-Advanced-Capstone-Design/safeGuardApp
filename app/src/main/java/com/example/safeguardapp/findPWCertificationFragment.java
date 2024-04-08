@@ -67,7 +67,7 @@ public class findPWCertificationFragment extends Fragment {
                 newEditText.setLayoutParams(params);
 
                 // 추가된 EditText의 속성 설정
-                newEditText.setHint("새로운 EditText");
+                newEditText.setHint("인증번호를 입력해주세요");
                 newEditText.setInputType(InputType.TYPE_CLASS_TEXT); // 예시로 입력 타입 지정
 
                 // 프래그먼트의 루트 레이아웃 가져오기

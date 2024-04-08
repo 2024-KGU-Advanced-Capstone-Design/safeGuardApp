@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="재설정할 비밀번호를 입력해주세요"
-        android:inputType="textEmailAddress" />
+        android:inputType="textPassword" />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:hint="비밀번호를 한번 더 입력해주세요"
-        android:inputType="textEmailAddress" />
+        android:inputType="textPassword" />
     <TextView
         android:id="@+id/X_PW_re"
         android:layout_width="match_parent"
