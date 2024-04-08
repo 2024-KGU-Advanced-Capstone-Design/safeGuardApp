@@ -81,12 +81,22 @@ public class findPWFragment extends Fragment {
                     }
                     else {
                         X_pw2.setVisibility(View.VISIBLE);
+                        isPasswordValid = false;
                     }
                 }
                 else {
                     X_pw1.setVisibility(View.VISIBLE);
                     X_pw2.setVisibility(View.INVISIBLE);
+                    isPasswordValid = false;
+
                 }
+                updateSignUpButtonState();
+
+                // 비밀번호를 다시 입력할 때 비밀번호 재입력칸 알림 메시지 수정
+                String pw = editable.toString();
+                String pwRe = resetPW_re.getText().toString();
+                isPasswordValid2 = pwRe.equals(pw) && pw.equals(pwRe);
+                X_pw_re.setVisibility(isPasswordValid2 ? View.INVISIBLE : View.VISIBLE);
                 updateSignUpButtonState();
             }
 
@@ -103,7 +113,7 @@ public class findPWFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
                 String pw = resetPW.getText().toString();
                 String pwRe = editable.toString();
-                isPasswordValid2 = pw.equals(pwRe);
+                isPasswordValid2 = pwRe.equals(pw) && pw.equals(pwRe);
                 X_pw_re.setVisibility(isPasswordValid2 ? View.INVISIBLE : View.VISIBLE);
                 updateSignUpButtonState();
             }
