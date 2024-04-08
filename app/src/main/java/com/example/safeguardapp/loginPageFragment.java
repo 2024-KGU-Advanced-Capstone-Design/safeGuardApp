@@ -56,11 +56,20 @@ public class loginPageFragment extends Fragment {
         });
 
         // 아이디 찾기 버튼에 대한 클릭 이벤트 처리
-        view.findViewById(R.id.buttonFindIDPW).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.buttonFindID).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new findIDPWFragment());
+                transaction.replace(R.id.activity_main, new findIDFragment());
+                transaction.commit();
+            }
+        });
+
+        view.findViewById(R.id.buttonFindPW).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main, new findPWCertificationFragment());
                 transaction.commit();
             }
         });

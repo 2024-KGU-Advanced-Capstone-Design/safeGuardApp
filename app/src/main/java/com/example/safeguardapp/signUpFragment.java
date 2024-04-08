@@ -92,11 +92,11 @@ public class signUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String password = editable.toString();
-                isPasswordValid = password.length() >= 8;
-                if (isPasswordValid){
+                if (password.length() >= 8){
                     X_PW.setVisibility(View.INVISIBLE);
                     if (PasswordValidFunc(password)){
                         X_PW2.setVisibility(View.INVISIBLE);
+                        isPasswordValid = true;
                     }
                     else {
                         X_PW2.setVisibility(View.VISIBLE);

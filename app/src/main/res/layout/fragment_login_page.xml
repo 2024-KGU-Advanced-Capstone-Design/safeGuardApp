@@ -71,20 +71,30 @@
         android:windowSoftInputMode="adjustPan">
 
 
-        <Button
-            android:id="@+id/buttonFindIDPW"
+        <android.widget.Button
+            android:id="@+id/buttonFindID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="아이디/비밀번호 찾기"
+            android:text="아이디 찾기"
+            android:textSize="12dp"
             />
-        <Button
+        <android.widget.Button
+            android:id="@+id/buttonFindPW"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="비밀번호 찾기"
+            android:textSize="12dp"
+            />
+        <android.widget.Button
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="#602196F3"
-            android:text="회원가입" />
+            android:text="회원가입"
+            android:textSize="12dp"
+            />
 
 
 
