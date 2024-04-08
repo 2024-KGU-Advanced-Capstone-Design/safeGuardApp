@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_marginTop="150dp"
+    android:id="@+id/findPWFragment">
+
+    <EditText
+        android:id="@+id/findPWToID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="아이디를 입력해주세요"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/findPWToEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="이메일을 입력해주세요"
+        android:inputType="textEmailAddress" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <android.widget.Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="취소"
+            android:layout_weight="1"/>
+
+        <android.widget.Button
+            android:id="@+id/send_ANumber_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="인증번호 전송"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
