@@ -65,16 +65,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (item.getItemId() == R.id.map){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
                     mapFragment.getMapAsync(MainActivity.this);
+                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
+                    linearLayout.setVisibility(View.VISIBLE);
 //                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 //                    inflater.inflate(R.layout.activity_main, findViewById(R.id.mapModeNav), true);
                     return true;
                 }else if(item.getItemId() == R.id.setting){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
+                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
+                    linearLayout.setVisibility(View.INVISIBLE);
 //                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
 //                    linearLayout.removeAllViews();
                     return true;
                 }else if(item.getItemId() == R.id.group){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, groupFragment).commit();
+                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
+                    linearLayout.setVisibility(View.INVISIBLE);
 //                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
 //                    linearLayout.removeAllViews();
                     return true;
@@ -126,23 +132,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource);
-
-        // ----지도 모드 전환 버튼 구현 중------------------------------------------------------
-//        Button button = new Button(this);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mNaverMap.getMapType() == NaverMap.MapType.Basic) {
-//                    mNaverMap.setMapType(NaverMap.MapType.Hybrid);
-//                } else {
-//                    mNaverMap.setMapType(NaverMap.MapType.Basic);
-//                }
-//            }
-//        });
-//
-//        FrameLayout frameLayout = findViewById(R.id.mapScreen);
-//        frameLayout.addView(button);
-        // ----------------------------------------------------------------------------------
 
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);

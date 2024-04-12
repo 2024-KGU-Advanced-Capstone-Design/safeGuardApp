@@ -8,10 +8,9 @@
     <string name="label_map_type">지도 유형:</string>
     <string-array name="map_types">
         <item>Basic</item>
-        <item>Satellite</item>
         <item>Hybrid</item>
-        <item>Terrain</item>
     </string-array>
+
     <string name="layer_groups">레이어 그룹…</string>
     <string name="building">건물</string>
     <string name="traffic">실시간 교통정보</string>
