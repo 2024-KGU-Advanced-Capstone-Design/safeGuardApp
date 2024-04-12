@@ -39,7 +39,7 @@ public class signUpFragment extends Fragment {
 
     //retrofit
     UserRetrofitInterface userRetrofitInterface;
-    Call<UserDTO> call;
+    Call<SignUpRequestDTO> call;
 
     @Nullable
     @Override
@@ -157,14 +157,14 @@ public class signUpFragment extends Fragment {
         signUp_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserDTO userDTO = new UserDTO(inputId.getText().toString(), inputName.getText().toString(),
+                SignUpRequestDTO userDTO = new SignUpRequestDTO(inputId.getText().toString(), inputName.getText().toString(),
                         inputEmail.getText().toString(), inputPW.getText().toString());
                 Gson gson = new Gson();
                 String userInfo = gson.toJson(userDTO);
 
                 Log.e("JSON",userInfo);
 
-                Call<ResponseBody> call = userRetrofitInterface.saveUser(userDTO);
+                Call<ResponseBody> call = userRetrofitInterface.signUp(userDTO);
                 call.clone().enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
