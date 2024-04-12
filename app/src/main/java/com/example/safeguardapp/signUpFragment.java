@@ -3,6 +3,7 @@ package com.example.safeguardapp;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.gson.Gson;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class signUpFragment extends Fragment {
     private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
@@ -28,6 +36,10 @@ public class signUpFragment extends Fragment {
     private boolean isPasswordMatch = false;
     private boolean isNameValid = false;
     private boolean isIDValid = false;
+
+    //retrofit
+    UserRetrofitInterface userRetrofitInterface;
+    Call<UserDTO> call;
 
     @Nullable
     @Override
@@ -145,9 +157,30 @@ public class signUpFragment extends Fragment {
         signUp_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new loginPageFragment());
-                transaction.commit();
+                UserDTO userDTO = new UserDTO(inputId.getText().toString(), inputName.getText().toString(),
+                        inputEmail.getText().toString(), inputPW.getText().toString());
+                Gson gson = new Gson();
+                String userInfo = gson.toJson(userDTO);
+
+                Log.e("JSON",userInfo);
+
+                Call<ResponseBody> call = userRetrofitInterface.saveUser(userDTO);
+                call.clone().enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()){
+                            Log.e("POST","성공");
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.activity_main, new loginPageFragment());
+                            transaction.commit();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.e("POST","실패");
+                    }
+                });
             }
         });
     }
