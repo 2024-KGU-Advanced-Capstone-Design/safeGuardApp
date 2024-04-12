@@ -9,10 +9,14 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.google.android.material.navigation.NavigationBarView;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
@@ -70,10 +74,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager fragmentManager = getSupportFragmentManager();
         /* 이 코드 때문에 한 화면에 지도가 두 번 생성 되는 듯?
         MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.home); */
-        if(mapFragment == null){
-            mapFragment = MapFragment.newInstance();
-            fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
-        }
+//        if(mapFragment == null){
+//            mapFragment = MapFragment.newInstance();
+//            fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
+//        }
 
         //getMapAsync 호출해 비동기로 onMapReady 콜백 메서드 호출
         //onMapReady에서 NaverMap 객체를 받음.
@@ -89,6 +93,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource);
+//        mNaverMap.setMapType(NaverMap.MapType.Hybrid); // 하이브리드(위성) 지도 띄우는 코드
+
+// ----지도 모드 전환 버튼 구현 중------------------------------------------------------
+//        Button button = new Button(this);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (mNaverMap.getMapType() == NaverMap.MapType.Basic) {
+//                    mNaverMap.setMapType(NaverMap.MapType.Hybrid);
+//                } else {
+//                    mNaverMap.setMapType(NaverMap.MapType.Basic);
+//                }
+//            }
+//        });
+//
+//        FrameLayout frameLayout = findViewById(R.id.mapScreen);
+//        frameLayout.addView(button);
+// ----------------------------------------------------------------------------------
 
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
