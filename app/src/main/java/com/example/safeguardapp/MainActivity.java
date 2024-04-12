@@ -1,17 +1,25 @@
 package com.example.safeguardapp;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
 
 import com.google.android.material.navigation.NavigationBarView;
 import com.naver.maps.map.LocationTrackingMode;
@@ -57,12 +65,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (item.getItemId() == R.id.map){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
                     mapFragment.getMapAsync(MainActivity.this);
+//                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                    inflater.inflate(R.layout.activity_main, findViewById(R.id.mapModeNav), true);
                     return true;
                 }else if(item.getItemId() == R.id.setting){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
+//                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
+//                    linearLayout.removeAllViews();
                     return true;
                 }else if(item.getItemId() == R.id.group){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, groupFragment).commit();
+//                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
+//                    linearLayout.removeAllViews();
                     return true;
                 }
                 return false;
@@ -71,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // -----^----- BottomNavigationView 구현 -----^-----
 
         //지도 객체 생성
-        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
         /* 이 코드 때문에 한 화면에 지도가 두 번 생성 되는 듯?
         MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.home); */
 //        if(mapFragment == null){
@@ -90,12 +104,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
 
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.map_types,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner spinner = findViewById(R.id.map_type);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                CharSequence mapType = adapter.getItem(position);
+                if (mapType != null) {
+                    naverMap.setMapType(NaverMap.MapType.valueOf(mapType.toString()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource);
-//        mNaverMap.setMapType(NaverMap.MapType.Hybrid); // 하이브리드(위성) 지도 띄우는 코드
 
-// ----지도 모드 전환 버튼 구현 중------------------------------------------------------
+        // ----지도 모드 전환 버튼 구현 중------------------------------------------------------
 //        Button button = new Button(this);
 //        button.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -110,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //
 //        FrameLayout frameLayout = findViewById(R.id.mapScreen);
 //        frameLayout.addView(button);
-// ----------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------
 
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
