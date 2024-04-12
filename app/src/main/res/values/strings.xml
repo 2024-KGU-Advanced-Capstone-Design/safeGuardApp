@@ -2,4 +2,22 @@
     <string name="app_name">safeGuardApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="name_map_types_and_layer_groups">Map Types &amp; Layer Groups</string>
+    <string name="description_map_types_and_layer_groups">지도 유형 및 레이어 그룹 지정</string>
+    <string name="label_map_type">지도 유형:</string>
+    <string-array name="map_types">
+        <item>Basic</item>
+        <item>Satellite</item>
+        <item>Hybrid</item>
+        <item>Terrain</item>
+    </string-array>
+    <string name="layer_groups">레이어 그룹…</string>
+    <string name="building">건물</string>
+    <string name="traffic">실시간 교통정보</string>
+    <string name="transit">대중교통</string>
+    <string name="bicycle">자전거</string>
+    <string name="cadastral">지적도</string>
+    <string name="mountain">등산로</string>
+
 </resources>
