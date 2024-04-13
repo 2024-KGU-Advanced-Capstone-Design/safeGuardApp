@@ -7,6 +7,7 @@
     android:id="@+id/groupScreen"
     android:orientation="vertical"
     android:padding="24dp">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,14 +25,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="10dp"
-            >
+            android:padding="10dp">
+
         </LinearLayout>
     </ScrollView>
 
     <Button
+        android:id="@+id/add_group_btn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="그룹 추가"
+        android:textSize="30dp"
         android:layout_weight="1"/>
 </LinearLayout>
