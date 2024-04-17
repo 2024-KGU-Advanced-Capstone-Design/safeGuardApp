@@ -1,24 +1,32 @@
 package com.example.safeguardapp;
 
-import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient{
     private static RetrofitClient instance = null;
     private static UserRetrofitInterface userRetrofitInterface;
-    private static String baseUrl = "http://10.0.2.2:8080/signup/";
+    private static String baseUrl = "http://localhost:8080/";
 
-    private RetrofitClient(){
-        retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
+    private RetrofitClient(String state){
+        if(state.equals("signup")){
+            retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        userRetrofitInterface = retrofit.create(UserRetrofitInterface.class);
+            userRetrofitInterface = retrofit.create(UserRetrofitInterface.class);
+        }
+        else if (state.equals("login")) {
+            retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
+                    .baseUrl(baseUrl+"login/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            userRetrofitInterface = retrofit.create(UserRetrofitInterface.class);
+        }
     }
 
-    public static RetrofitClient getInstance() {
+    public static RetrofitClient getInstance(String state) {
         if (instance == null) {
-            instance = new RetrofitClient();
+            instance = new RetrofitClient(state);
         }
         return instance;
     }
