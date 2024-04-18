@@ -72,6 +72,30 @@ public class SettingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // 비밀번호 변경 버튼에 대한 클릭 이벤트 처리
+        view.findViewById(R.id.changePW_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        // 위험구역 및 안전구역 설정 버튼에 대한 클릭 이벤트 처리
+        view.findViewById(R.id.selectZone_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        // 내 정보 수정 버튼에 대한 클릭 이벤트 처리
+        view.findViewById(R.id.editMyInfo_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
