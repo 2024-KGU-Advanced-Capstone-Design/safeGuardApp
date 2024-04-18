@@ -39,8 +39,10 @@ public class signUpFragment extends Fragment {
     private boolean isNameValid = false;
     private boolean isIDValid = false;
 
+    String signup = "signup";
+
     //retrofit
-    UserRetrofitInterface userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+    UserRetrofitInterface userRetrofitInterface = RetrofitClient.getInstance(signup).getUserRetrofitInterface();
     Call<SignUpRequestDTO> call;
 
     @Nullable
@@ -155,7 +157,7 @@ public class signUpFragment extends Fragment {
             }
         });
 
-        // 회원 가입 버튼 클릭 시 정보가 저장되며 로그인 화면으로 전환 -------- 미구현
+        // 회원 가입 버튼 클릭 시 정보가 저장되며 로그인 화면으로 전환
         signUp_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
