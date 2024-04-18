@@ -58,6 +58,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
-
+    // 원형 이미지 뷰
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 
 }
