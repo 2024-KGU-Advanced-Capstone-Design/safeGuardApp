@@ -65,24 +65,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (item.getItemId() == R.id.map){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
                     mapFragment.getMapAsync(MainActivity.this);
-                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
-                    linearLayout.setVisibility(View.VISIBLE);
-//                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                    inflater.inflate(R.layout.activity_main, findViewById(R.id.mapModeNav), true);
+                    // mapFragment를 실행시 mapModeNav 보이게 설정
+                    LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
+                    mapModeNav.setVisibility(View.VISIBLE);
                     return true;
                 }else if(item.getItemId() == R.id.setting){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
-                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
-                    linearLayout.setVisibility(View.INVISIBLE);
-//                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
-//                    linearLayout.removeAllViews();
+                    // SettingFragment로 실행시 mapModeNav를 사라지게 설정
+                    LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
+                    mapModeNav.setVisibility(View.GONE);
                     return true;
                 }else if(item.getItemId() == R.id.group){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, groupFragment).commit();
-                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
-                    linearLayout.setVisibility(View.INVISIBLE);
-//                    LinearLayout linearLayout = findViewById(R.id.mapModeNav);
-//                    linearLayout.removeAllViews();
+                    // GroupFragment로 넘어가면 mapModeNav를 사라지게 설정
+                    LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
+                    mapModeNav.setVisibility(View.GONE);
                     return true;
                 }
                 return false;
