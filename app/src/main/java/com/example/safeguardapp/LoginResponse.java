@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
 
-    @SerializedName("result")
+    @SerializedName("status")
     public String resultCode;
 
-    @SerializedName("access_token")
+    @SerializedName("authorization")
     public String token;
 
 

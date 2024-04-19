@@ -115,26 +115,34 @@ public class loginPageFragment extends Fragment {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 //통신 성공
-                if(response.isSuccessful()&&response.body()!=null){
+                if(response.isSuccessful()){
                     Log.e("POST","통신 성공");
                     LoginResponse result = response.body();
                     String resultCode = result.getResultCode();
 
-                    String success="200"; //성공
-                    String errorID="300"; //아이디X
-                    String errorPW="400"; //비밀번호 불일치
+                    if(response.body()!=null) {
+                        String success = "200"; //성공
+                        String errorID = "300"; //아이디X
+                        String errorPW = "400"; //비밀번호 불일치
+                        String error403 = "403";
 
-                    if(resultCode.equals(success)){
-                        Log.e("POST","로그인 성공");
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        startActivity(intent);
+                        if (resultCode.equals(success)) {
+                            Log.e("POST", "로그인 성공");
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            startActivity(intent);
+                        } else if (resultCode.equals(errorID)) {
+                            Log.e("POST", "아이디 에러");
+                        } else if (resultCode.equals(errorPW)) {
+                            Log.e("POST", "패스워드 에러");
+                        } else if (resultCode.equals(error403)) {
+                            Log.e("POST", "403 에러");
+                        } else{
+                            Log.e("POST", "null 값 오류");
+                        }
                     }
-                    else if (resultCode.equals(errorID)) {
-                        Log.e("POST","아이디 에러");
-                    }
-                    else if (resultCode.equals(errorPW)) {
-                        Log.e("POST","패스워드 에러");
-                    }
+                }
+                else{
+                    Log.e("POST","통신 실패");
                 }
             }
             @Override
@@ -149,5 +157,6 @@ public class loginPageFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
     }
+
 
 }

@@ -17,7 +17,7 @@ public class RetrofitClient{
         }
         else if (state.equals("login")) {
             retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
-                    .baseUrl(baseUrl+"login/")
+                    .baseUrl(baseUrl)
                     .addConverterFactory(new NullOnEmptyConverterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
