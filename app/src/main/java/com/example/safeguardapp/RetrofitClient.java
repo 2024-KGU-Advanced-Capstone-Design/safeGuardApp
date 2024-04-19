@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient{
     private static RetrofitClient instance = null;
     private static UserRetrofitInterface userRetrofitInterface;
-    private static String baseUrl = "http://localhost:8080/";
+    private static String baseUrl = "http://192.168.219.107:8080/";
 
     private RetrofitClient(String state){
         if(state.equals("signup")){
@@ -18,7 +18,6 @@ public class RetrofitClient{
         else if (state.equals("login")) {
             retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
                     .baseUrl(baseUrl)
-                    .addConverterFactory(new NullOnEmptyConverterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             userRetrofitInterface = retrofit.create(UserRetrofitInterface.class);
