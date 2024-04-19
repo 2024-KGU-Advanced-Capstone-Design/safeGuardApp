@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,7 @@ public class loginPageFragment extends Fragment {
 
         EditText editTextID = view.findViewById(R.id.editTextID);
         EditText editTextPW = view.findViewById(R.id.editTextPW);
+        TextView checkIDPW = view.findViewById(R.id.X_IDPW);
         CheckBox checkBox = view.findViewById(R.id.autoLogin);
 
         // 로그인 버튼에 대한 클릭 이벤트 처리
@@ -57,7 +59,7 @@ public class loginPageFragment extends Fragment {
                 String id = editTextID.getText().toString();
                 String pw = editTextPW.getText().toString();
 
-                LoginResponse(id,pw);
+                LoginResponse(id,pw,checkIDPW);
             }
         });
 
@@ -92,7 +94,7 @@ public class loginPageFragment extends Fragment {
         });
     }
 
-    public void LoginResponse(String id, String pw){
+    public void LoginResponse(String id, String pw, TextView CheckIDPW){
         String login = "login";
         String loginType = "Member";
 
@@ -120,29 +122,20 @@ public class loginPageFragment extends Fragment {
                     LoginResponse result = response.body();
                     String resultCode = result.getResultCode();
 
+                    Log.e("POST",resultCode);
+
                     if(response.body()!=null) {
                         String success = "200"; //성공
-                        String errorID = "300"; //아이디X
-                        String errorPW = "400"; //비밀번호 불일치
-                        String error403 = "403";
-
                         if (resultCode.equals(success)) {
                             Log.e("POST", "로그인 성공");
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             startActivity(intent);
-                        } else if (resultCode.equals(errorID)) {
-                            Log.e("POST", "아이디 에러");
-                        } else if (resultCode.equals(errorPW)) {
-                            Log.e("POST", "패스워드 에러");
-                        } else if (resultCode.equals(error403)) {
-                            Log.e("POST", "403 에러");
-                        } else{
-                            Log.e("POST", "null 값 오류");
                         }
                     }
                 }
                 else{
                     Log.e("POST","통신 실패");
+                    CheckIDPW.setVisibility(View.VISIBLE);
                 }
             }
             @Override
