@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="50dp"
-            android:background="#2196F3"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -72,6 +71,18 @@
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#2196F3"
                 android:text="내 정보 수정" />
+
+            <Button
+                android:id="@+id/logout_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/material_dynamic_neutral70"
+                android:text="로그아웃"
+                android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>
 
