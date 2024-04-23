@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
     <EditText
+        android:id="@+id/name_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="그룹 명 입력"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:hint="그룹 명 입력" />
 
     <EditText
+        android:id="@+id/id_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="아이디 입력"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp"
+        android:hint="아이디 입력" />
 
     <EditText
+        android:id="@+id/password_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="비밀번호 입력"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp"
+        android:hint="비밀번호 입력" />
 
 </LinearLayout>

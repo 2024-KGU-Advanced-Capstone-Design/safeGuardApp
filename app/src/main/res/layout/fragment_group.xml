@@ -1,40 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/groupScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GroupFragment"
-    android:id="@+id/groupScreen"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    tools:context=".GroupFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="그룹 설정"
-        android:textSize="25dp"
-        />
+        android:textSize="25dp" />
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.25">
-
-        <LinearLayout
-            android:id="@+id/group_setting"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <Button
         android:id="@+id/add_group_btn"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="72dp"
         android:text="그룹 추가"
-        android:textSize="30dp"
-        android:layout_weight="1"/>
+        android:textSize="30dp" />
+
 </LinearLayout>
