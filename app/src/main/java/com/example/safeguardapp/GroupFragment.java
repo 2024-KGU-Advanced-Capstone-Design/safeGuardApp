@@ -1,97 +1,50 @@
 package com.example.safeguardapp;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-
+import com.example.safeguardapp.data.model.Group;
+import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link GroupFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.List;
+
 public class GroupFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private GroupRepository repository;
+    private RecyclerView groupListView;
     private Button addGroupBtn;
-
-    public GroupFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GroupFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static GroupFragment newInstance(String param1, String param2) {
-        GroupFragment fragment = new GroupFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
-        // Inflate the layout for this fragment
-        initializeView(view);
-        setupListeners();
         return view;
-    }
-
-    private void initializeView(View view) {
-        addGroupBtn = view.findViewById(R.id.add_group_btn);
-    }
-    private void setupListeners() {
-        addGroupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addGroupPopupFragment addGroupPopupFragment = new addGroupPopupFragment();
-
-                // DialogFragment를 보여줍니다.
-                addGroupPopupFragment.show(getFragmentManager(), "addGroupPopupFragment");
-            }
-        });
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        repository = GroupRepository.getInstance(requireContext());
+
+        // Inflate the layout for this fragment
+        initializeView(view);
+        setupListeners();
+
+        repository.getGroupListStream().observe(getViewLifecycleOwner(), groupList -> {
+            groupListView.setAdapter(new GroupAdapter(groupList));
+        });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -106,5 +59,58 @@ public class GroupFragment extends Fragment {
                 navigationView.setSelectedItemId(R.id.map);
             }
         });
+    }
+
+    private void initializeView(View view) {
+        addGroupBtn = view.findViewById(R.id.add_group_btn);
+        groupListView = view.findViewById(R.id.recycler_view);
+    }
+
+    private void setupListeners() {
+        addGroupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addGroupPopupFragment addGroupPopupFragment = new addGroupPopupFragment();
+
+                // DialogFragment를 보여줍니다.
+                addGroupPopupFragment.show(getFragmentManager(), "addGroupPopupFragment");
+            }
+        });
+    }
+
+    private static class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupItemViewHolder> {
+        private final List<Group> groupList;
+
+        private GroupAdapter(List<Group> groupList) {
+            this.groupList = groupList;
+        }
+
+        @NonNull
+        @Override
+        public GroupItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = inflater.inflate(R.layout.item_group, parent, false);
+            return new GroupItemViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull GroupItemViewHolder holder, int position) {
+            Group group = groupList.get(position);
+            holder.button.setText(group.getName());
+        }
+
+        @Override
+        public int getItemCount() {
+            return groupList.size();
+        }
+
+        static class GroupItemViewHolder extends RecyclerView.ViewHolder {
+            public MaterialButton button;
+
+            public GroupItemViewHolder(@NonNull View itemView) {
+                super(itemView);
+                button = itemView.findViewById(R.id.button);
+            }
+        }
     }
 }
