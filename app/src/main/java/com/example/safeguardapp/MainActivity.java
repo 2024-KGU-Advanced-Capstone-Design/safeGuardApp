@@ -17,9 +17,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationBarView;
 import com.naver.maps.map.LocationTrackingMode;
@@ -102,6 +104,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
+
+        // notice_btn 클릭 이벤트 처리
+        ImageButton noticeButton = findViewById(R.id.notice_btn);
+        noticeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "click Notice Button!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
