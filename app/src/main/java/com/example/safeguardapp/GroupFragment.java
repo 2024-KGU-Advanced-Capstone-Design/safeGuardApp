@@ -43,7 +43,12 @@ public class GroupFragment extends Fragment {
         setupListeners();
 
         repository.getGroupListStream().observe(getViewLifecycleOwner(), groupList -> {
-            groupListView.setAdapter(new GroupAdapter(groupList));
+            groupListView.setAdapter(new GroupAdapter(groupList, new GroupAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Group group) {
+                    GroupSettingActivity.startActivity(requireContext(), group.getUuid());
+                }
+            }));
         });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -80,9 +85,15 @@ public class GroupFragment extends Fragment {
 
     private static class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupItemViewHolder> {
         private final List<Group> groupList;
+        private final OnItemClickListener listener;
 
-        private GroupAdapter(List<Group> groupList) {
+        public interface OnItemClickListener {
+            void onItemClick(Group group);
+        }
+
+        public GroupAdapter(List<Group> groupList, OnItemClickListener listener) {
             this.groupList = groupList;
+            this.listener = listener;
         }
 
         @NonNull
@@ -96,7 +107,7 @@ public class GroupFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull GroupItemViewHolder holder, int position) {
             Group group = groupList.get(position);
-            holder.button.setText(group.getName());
+            holder.bind(group, listener);
         }
 
         @Override
@@ -110,6 +121,16 @@ public class GroupFragment extends Fragment {
             public GroupItemViewHolder(@NonNull View itemView) {
                 super(itemView);
                 button = itemView.findViewById(R.id.button);
+            }
+
+            public void bind(final Group group, final OnItemClickListener listener) {
+                button.setText(group.getName());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onItemClick(group);
+                    }
+                });
             }
         }
     }
