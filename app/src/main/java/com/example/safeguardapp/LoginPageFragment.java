@@ -23,8 +23,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class loginPageFragment extends Fragment {
-    private startScreenActivity startScreenActivity;
+public class LoginPageFragment extends Fragment {
+    private StartScreenActivity startScreenActivity;
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
     private SharedPreferences preferences;
@@ -64,7 +64,7 @@ public class loginPageFragment extends Fragment {
             public void onClick(View v) {
                 // 회원가입 버튼을 클릭했을 때 fragmentSignUp로 화면 전환
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new signUpFragment());
+                transaction.replace(R.id.start_activity, new SignUpFragment());
                 transaction.commit();
             }
         });
@@ -74,7 +74,7 @@ public class loginPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new findIDFragment());
+                transaction.replace(R.id.start_activity, new FindIDFragment());
                 transaction.commit();
             }
         });
@@ -83,7 +83,7 @@ public class loginPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new findPWCertificationFragment());
+                transaction.replace(R.id.start_activity, new FindPWCertificationFragment());
                 transaction.commit();
             }
         });

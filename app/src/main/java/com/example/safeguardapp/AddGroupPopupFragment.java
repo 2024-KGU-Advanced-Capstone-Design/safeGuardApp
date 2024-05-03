@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -16,7 +15,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 
-public class addGroupPopupFragment extends DialogFragment {
+public class AddGroupPopupFragment extends DialogFragment {
 
     @NonNull
     @Override

@@ -75,7 +75,7 @@ public class GroupFragment extends Fragment {
         addGroupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addGroupPopupFragment addGroupPopupFragment = new addGroupPopupFragment();
+                AddGroupPopupFragment addGroupPopupFragment = new AddGroupPopupFragment();
 
                 // DialogFragment를 보여줍니다.
                 addGroupPopupFragment.show(getFragmentManager(), "addGroupPopupFragment");

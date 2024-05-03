@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class findPWFragment extends Fragment {
+public class FindPWFragment extends Fragment {
 
     private EditText resetPW, resetPW_re;
     private TextView X_pw1, X_pw2, X_pw_re;
@@ -49,7 +49,7 @@ public class findPWFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
         });
@@ -58,7 +58,7 @@ public class findPWFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
         });
@@ -130,7 +130,7 @@ public class findPWFragment extends Fragment {
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new findPWCertificationFragment());
+                transaction.replace(R.id.start_activity, new FindPWCertificationFragment());
                 transaction.commit();
             }
         });

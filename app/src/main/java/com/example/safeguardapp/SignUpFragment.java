@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class signUpFragment extends Fragment {
+public class SignUpFragment extends Fragment {
     private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
     private TextView O_email, X_email, X_PW, X_PW_re, X_PW2;
     private Button signUp_btn, cancel_btn;
@@ -149,7 +149,7 @@ public class signUpFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
         });
@@ -172,7 +172,7 @@ public class signUpFragment extends Fragment {
                         if (response.isSuccessful()){
                             Log.e("POST","성공");
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.start_activity, new loginPageFragment());
+                            transaction.replace(R.id.start_activity, new LoginPageFragment());
                             transaction.commit();
                         }
                     }
@@ -222,7 +222,7 @@ public class signUpFragment extends Fragment {
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
         });
