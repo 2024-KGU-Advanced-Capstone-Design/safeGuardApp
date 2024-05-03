@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class findPWCertificationFragment extends Fragment {
+public class FindPWCertificationFragment extends Fragment {
     private EditText findPWToEmail, findPWToID;
     private Button cancel_btn, send_ANumber_btn;
 
@@ -44,7 +44,7 @@ public class findPWCertificationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
         });
@@ -85,7 +85,7 @@ public class findPWCertificationFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.start_activity, new findPWFragment());
+                        transaction.replace(R.id.start_activity, new FindPWFragment());
                         transaction.commit();
 
                     }
@@ -104,7 +104,7 @@ public class findPWCertificationFragment extends Fragment {
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
         });

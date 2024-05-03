@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-public class startScreenActivity extends AppCompatActivity {
+public class StartScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,7 +13,7 @@ public class startScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start_screen);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.start_activity, new loginPageFragment());
+        transaction.replace(R.id.start_activity, new LoginPageFragment());
         transaction.commit();
 
     }
