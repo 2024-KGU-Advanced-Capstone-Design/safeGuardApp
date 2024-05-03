@@ -23,9 +23,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 
 public class signUpFragment extends Fragment {
     private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
@@ -152,7 +149,7 @@ public class signUpFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new loginPageFragment());
                 transaction.commit();
             }
         });
@@ -175,7 +172,7 @@ public class signUpFragment extends Fragment {
                         if (response.isSuccessful()){
                             Log.e("POST","성공");
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.activity_main, new loginPageFragment());
+                            transaction.replace(R.id.start_activity, new loginPageFragment());
                             transaction.commit();
                         }
                     }
@@ -225,7 +222,7 @@ public class signUpFragment extends Fragment {
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new loginPageFragment());
                 transaction.commit();
             }
         });

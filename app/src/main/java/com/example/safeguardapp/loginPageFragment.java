@@ -1,8 +1,5 @@
 package com.example.safeguardapp;
 
-import static android.content.Context.MODE_PRIVATE;
-
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +19,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.gson.Gson;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,7 +64,7 @@ public class loginPageFragment extends Fragment {
             public void onClick(View v) {
                 // 회원가입 버튼을 클릭했을 때 fragmentSignUp로 화면 전환
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new signUpFragment());
+                transaction.replace(R.id.start_activity, new signUpFragment());
                 transaction.commit();
             }
         });
@@ -79,7 +74,7 @@ public class loginPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new findIDFragment());
+                transaction.replace(R.id.start_activity, new findIDFragment());
                 transaction.commit();
             }
         });
@@ -88,7 +83,7 @@ public class loginPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main, new findPWCertificationFragment());
+                transaction.replace(R.id.start_activity, new findPWCertificationFragment());
                 transaction.commit();
             }
         });

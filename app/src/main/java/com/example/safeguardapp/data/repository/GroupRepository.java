@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GroupRepository {
     private static GroupRepository instance;
@@ -30,7 +31,7 @@ public class GroupRepository {
     }
 
     private GroupRepository(Context context) {
-        prefs = context.getSharedPreferences("com.example.safeguardapp.group", Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences("com.example.safeguardapp.group.1", Context.MODE_PRIVATE);
         groupList.postValue(getGroupList());
     }
 
@@ -55,6 +56,39 @@ public class GroupRepository {
                 .putString("list", new Gson().toJson(groupList))
                 .apply();
 
+        this.groupList.postValue(groupList);
+    }
+
+    public void removeGroup(String uuid) {
+        List<Group> groupList = new ArrayList<>(getGroupList())
+                .stream().filter(e -> !TextUtils.equals(uuid, e.getUuid()))
+                .collect(Collectors.toList());
+
+        // 변경된 리스트를 SharedPreferences에 저장
+        prefs.edit()
+                .putString("list", new Gson().toJson(groupList))
+                .apply();
+
+        // LiveData를 업데이트
+        this.groupList.postValue(groupList);
+    }
+
+    public void editGroup(Group group) {
+        List<Group> groupList = new ArrayList<>(getGroupList());
+        if (groupList.isEmpty()) return;
+
+        for (int i = 0; i < groupList.size(); i++) {
+            if (TextUtils.equals(group.getUuid(), groupList.get(i).getUuid())) {
+                groupList.set(i, group);
+            }
+        }
+
+        // 변경된 리스트를 SharedPreferences에 저장
+        prefs.edit()
+                .putString("list", new Gson().toJson(groupList))
+                .apply();
+
+        // LiveData를 업데이트
         this.groupList.postValue(groupList);
     }
 
