@@ -13,7 +13,7 @@ public class startScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start_screen);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.start_main, new loginPageFragment());
+        transaction.replace(R.id.start_activity, new loginPageFragment());
         transaction.commit();
 
     }

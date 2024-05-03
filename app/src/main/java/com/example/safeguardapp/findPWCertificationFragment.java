@@ -44,7 +44,7 @@ public class findPWCertificationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_main, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new loginPageFragment());
                 transaction.commit();
             }
         });
@@ -85,7 +85,7 @@ public class findPWCertificationFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.start_main, new findPWFragment());
+                        transaction.replace(R.id.start_activity, new findPWFragment());
                         transaction.commit();
 
                     }
@@ -104,7 +104,7 @@ public class findPWCertificationFragment extends Fragment {
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_main, new loginPageFragment());
+                transaction.replace(R.id.start_activity, new loginPageFragment());
                 transaction.commit();
             }
         });

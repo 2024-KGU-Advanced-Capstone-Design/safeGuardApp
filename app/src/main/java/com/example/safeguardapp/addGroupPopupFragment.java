@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -36,8 +38,19 @@ public class addGroupPopupFragment extends DialogFragment {
                         String name = nameEditText.getText().toString().trim();
                         String id = idEditText.getText().toString().trim();
                         String password = passwordEditText.getText().toString().trim();
-
-                        addNewButton(name, id, password);
+                        if(!TextUtils.isEmpty(id) && !TextUtils.isEmpty(password)){
+                            addNewButton(name, id, password);
+                        }
+                        else{
+                            dialog.dismiss();
+                            AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getActivity())
+                                    .setTitle("오류")
+                                    .setMessage("아이디 또는 비밀번호가 입력되지 않았습니다.")
+                                    .setPositiveButton("확인", (dialogInterface, i) -> {
+                                    });
+                            AlertDialog msgDlg = msgBuilder.create();
+                            msgDlg.show();
+                        }
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
