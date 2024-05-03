@@ -1,32 +1,24 @@
 package com.example.safeguardapp;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationBarView;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
-import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
@@ -140,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource);
+        mNaverMap.setIndoorEnabled(true);
 
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
