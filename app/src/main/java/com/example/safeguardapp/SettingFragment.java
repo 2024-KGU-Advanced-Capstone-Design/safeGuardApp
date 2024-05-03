@@ -1,48 +1,43 @@
 package com.example.safeguardapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.telecom.Call;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SettingFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RetrofitClient retrofitClient;
+    private UserRetrofitInterface userRetrofitInterface;
 
     public SettingFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SettingFragment newInstance(String param1, String param2) {
         SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
@@ -84,7 +79,11 @@ public class SettingFragment extends Fragment {
         view.findViewById(R.id.selectZone_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                SectorMapFragment sectorMapFragment = new SectorMapFragment();
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containers, sectorMapFragment);
+                fragmentTransaction.commit();
             }
         });
 
@@ -96,6 +95,26 @@ public class SettingFragment extends Fragment {
             }
         });
 
+        // 로그아웃 버튼에 대한 클릭 이벤트 처리
+        view.findViewById(R.id.logout_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("로그아웃")
+                        .setMessage("로그아웃 하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//                                String token = "";
+//                                LogoutResponse(token);
+                            }
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
+            }
+        });
+
+        // SettingFragment에서 뒤로 갔을 때 MapFragment로 이동
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -110,4 +129,51 @@ public class SettingFragment extends Fragment {
             }
         });
     }
+/*
+    public void LogoutResponse(String token) {
+        String logout = "logout";
+        String logoutType = "Member";
+
+        LogoutRequest logoutRequest = new LogoutRequest(token);
+
+        retrofitClient = RetrofitClient.getInstance(logout);
+        userRetrofitInterface = RetrofitClient.getInstance(logout).getUserRetrofitInterface();
+
+        Log.e("POST","client 생성");
+
+        Gson gson = new Gson();
+        String userInfo = gson.toJson(logoutRequest);
+
+        Call<LogoutResponse> call = userRetrofitInterface.logout(logoutRequest);
+        call.clone().enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<LoginResponse> call, Response<LoginResponse> response) {
+                //통신 성공
+                if(response.isSuccessful()){
+                    Log.e("POST","통신 성공");
+                    LoginResponse result = response.body();
+                    String resultCode = result.getResultCode();
+
+                    Log.e("POST",resultCode);
+
+                    if(response.body()!=null) {
+                        String success = "200"; //성공
+                        if (resultCode.equals(success)) {
+                            Log.e("POST", "로그아웃 성공");
+                            Intent intent = new Intent(getActivity(), startScreenActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                }
+                else{
+                    Log.e("POST","통신 실패");
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<LoginResponse> call, Throwable t) {
+                Log.e("POST","에러");
+            }
+        });
+    }
+    */
 }
