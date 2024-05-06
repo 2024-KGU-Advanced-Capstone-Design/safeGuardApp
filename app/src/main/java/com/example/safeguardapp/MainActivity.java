@@ -27,6 +27,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     MapFragment mapFragment;
     GroupFragment groupFragment;
+    NoticeFragment noticeFragment;
     SettingFragment settingFragment;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // -----v----- BottomNavigationView 구현 -----v-----
         mapFragment = new MapFragment();
         groupFragment = new GroupFragment();
+        noticeFragment = new NoticeFragment();
         settingFragment = new SettingFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
@@ -66,6 +68,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }else if(item.getItemId() == R.id.setting){
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
                     // SettingFragment로 실행시 mapModeNav를 사라지게 설정
+                    LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
+                    mapModeNav.setVisibility(View.GONE);
+                    return true;
+                }else if(item.getItemId() == R.id.notice){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.containers, noticeFragment).commit();
+                    // NoticeFragment로 실행시 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.GONE);
                     return true;
@@ -96,15 +104,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
-
-        // notice_btn 클릭 이벤트 처리
-        ImageButton noticeButton = findViewById(R.id.notice_btn);
-        noticeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "click Notice Button!", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
