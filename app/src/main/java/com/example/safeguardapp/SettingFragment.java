@@ -13,12 +13,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.telecom.Call;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.safeguardapp.data.model.Group;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
@@ -71,6 +73,11 @@ public class SettingFragment extends Fragment {
         view.findViewById(R.id.changePW_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containers, new ChangePWFragment());
+
+                fragmentTransaction.commit();
 
             }
         });
@@ -91,6 +98,7 @@ public class SettingFragment extends Fragment {
         view.findViewById(R.id.editMyInfo_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
             }
         });
