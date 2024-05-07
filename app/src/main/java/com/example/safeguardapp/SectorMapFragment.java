@@ -1,7 +1,5 @@
 package com.example.safeguardapp;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +10,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -22,14 +19,13 @@ import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
-import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
     private static final String ARG_PARAM1 = "param1";
@@ -41,11 +37,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
-//    private static final int PERMISSION_REQUEST_CODE = 100;
-//    private static final String[] PERMISSIONS = {
-//            android.Manifest.permission.ACCESS_FINE_LOCATION,
-//            Manifest.permission.ACCESS_COARSE_LOCATION
-//    };
+
+    // 4개 좌표의 위도, 경도 값 저장하는 리스트
+    private List<LatLng> polygonPoints = new ArrayList<>();
 
     public SectorMapFragment() {
         // Required empty public constructor
@@ -93,29 +87,26 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
         mNaverMap.setLocationSource(locationSource);
         mNaverMap.setIndoorEnabled(true);
 
-        mNaverMap.setOnMapLongClickListener((point, coord) ->
-                Toast.makeText(getContext(), coord.latitude + ", " + coord.longitude, Toast.LENGTH_SHORT).show());
+        mNaverMap.setOnMapLongClickListener((point, coord) -> {
+            double latitude = coord.latitude;
+            double longitude = coord.longitude;
+            Toast.makeText(getContext(), "좌표 지정", Toast.LENGTH_SHORT).show();
 
-//        Marker marker = new Marker();
-//        mNaverMap.setOnMapLongClickListener((point, coord) ->
-//                marker.setPosition(new LatLng(coord.latitude, coord.longitude)));
-//        marker.setMap(mNaverMap);
+            // PolygonOverlay에 추가할 점을 리스트에 추가합니다.
+            polygonPoints.add(new LatLng(latitude, longitude));
 
-        CircleOverlay circleOverlay = new CircleOverlay();
-        circleOverlay.setCenter(new LatLng(37.5182, 126.9077));
-        circleOverlay.setRadius(150);
-        circleOverlay.setColor(Color.argb(75, 100, 0 , 0));
-        circleOverlay.setMap(naverMap);
+            // 사용자가 4개의 좌표를 입력하면 polygon을 생성하고 지도에 표시합니다.
+            if (polygonPoints.size() == 4) {
+                PolygonOverlay polygonOverlay = new PolygonOverlay();
+                polygonOverlay.setCoords(polygonPoints);
+                polygonOverlay.setColor(Color.argb(75, 100, 0, 0));
+                polygonOverlay.setMap(mNaverMap);
+                Toast.makeText(getContext(), "위험구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
 
-        PolygonOverlay polygonOverlay = new PolygonOverlay();
-        polygonOverlay.setCoords(Arrays.asList(
-                new LatLng(37.515594, 126.902706),
-                new LatLng(37.515320, 126.903029),
-                new LatLng(37.515929, 126.904795),
-                new LatLng(37.516353, 126.904509)
-        ));
-        polygonOverlay.setColor(Color.argb(75, 100, 0, 0));
-        polygonOverlay.setMap(naverMap);
+                // 다음을 위해 리스트를 초기화합니다.
+                polygonPoints.clear();
+            }
+        });
 
         // 네이버지도 UI 설정
         UiSettings uiSettings = mNaverMap.getUiSettings();
