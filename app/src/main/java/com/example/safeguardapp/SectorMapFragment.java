@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
@@ -21,8 +20,10 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,14 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
         mNaverMap.setOnMapLongClickListener((point, coord) -> {
             double latitude = coord.latitude;
             double longitude = coord.longitude;
-            Toast.makeText(getContext(), "좌표 지정", Toast.LENGTH_SHORT).show();
+
+            Marker marker = new Marker();
+            marker.setPosition(new LatLng(latitude, longitude));
+            marker.setIcon(MarkerIcons.BLACK);
+            marker.setIconTintColor(Color.RED);
+            marker.setWidth(Marker.SIZE_AUTO);
+            marker.setHeight(Marker.SIZE_AUTO);
+            marker.setMap(mNaverMap);
 
             // PolygonOverlay에 추가할 점을 리스트에 추가합니다.
             polygonPoints.add(new LatLng(latitude, longitude));
