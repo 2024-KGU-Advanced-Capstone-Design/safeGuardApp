@@ -19,10 +19,11 @@ import androidx.fragment.app.FragmentTransaction;
 public class FindPWFragment extends Fragment {
 
     private EditText resetPW, resetPW_re;
-    private TextView X_pw1, X_pw2, X_pw_re;
+    private TextView X_pw1, X_pw2, X_pw_re, spacePW;
     private Button cancel_btn, resettingPW_btn;
     private Boolean isPasswordValid = false;
     private Boolean isPasswordValid2 = false;
+    private Boolean isSpacePWValid = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_find_pw, container, false);
@@ -41,6 +42,7 @@ public class FindPWFragment extends Fragment {
         X_pw_re = view.findViewById(R.id.X_PW_re);
         cancel_btn = view.findViewById(R.id.cancel_btn);
         resettingPW_btn = view.findViewById(R.id.resettingPW_btn);
+        spacePW = view.findViewById(R.id.X_space_PW);
     }
 
     private void setupListeners() {
@@ -73,22 +75,31 @@ public class FindPWFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String password = editable.toString();
-                if (password.length() >= 8){
+                if(password.contains(" ")) {
+                    isSpacePWValid = false;
+                    spacePW.setVisibility(View.VISIBLE);
                     X_pw1.setVisibility(View.INVISIBLE);
-                    if (PasswordValidFunc(password)){
-                        X_pw2.setVisibility(View.INVISIBLE);
-                        isPasswordValid = true;
-                    }
-                    else {
-                        X_pw2.setVisibility(View.VISIBLE);
-                        isPasswordValid = false;
-                    }
-                }
-                else {
-                    X_pw1.setVisibility(View.VISIBLE);
                     X_pw2.setVisibility(View.INVISIBLE);
-                    isPasswordValid = false;
+                }
+                else{
+                    isSpacePWValid = true;
+                    spacePW.setVisibility(View.INVISIBLE);
 
+                    if (password.length() >= 8) {
+                        X_pw1.setVisibility(View.INVISIBLE);
+                        if (PasswordValidFunc(password)) {
+                            X_pw2.setVisibility(View.INVISIBLE);
+                            isPasswordValid = true;
+                        } else {
+                            X_pw2.setVisibility(View.VISIBLE);
+                            isPasswordValid = false;
+                        }
+                    } else {
+                        X_pw1.setVisibility(View.VISIBLE);
+                        X_pw2.setVisibility(View.INVISIBLE);
+                        isPasswordValid = false;
+
+                    }
                 }
                 updateSignUpButtonState();
 

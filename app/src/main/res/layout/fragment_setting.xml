@@ -51,17 +51,6 @@
                 android:text="닉네임 변경" />
 
             <Button
-                android:id="@+id/editEmail_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="#2196F3"
-                android:text="이메일 변경" />
-
-            <Button
                 android:id="@+id/changePW_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

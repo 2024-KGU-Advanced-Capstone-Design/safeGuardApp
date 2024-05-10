@@ -16,13 +16,6 @@
         android:hint="아이디를 입력해주세요"
         android:inputType="textEmailAddress" />
 
-    <EditText
-        android:id="@+id/findPWToEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="이메일을 입력해주세요"
-        android:inputType="textEmailAddress" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="인증번호 전송"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:enabled="false"/>
 
     </LinearLayout>
 

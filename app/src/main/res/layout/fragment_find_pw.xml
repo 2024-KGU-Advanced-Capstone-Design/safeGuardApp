@@ -35,6 +35,14 @@
             android:textSize="12sp"
             android:visibility="invisible" />
 
+        <TextView
+            android:id="@+id/X_space_PW"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
+            android:textColor="#ff0000"
+            android:textSize="12sp"
+            android:visibility="invisible" />
     </FrameLayout>
 
     <EditText

@@ -26,7 +26,7 @@ import retrofit2.Response;
 
 public class SignUpFragment extends Fragment {
     private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
-    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2;
+    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2, spaceID, spacePW;
     private Button signUp_btn, cancel_btn;
 
     // 회원 가입 버튼 활성화 조건들의 변수 선언
@@ -35,6 +35,8 @@ public class SignUpFragment extends Fragment {
     private boolean isPasswordMatch = false;
     private boolean isNameValid = false;
     private boolean isIDValid = false;
+    private boolean isSpaceIDValid = false;
+    private boolean isSpacePWValid = false;
 
     String signup = "signup";
 
@@ -66,6 +68,8 @@ public class SignUpFragment extends Fragment {
         X_PW2 = view.findViewById(R.id.X_PW2);
         signUp_btn = view.findViewById(R.id.signUp_btn);
         cancel_btn = view.findViewById(R.id.cancel_btn);
+        spaceID = view.findViewById(R.id.X_space_ID);
+        spacePW = view.findViewById(R.id.X_space_PW);
     }
 
     private void setupListeners() {
@@ -83,6 +87,15 @@ public class SignUpFragment extends Fragment {
         inputId.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
+                String inputID = editable.toString();
+                if(inputID.contains(" ")){
+                    isSpaceIDValid = false;
+                    spaceID.setVisibility(View.VISIBLE);
+                }
+                else{
+                    isSpaceIDValid = true;
+                    spaceID.setVisibility(View.INVISIBLE);
+                }
                 isIDValid = editable.length() > 0;
                 updateSignUpButtonState();
             }
@@ -105,22 +118,34 @@ public class SignUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String password = editable.toString();
-                if (password.length() >= 8){
+                if(password.contains(" ")){
+                    isSpacePWValid = false;
+                    spacePW.setVisibility(View.VISIBLE);
                     X_PW.setVisibility(View.INVISIBLE);
-                    if (PasswordValidFunc(password)){
-                        X_PW2.setVisibility(View.INVISIBLE);
-                        isPasswordValid = true;
+                    X_PW2.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    isSpacePWValid = true;
+                    spacePW.setVisibility(View.INVISIBLE);
+
+                    if (password.length() >= 8){
+                        X_PW.setVisibility(View.INVISIBLE);
+                        if (PasswordValidFunc(password)){
+                            X_PW2.setVisibility(View.INVISIBLE);
+                            isPasswordValid = true;
+                        }
+                        else {
+                            X_PW2.setVisibility(View.VISIBLE);
+                            isPasswordValid = false;
+                        }
                     }
                     else {
-                        X_PW2.setVisibility(View.VISIBLE);
+                        X_PW.setVisibility(View.VISIBLE);
+                        X_PW2.setVisibility(View.INVISIBLE);
                         isPasswordValid = false;
                     }
                 }
-                else {
-                    X_PW.setVisibility(View.VISIBLE);
-                    X_PW2.setVisibility(View.INVISIBLE);
-                    isPasswordValid = false;
-                }
+
                 updateSignUpButtonState();
 
                 // 비밀번호를 다시 입력할 때 비밀번호 재입력칸 알림 메시지 수정
@@ -188,7 +213,7 @@ public class SignUpFragment extends Fragment {
 
     // 회원 가입 버튼 활성화 및 비활성화 메서드
     private void updateSignUpButtonState() {
-        signUp_btn.setEnabled(isEmailValid && isPasswordValid && isPasswordMatch && isNameValid && isIDValid);
+        signUp_btn.setEnabled(isEmailValid && isPasswordValid && isPasswordMatch && isNameValid && isIDValid && isSpaceIDValid && isSpacePWValid);
         signUp_btn.setBackground(getResources().getDrawable(signUp_btn.isEnabled() ? R.drawable.signup_button_blue_version : R.drawable.signup_button_grey_version));
     }
 
@@ -205,7 +230,7 @@ public class SignUpFragment extends Fragment {
     }
 
     // TextWatcher 중복 제거
-    private abstract class SimpleTextWatcher implements TextWatcher {
+    abstract static class SimpleTextWatcher implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         @Override

@@ -95,7 +95,7 @@ public class SettingFragment extends Fragment {
         });
 
         // 내 정보 수정 버튼에 대한 클릭 이벤트 처리
-        view.findViewById(R.id.editMyInfo_btn).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.editName_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

@@ -39,7 +39,7 @@
             android:inputType="text"
             android:textSize="13sp"
             android:layout_marginTop="3dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/signup_edittext_design" />
 
         <TextView
@@ -47,7 +47,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="아이디"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginTop="13sp"/>
 
         <EditText
             android:id="@+id/inputId"
@@ -58,8 +59,24 @@
             android:inputType="text"
             android:textSize="13sp"
             android:layout_marginTop="3dp"
-            android:layout_marginBottom="15dp"
             android:background="@drawable/signup_edittext_design" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:id="@+id/X_space_ID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="아이디에 띄어쓰기는 사용이 불가능합니다"
+                android:textColor="#ff0000"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+        </FrameLayout>
+
+
 
         <TextView
             android:id="@+id/email_signup"
@@ -145,6 +162,14 @@
                 android:textSize="12sp"
                 android:visibility="invisible" />
 
+            <TextView
+                android:id="@+id/X_space_PW"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
+                android:textColor="#ff0000"
+                android:textSize="12sp"
+                android:visibility="invisible" />
         </FrameLayout>
 
 
@@ -154,7 +179,7 @@
             android:layout_height="wrap_content"
             android:text="비밀번호 확인"
             android:textSize="14sp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             />
 
         <EditText

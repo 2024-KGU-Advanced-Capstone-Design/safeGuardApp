@@ -1,7 +1,9 @@
 package com.example.safeguardapp;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 public class FindPWCertificationFragment extends Fragment {
-    private EditText findPWToEmail, findPWToID;
+    private EditText findPWToID;
     private Button cancel_btn, send_ANumber_btn;
 
     @Nullable
@@ -33,7 +35,6 @@ public class FindPWCertificationFragment extends Fragment {
 
     private void initializeView(View view) {
         findPWToID = view.findViewById(R.id.findPWToID);
-        findPWToEmail = view.findViewById(R.id.findPWToEmail);
         cancel_btn = view.findViewById(R.id.cancel_btn);
         send_ANumber_btn = view.findViewById(R.id.send_ANumber_btn);
     }
@@ -49,11 +50,22 @@ public class FindPWCertificationFragment extends Fragment {
             }
         });
 
+        findPWToID.addTextChangedListener(new SignUpFragment.SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.length() > 0)
+                    send_ANumber_btn.setEnabled(true);
+                else
+                    send_ANumber_btn.setEnabled(false);
+            }
+        });
+
         // 비밀번호 찾기 버튼 클릭시 이메일을 통해서 비밀번호를 찾는 화면으로 전환 -------- 미구현
         send_ANumber_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText newEditText = new EditText(getContext());
+                send_ANumber_btn.setEnabled(false);
 
                 // LayoutParams 설정
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -80,7 +92,15 @@ public class FindPWCertificationFragment extends Fragment {
                 rootView.addView(newEditText, index);
                 params.setMargins(0,dpToPx(15),0,0);
                 send_ANumber_btn.setText("다음");
-
+                newEditText.addTextChangedListener(new SignUpFragment.SimpleTextWatcher() {
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if(editable.length() > 0)
+                            send_ANumber_btn.setEnabled(true);
+                        else
+                            send_ANumber_btn.setEnabled(false);
+                    }
+                });
                 send_ANumber_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -114,5 +134,12 @@ public class FindPWCertificationFragment extends Fragment {
                 TypedValue.COMPLEX_UNIT_DIP, sizeInDP, getResources().getDisplayMetrics()
                 );
         return pxVal;
+    }
+
+    private abstract class SimpleTextWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
     }
 }
