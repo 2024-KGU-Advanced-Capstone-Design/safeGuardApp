@@ -2,9 +2,12 @@ package com.example.safeguardapp;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -88,34 +91,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
         mNaverMap.setLocationSource(locationSource);
         mNaverMap.setIndoorEnabled(true);
 
-        mNaverMap.setOnMapLongClickListener((point, coord) -> {
-            double latitude = coord.latitude;
-            double longitude = coord.longitude;
-
-            Marker marker = new Marker();
-            marker.setPosition(new LatLng(latitude, longitude));
-            marker.setIcon(MarkerIcons.BLACK);
-            marker.setIconTintColor(Color.RED);
-            marker.setWidth(Marker.SIZE_AUTO);
-            marker.setHeight(Marker.SIZE_AUTO);
-            marker.setMap(mNaverMap);
-
-            // PolygonOverlay에 추가할 점을 리스트에 추가합니다.
-            polygonPoints.add(new LatLng(latitude, longitude));
-
-            // 사용자가 4개의 좌표를 입력하면 polygon을 생성하고 지도에 표시합니다.
-            if (polygonPoints.size() == 4) {
-                PolygonOverlay polygonOverlay = new PolygonOverlay();
-                polygonOverlay.setCoords(polygonPoints);
-                polygonOverlay.setColor(Color.argb(75, 100, 0, 0));
-                polygonOverlay.setMap(mNaverMap);
-                Toast.makeText(getContext(), "위험구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
-
-                // 다음을 위해 리스트를 초기화합니다.
-                polygonPoints.clear();
-            }
-        });
-
         // 네이버지도 UI 설정
         UiSettings uiSettings = mNaverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
@@ -136,6 +111,86 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        RadioButton safeZoneRadioButton = view.findViewById(R.id.safeZone);
+        safeZoneRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mNaverMap.setOnMapLongClickListener((point, coord) -> {
+                        double latitude = coord.latitude;
+                        double longitude = coord.longitude;
+
+                        Marker marker = new Marker();
+                        marker.setPosition(new LatLng(latitude, longitude));
+                        marker.setIcon(MarkerIcons.BLACK);
+                        marker.setIconTintColor(Color.GREEN);
+                        marker.setWidth(Marker.SIZE_AUTO);
+                        marker.setHeight(Marker.SIZE_AUTO);
+                        marker.setMap(mNaverMap);
+
+                        polygonPoints.add(new LatLng(latitude, longitude));
+
+                        if (polygonPoints.size() == 4) {
+
+                            double x0 = polygonPoints.get(0).longitude;
+                            double y0 = polygonPoints.get(0).latitude;
+
+                            double x1 = polygonPoints.get(1).longitude;
+                            double y1 = polygonPoints.get(1).latitude;
+
+                            double x2 = polygonPoints.get(2).longitude;
+                            double y2 = polygonPoints.get(2).latitude;
+
+                            double x3 = polygonPoints.get(3).longitude;
+                            double y3 = polygonPoints.get(3).latitude;
+
+                            PolygonOverlay polygonOverlay = new PolygonOverlay();
+                            polygonOverlay.setCoords(polygonPoints);
+                            polygonOverlay.setColor(Color.argb(75, 0, 100, 0));
+                            polygonOverlay.setMap(mNaverMap);
+                            Toast.makeText(getContext(), "안전구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
+
+                            polygonPoints.clear();
+                        }
+                    });
+                }
+            }
+        });
+
+        RadioButton dangerZoneRadioButton = view.findViewById(R.id.dangerZone);
+        dangerZoneRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mNaverMap.setOnMapLongClickListener((point, coord) -> {
+                        double latitude = coord.latitude;
+                        double longitude = coord.longitude;
+
+                        Marker marker = new Marker();
+                        marker.setPosition(new LatLng(latitude, longitude));
+                        marker.setIcon(MarkerIcons.BLACK);
+                        marker.setIconTintColor(Color.RED);
+                        marker.setWidth(Marker.SIZE_AUTO);
+                        marker.setHeight(Marker.SIZE_AUTO);
+                        marker.setMap(mNaverMap);
+
+                        polygonPoints.add(new LatLng(latitude, longitude));
+
+                        if (polygonPoints.size() == 4) {
+
+                            PolygonOverlay polygonOverlay = new PolygonOverlay();
+                            polygonOverlay.setCoords(polygonPoints);
+                            polygonOverlay.setColor(Color.argb(75, 100, 0, 0));
+                            polygonOverlay.setMap(mNaverMap);
+                            Toast.makeText(getContext(), "위험구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
+
+                            polygonPoints.clear();
+                        }
+                    });
+                }
+            }
+        });
 
         // SectorMapFragment에서 뒤로 갔을 때 SettingFragment로 이동
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
