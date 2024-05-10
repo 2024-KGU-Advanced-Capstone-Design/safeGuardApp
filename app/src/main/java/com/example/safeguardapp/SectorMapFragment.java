@@ -2,7 +2,6 @@ package com.example.safeguardapp;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
@@ -27,11 +25,15 @@ import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
+import com.naver.maps.map.NaverMap.*;
+
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
+public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -42,11 +44,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
 
-    // 4개 좌표의 위도, 경도 값 저장하는 리스트
     private List<LatLng> polygonPoints = new ArrayList<>();
 
     public SectorMapFragment() {
-        // Required empty public constructor
     }
 
     public static SectorMapFragment newInstance(String param1, String param2) {
@@ -72,15 +72,12 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        // MapFragment 추가
         MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.sectorMapScreen);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance();
             getChildFragmentManager().beginTransaction().add(R.id.sectorMapScreen, mapFragment).commit();
         }
 
-        // MapFragment에서 네이버지도 설정
         mapFragment.getMapAsync(this);
         return inflater.inflate(R.layout.fragment_sector_map, container, false);
     }
@@ -91,22 +88,31 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
         mNaverMap.setLocationSource(locationSource);
         mNaverMap.setIndoorEnabled(true);
 
-        // 네이버지도 UI 설정
         UiSettings uiSettings = mNaverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
-        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        mNaverMap.getUiSettings().setLocationButtonEnabled(true);
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        // request code와 권한 획득 여부 확인
-//        if(requestCode == PERMISSION_REQUEST_CODE){
-//            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-//            }
-//        }
-//    }
+    private LatLng computeCentroid() {
+        double centerX = 0, centerY = 0;
+        for (LatLng point : polygonPoints) {
+            centerX += point.longitude;
+            centerY += point.latitude;
+        }
+        return new LatLng(centerY / polygonPoints.size(), centerX / polygonPoints.size());
+    }
+
+    private void sortPointsCounterClockwise() {
+        LatLng centroid = computeCentroid();
+        Collections.sort(polygonPoints, new Comparator<LatLng>() {
+            @Override
+            public int compare(LatLng a, LatLng b) {
+                double angleA = Math.atan2(a.latitude - centroid.latitude, a.longitude - centroid.longitude);
+                double angleB = Math.atan2(b.latitude - centroid.latitude, b.longitude - centroid.longitude);
+                return Double.compare(angleA, angleB);
+            }
+        });
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -118,33 +124,16 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mNaverMap.setOnMapLongClickListener((point, coord) -> {
-                        double latitude = coord.latitude;
-                        double longitude = coord.longitude;
-
                         Marker marker = new Marker();
-                        marker.setPosition(new LatLng(latitude, longitude));
+                        marker.setPosition(coord);
                         marker.setIcon(MarkerIcons.BLACK);
                         marker.setIconTintColor(Color.GREEN);
-                        marker.setWidth(Marker.SIZE_AUTO);
-                        marker.setHeight(Marker.SIZE_AUTO);
                         marker.setMap(mNaverMap);
 
-                        polygonPoints.add(new LatLng(latitude, longitude));
+                        polygonPoints.add(coord);
 
                         if (polygonPoints.size() == 4) {
-
-                            double x0 = polygonPoints.get(0).longitude;
-                            double y0 = polygonPoints.get(0).latitude;
-
-                            double x1 = polygonPoints.get(1).longitude;
-                            double y1 = polygonPoints.get(1).latitude;
-
-                            double x2 = polygonPoints.get(2).longitude;
-                            double y2 = polygonPoints.get(2).latitude;
-
-                            double x3 = polygonPoints.get(3).longitude;
-                            double y3 = polygonPoints.get(3).latitude;
-
+                            sortPointsCounterClockwise(); // 점들을 정렬
                             PolygonOverlay polygonOverlay = new PolygonOverlay();
                             polygonOverlay.setCoords(polygonPoints);
                             polygonOverlay.setColor(Color.argb(75, 0, 100, 0));
@@ -164,21 +153,16 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mNaverMap.setOnMapLongClickListener((point, coord) -> {
-                        double latitude = coord.latitude;
-                        double longitude = coord.longitude;
-
                         Marker marker = new Marker();
-                        marker.setPosition(new LatLng(latitude, longitude));
+                        marker.setPosition(coord);
                         marker.setIcon(MarkerIcons.BLACK);
                         marker.setIconTintColor(Color.RED);
-                        marker.setWidth(Marker.SIZE_AUTO);
-                        marker.setHeight(Marker.SIZE_AUTO);
                         marker.setMap(mNaverMap);
 
-                        polygonPoints.add(new LatLng(latitude, longitude));
+                        polygonPoints.add(coord);
 
                         if (polygonPoints.size() == 4) {
-
+                            sortPointsCounterClockwise(); // 점들을 정렬
                             PolygonOverlay polygonOverlay = new PolygonOverlay();
                             polygonOverlay.setCoords(polygonPoints);
                             polygonOverlay.setColor(Color.argb(75, 100, 0, 0));
@@ -192,13 +176,10 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback{
             }
         });
 
-        // SectorMapFragment에서 뒤로 갔을 때 SettingFragment로 이동
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                // 이동 시에는 이미 생성된 settingFragment를 사용하여 교체
                 transaction.replace(R.id.containers, ((MainActivity) requireActivity()).settingFragment);
                 transaction.commit();
 
