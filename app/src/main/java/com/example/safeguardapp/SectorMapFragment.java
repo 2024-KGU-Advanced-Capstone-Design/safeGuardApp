@@ -45,6 +45,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private NaverMap mNaverMap;
 
     private List<LatLng> polygonPoints = new ArrayList<>();
+    private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
+    private List<Marker> redMarkerList = new ArrayList<>();
+    private List<Marker> greenMarkerList = new ArrayList<>();
 
     public SectorMapFragment() {
     }
@@ -123,8 +126,17 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    polygonPoints.clear();
+
+                    for(Marker eraseMarker: redMarkerList){
+                        eraseMarker.setMap(null);
+                    }
+
                     mNaverMap.setOnMapLongClickListener((point, coord) -> {
                         Marker marker = new Marker();
+
+                        greenMarkerList.add(marker);
+
                         marker.setPosition(coord);
                         marker.setIcon(MarkerIcons.BLACK);
                         marker.setIconTintColor(Color.GREEN);
@@ -141,6 +153,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             Toast.makeText(getContext(), "안전구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
 
                             polygonPoints.clear();
+                            greenMarkerList.clear();
                         }
                     });
                 }
@@ -152,8 +165,17 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    polygonPoints.clear();
+
+                    for(Marker eraseMarker: greenMarkerList){
+                        eraseMarker.setMap(null);
+                    }
+
                     mNaverMap.setOnMapLongClickListener((point, coord) -> {
                         Marker marker = new Marker();
+
+                        redMarkerList.add(marker);
+
                         marker.setPosition(coord);
                         marker.setIcon(MarkerIcons.BLACK);
                         marker.setIconTintColor(Color.RED);
@@ -170,6 +192,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             Toast.makeText(getContext(), "위험구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
 
                             polygonPoints.clear();
+                            redMarkerList.clear();
                         }
                     });
                 }
