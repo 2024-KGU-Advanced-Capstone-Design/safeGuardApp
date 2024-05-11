@@ -38,10 +38,8 @@ public class SignUpFragment extends Fragment {
     private boolean isSpaceIDValid = false;
     private boolean isSpacePWValid = false;
 
-    String signup = "signup";
-
     //retrofit
-    UserRetrofitInterface userRetrofitInterface = RetrofitClient.getInstance(signup).getUserRetrofitInterface();
+    UserRetrofitInterface userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
     Call<SignUpRequestDTO> call;
 
     @Nullable

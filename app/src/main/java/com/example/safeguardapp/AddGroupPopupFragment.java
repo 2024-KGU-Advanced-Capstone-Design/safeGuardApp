@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -14,8 +14,17 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
+import com.google.gson.Gson;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddGroupPopupFragment extends DialogFragment {
+
+    RetrofitClient retrofitClient;
+    UserRetrofitInterface userRetrofitInterface;
 
     @NonNull
     @Override
@@ -37,19 +46,38 @@ public class AddGroupPopupFragment extends DialogFragment {
                         String name = nameEditText.getText().toString().trim();
                         String id = idEditText.getText().toString().trim();
                         String password = passwordEditText.getText().toString().trim();
-                        if(!TextUtils.isEmpty(id) && !TextUtils.isEmpty(password)){
-                            addNewButton(name, id, password);
-                        }
-                        else{
-                            dialog.dismiss();
-                            AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getActivity())
-                                    .setTitle("오류")
-                                    .setMessage("아이디 또는 비밀번호가 입력되지 않았습니다.")
-                                    .setPositiveButton("확인", (dialogInterface, i) -> {
-                                    });
-                            AlertDialog msgDlg = msgBuilder.create();
-                            msgDlg.show();
-                        }
+
+                        //retrofit 생성
+                        retrofitClient = RetrofitClient.getInstance();
+                        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
+                        String GuardID = LoginInfo.getLoginID();
+                        Log.e("POST","child 생성");
+                        ChildDTO childDTO = new ChildDTO(id,password,GuardID);
+                        Gson gson = new Gson();
+                        String userInfo = gson.toJson(childDTO);
+
+
+                        Log.e("JSON",userInfo);
+
+                        Call<ResponseBody> call = userRetrofitInterface.child(childDTO);
+                        call.clone().enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if (response.isSuccessful()){
+                                    Log.e("POST","성공");
+                                    dismiss();
+                                }else
+                                    Log.e("POST","not success");
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e("POST","실패");
+                            }
+                        });
+
+                        addNewButton(name, id, password);
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -65,6 +93,7 @@ public class AddGroupPopupFragment extends DialogFragment {
     private void addNewButton(String name, String id, String password) {
         Group group = new Group(name, id, password);
         GroupRepository.getInstance(requireContext()).addGroup(group);
+
         dismiss();
     }
 }

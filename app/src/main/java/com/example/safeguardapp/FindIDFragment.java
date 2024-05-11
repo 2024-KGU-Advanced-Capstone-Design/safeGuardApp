@@ -1,11 +1,14 @@
 package com.example.safeguardapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -13,8 +16,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.gson.Gson;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class FindIDFragment extends Fragment {
-    private EditText findIDToEmail;
+    RetrofitClient retrofitClient;
+    UserRetrofitInterface userRetrofitInterface;
+    private TextView checkInfo;
+    private EditText findIDToName, findIDToEmail;
     private Button cancel_btn, find_btn;
     @Nullable
     @Override
@@ -28,9 +40,11 @@ public class FindIDFragment extends Fragment {
     }
 
     private void initializeView(View view) {
-        findIDToEmail = view.findViewById(R.id.findIDToEmail);
         cancel_btn = view.findViewById(R.id.cancel_btn);
         find_btn = view.findViewById(R.id.find_btn);
+        findIDToName = view.findViewById(R.id.findIDToName);
+        findIDToEmail = view.findViewById(R.id.findIDToEmail);
+        checkInfo = view.findViewById(R.id.Check_Info);
     }
 
     private void setupListeners() {
@@ -44,13 +58,49 @@ public class FindIDFragment extends Fragment {
             }
         });
 
-        // 비밀번호 찾기 버튼 클릭시 이메일로 아이디 전송 및 로그인 화면으로 전환-------- 미구현
+        // 찾기 버튼 클릭 시 리스너
         find_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new LoginPageFragment());
-                transaction.commit();
+                String getName,getEmail;
+                getName = findIDToName.getText().toString();
+                getEmail = findIDToEmail.getText().toString();
+                FindIDRequest idDTO = new FindIDRequest(getName,getEmail);
+                Gson gson = new Gson();
+                String userInfo = gson.toJson(idDTO);
+
+                Log.e("JSON",userInfo);
+
+                retrofitClient = RetrofitClient.getInstance();
+                userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
+                Call<FindIDResponse> call = userRetrofitInterface.findID(idDTO);
+                call.clone().enqueue(new Callback<FindIDResponse>() {
+                    @Override
+                    public void onResponse(Call<FindIDResponse> call, Response<FindIDResponse> response) {
+                        Log.e("POST","통신 성공");
+
+                        FindIDResponse result = response.body();
+                        if(result==null) {
+                            checkInfo.setVisibility(View.VISIBLE);
+                        }else {
+                            checkInfo.setVisibility(View.INVISIBLE);
+
+                            String state = result.getResultCode();
+                            String memberId = result.getMemberId();
+
+                            Log.e("JSON", state);
+                            Log.e("JSON", memberId);
+
+                            Toast.makeText(v.getContext(), "회원님의 ID는" + memberId + " 입니다.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FindIDResponse> call, Throwable t) {
+                        checkInfo.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
     }
