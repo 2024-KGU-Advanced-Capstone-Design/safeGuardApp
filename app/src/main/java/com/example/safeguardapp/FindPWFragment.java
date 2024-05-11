@@ -9,12 +9,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FindPWFragment extends Fragment {
 
@@ -24,6 +30,8 @@ public class FindPWFragment extends Fragment {
     private Boolean isPasswordValid = false;
     private Boolean isPasswordValid2 = false;
     private Boolean isSpacePWValid = false;
+    private RetrofitClient retrofitClient;
+    private UserRetrofitInterface userRetrofitInterface;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_find_pw, container, false);
@@ -46,6 +54,10 @@ public class FindPWFragment extends Fragment {
     }
 
     private void setupListeners() {
+        //retrofit 생성
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
         // 취소 버튼 클릭 시 비밀번호 찾기 인증 화면으로 전환
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,9 +71,28 @@ public class FindPWFragment extends Fragment {
         resettingPW_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new LoginPageFragment());
-                transaction.commit();
+                String ID = FindPWCertificationFragment.sendID;
+                String newPW = resetPW.getText().toString();
+                ResetPwRequest pwRequest = new ResetPwRequest(ID, newPW);
+
+                Call<ResponseBody> call = userRetrofitInterface.resetPw(pwRequest);
+                call.clone().enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.isSuccessful()) {
+                            Toast.makeText(v.getContext(), "비밀번호가 변경되었습니다. 다시 로그인 해주세요", Toast.LENGTH_LONG).show();
+
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.start_activity, new LoginPageFragment());
+                            transaction.commit();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(v.getContext(), "통신 오류", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 

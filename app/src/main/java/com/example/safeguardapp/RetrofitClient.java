@@ -7,26 +7,17 @@ public class RetrofitClient{
     private static UserRetrofitInterface userRetrofitInterface;
     private static String baseUrl = "http://localhost:8080/";
 
-    private RetrofitClient(String state){
-        if(state.equals("signup")){
-            retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
+    private RetrofitClient(){
+        retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-            userRetrofitInterface = retrofit.create(UserRetrofitInterface.class);
-        }
-        else if (state.equals("login")) {
-            retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            userRetrofitInterface = retrofit.create(UserRetrofitInterface.class);
-        }
+        userRetrofitInterface = retrofit.create(UserRetrofitInterface.class);
     }
 
-    public static RetrofitClient getInstance(String state) {
+    public static RetrofitClient getInstance() {
         if (instance == null) {
-            instance = new RetrofitClient(state);
+            instance = new RetrofitClient();
         }
         return instance;
     }
