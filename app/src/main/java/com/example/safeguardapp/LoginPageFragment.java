@@ -95,10 +95,11 @@ public class LoginPageFragment extends Fragment {
 
         //loginRequest에 id,pw 저장
         LoginRequest loginRequest = new LoginRequest(id,pw,loginType);
+        LoginInfo.setLoginID(id);
 
         //retrofit 생성
-        retrofitClient = RetrofitClient.getInstance(login);
-        userRetrofitInterface = RetrofitClient.getInstance(login).getUserRetrofitInterface();
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
         Log.e("POST","client 생성");
 
