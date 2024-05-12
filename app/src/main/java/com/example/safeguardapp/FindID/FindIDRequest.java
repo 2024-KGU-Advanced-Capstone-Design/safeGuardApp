@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.FindID;
 
 public class FindIDRequest {
     private String name;

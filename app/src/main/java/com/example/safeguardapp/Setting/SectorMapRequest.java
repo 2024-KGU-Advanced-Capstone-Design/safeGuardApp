@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.Setting;
 
 public class SectorMapRequest {
     private double xOfPointA, yOfPointA, xOfPointB, yOfPointB, xOfPointC, yOfPointC, xOfPointD, yOfPointD;

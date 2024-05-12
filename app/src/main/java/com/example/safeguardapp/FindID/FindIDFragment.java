@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.FindID;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.safeguardapp.LogIn.LoginPageFragment;
+import com.example.safeguardapp.R;
+import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -92,7 +96,7 @@ public class FindIDFragment extends Fragment {
                             Log.e("JSON", state);
                             Log.e("JSON", memberId);
 
-                            Toast.makeText(v.getContext(), "회원님의 ID는" + memberId + " 입니다.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(v.getContext(), "회원님의 ID는 " + memberId + " 입니다.", Toast.LENGTH_LONG).show();
                         }
                     }
 

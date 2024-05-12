@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.Setting;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.safeguardapp.MainActivity;
+import com.example.safeguardapp.R;
+import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
@@ -33,10 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     RetrofitClient retrofitClient;

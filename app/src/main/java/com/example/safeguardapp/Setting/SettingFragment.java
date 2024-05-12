@@ -1,8 +1,7 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.Setting;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -12,20 +11,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.telecom.Call;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.safeguardapp.data.model.Group;
+import com.example.safeguardapp.MainActivity;
+import com.example.safeguardapp.R;
+import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
-
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SettingFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";

@@ -11,11 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
+import com.example.safeguardapp.Group.GroupFragment;
+import com.example.safeguardapp.Notice.NoticeFragment;
+import com.example.safeguardapp.Setting.SettingFragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
@@ -25,10 +26,10 @@ import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
-    MapFragment mapFragment;
-    GroupFragment groupFragment;
-    NoticeFragment noticeFragment;
-    SettingFragment settingFragment;
+    public MapFragment mapFragment;
+    public GroupFragment groupFragment;
+    public NoticeFragment noticeFragment;
+    public SettingFragment settingFragment;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;

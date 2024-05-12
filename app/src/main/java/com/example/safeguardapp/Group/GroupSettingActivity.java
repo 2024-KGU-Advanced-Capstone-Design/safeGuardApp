@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.Group;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.safeguardapp.R;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.appbar.MaterialToolbar;

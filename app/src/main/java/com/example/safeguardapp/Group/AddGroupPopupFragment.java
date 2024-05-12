@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.Group;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +12,11 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.safeguardapp.Group.ChildDTO;
+import com.example.safeguardapp.LogIn.LoginInfo;
+import com.example.safeguardapp.R;
+import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.gson.Gson;

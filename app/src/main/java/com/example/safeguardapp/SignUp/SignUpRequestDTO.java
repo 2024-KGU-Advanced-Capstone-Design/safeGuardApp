@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.SignUp;
 
 public class SignUpRequestDTO {
     private String inputID;

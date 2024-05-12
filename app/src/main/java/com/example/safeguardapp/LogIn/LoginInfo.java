@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.LogIn;
 
 public class LoginInfo {
     public static String getLoginID() {

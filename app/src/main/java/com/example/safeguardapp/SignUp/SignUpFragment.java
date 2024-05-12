@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.SignUp;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,6 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.safeguardapp.LogIn.LoginPageFragment;
+import com.example.safeguardapp.R;
+import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.gson.Gson;
 
 import okhttp3.ResponseBody;
@@ -228,7 +232,7 @@ public class SignUpFragment extends Fragment {
     }
 
     // TextWatcher 중복 제거
-    abstract static class SimpleTextWatcher implements TextWatcher {
+    public abstract static class SimpleTextWatcher implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         @Override

@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.Setting;
 
 import com.google.gson.annotations.SerializedName;
 

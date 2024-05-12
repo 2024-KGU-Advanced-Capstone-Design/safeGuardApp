@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
+import com.example.safeguardapp.LogIn.LoginPageFragment;
+
 public class StartScreenActivity extends AppCompatActivity {
 
     @Override

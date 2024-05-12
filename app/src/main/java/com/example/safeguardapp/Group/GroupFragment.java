@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.Group;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.safeguardapp.Group.AddGroupPopupFragment;
+import com.example.safeguardapp.Group.GroupSettingActivity;
+import com.example.safeguardapp.MainActivity;
+import com.example.safeguardapp.R;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

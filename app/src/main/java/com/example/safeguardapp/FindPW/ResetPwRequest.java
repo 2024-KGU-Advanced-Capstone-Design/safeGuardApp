@@ -1,4 +1,4 @@
-package com.example.safeguardapp;
+package com.example.safeguardapp.FindPW;
 
 public class ResetPwRequest {
     private String id;

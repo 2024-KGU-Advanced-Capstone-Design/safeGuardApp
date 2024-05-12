@@ -35,7 +35,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".GroupSettingActivity"
+            android:name=".Group.GroupSettingActivity"
             android:exported="false" />
 
         <meta-data
