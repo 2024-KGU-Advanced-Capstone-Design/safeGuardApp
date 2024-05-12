@@ -2,6 +2,7 @@ package com.example.safeguardapp;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.MapFragment;
@@ -25,7 +27,6 @@ import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
-import com.naver.maps.map.NaverMap.*;
 
 
 import java.util.ArrayList;
@@ -33,7 +34,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
+    RetrofitClient retrofitClient;
+    UserRetrofitInterface userRetrofitInterface;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -45,6 +52,8 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private NaverMap mNaverMap;
 
     private List<LatLng> polygonPoints = new ArrayList<>();
+
+    private PolygonManager polygonManager = new PolygonManager();
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
     private List<Marker> redMarkerList = new ArrayList<>();
     private List<Marker> greenMarkerList = new ArrayList<>();
@@ -82,6 +91,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         mapFragment.getMapAsync(this);
+
         return inflater.inflate(R.layout.fragment_sector_map, container, false);
     }
 
@@ -94,7 +104,21 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
         UiSettings uiSettings = mNaverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         mNaverMap.getUiSettings().setLocationButtonEnabled(true);
+
+        drawAllPolygons();
     }
+
+    private void drawAllPolygons() {
+
+        // PolygonManager에 저장된 모든 폴리곤을 맵에 그리기
+        for (List<LatLng> polygon : polygonManager.getPolygons()) {
+            PolygonOverlay polygonOverlay = new PolygonOverlay();
+            polygonOverlay.setCoords(polygon);
+            polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 색상 설정
+            polygonOverlay.setMap(mNaverMap);
+        }
+    }
+
 
     private LatLng computeCentroid() {
         double centerX = 0, centerY = 0;
@@ -133,17 +157,17 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                     }
 
                     mNaverMap.setOnMapLongClickListener((point, coord) -> {
-                        Marker marker = new Marker();
+                        if (polygonPoints.size() < 4) {
+                            Marker marker = new Marker();
+                            greenMarkerList.add(marker);
+                            marker.setPosition(coord);
+                            marker.setIcon(MarkerIcons.BLACK);
+                            marker.setIconTintColor(Color.GREEN);
+                            marker.setMap(mNaverMap);
 
-                        greenMarkerList.add(marker);
-
-                        marker.setPosition(coord);
-                        marker.setIcon(MarkerIcons.BLACK);
-                        marker.setIconTintColor(Color.GREEN);
-                        marker.setMap(mNaverMap);
-
-                        polygonPoints.add(coord);
-
+                            polygonPoints.add(coord);
+                            greenMarkerList.add(marker);
+                        }
                         if (polygonPoints.size() == 4) {
                             sortPointsCounterClockwise(); // 점들을 정렬
                             PolygonOverlay polygonOverlay = new PolygonOverlay();
@@ -151,6 +175,30 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             polygonOverlay.setColor(Color.argb(75, 0, 100, 0));
                             polygonOverlay.setMap(mNaverMap);
                             Toast.makeText(getContext(), "안전구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
+
+                            PolygonManager polygonManager = new PolygonManager();
+                            polygonManager.addPolygon(new ArrayList<>(polygonPoints));
+                            drawAllPolygons();
+                            //retrofit 데이터 전송
+                            double getXA, getYA, getXB, getYB, getXC, getYC, getXD, getYD;
+                            getXA = polygonPoints.get(0).longitude;
+                            getYA = polygonPoints.get(0).latitude;
+                            getXB = polygonPoints.get(1).longitude;
+                            getYB = polygonPoints.get(1).latitude;
+                            getXC = polygonPoints.get(2).longitude;
+                            getYC = polygonPoints.get(2).latitude;
+                            getXD = polygonPoints.get(3).longitude;
+                            getYD = polygonPoints.get(3).latitude;
+
+                            SectorMapRequest MapDTO = new SectorMapRequest(getXA, getYA, getXB, getYB,
+                                    getXC, getYC, getXD, getYD);
+                            Gson gson = new Gson();
+                            String mapInfo = gson.toJson(MapDTO);
+
+                            Log.e("JSON", mapInfo);
+
+                            retrofitClient = RetrofitClient.getInstance();
+                            userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
                             polygonPoints.clear();
                             greenMarkerList.clear();
@@ -210,5 +258,36 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 navigationView.setSelectedItemId(R.id.setting);
             }
         });
+    }
+
+    public class PolygonManager {
+        private List<List<LatLng>> polygons = new ArrayList<>();
+        private static final int MAX_POLYGONS = 20;
+
+        public boolean addPolygon(List<LatLng> polygon) {
+            if (polygon.size() != 4) {
+                throw new IllegalArgumentException("Each polygon must exactly contain 4 points.");
+            }
+            if (polygons.size() < MAX_POLYGONS) {
+                polygons.add(new ArrayList<>(polygon));
+                logPolygonAdded(polygon);  // 로그 출력
+                return true;
+            } else {
+                Log.e("PolygonManager", "Cannot add more polygons. Maximum limit reached.");
+                return false; // Can't add more polygons
+            }
+        }
+
+        private void logPolygonAdded(List<LatLng> polygon) {
+            StringBuilder coordinatesLog = new StringBuilder("Polygon added with coordinates: ");
+            for (LatLng coord : polygon) {
+                coordinatesLog.append(String.format("[Lat: %.5f, Lng: %.5f] ", coord.latitude, coord.longitude));
+            }
+            Log.e("PolygonManager", coordinatesLog.toString());
+        }
+
+        public List<List<LatLng>> getPolygons() {
+            return polygons;
+        }
     }
 }
