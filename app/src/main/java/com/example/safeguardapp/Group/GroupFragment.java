@@ -10,11 +10,12 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safeguardapp.Group.AddGroupPopupFragment;
-import com.example.safeguardapp.Group.GroupSettingActivity;
+import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.data.model.Group;
@@ -50,7 +51,11 @@ public class GroupFragment extends Fragment {
             groupListView.setAdapter(new GroupAdapter(groupList, new GroupAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(Group group) {
-                    GroupSettingActivity.startActivity(requireContext(), group.getUuid());
+                    // Assuming you have a method in your activity to handle the fragment transition
+                    if (getActivity() instanceof MainActivity) { // Replace MainActivity with your actual activity's class name
+                        MainActivity mainActivity = (MainActivity) getActivity();
+                        mainActivity.replaceFragment(GroupSettingFragment.newInstance(group.getUuid()));
+                    }
                 }
             }));
         });
@@ -138,4 +143,5 @@ public class GroupFragment extends Fragment {
             }
         }
     }
+
 }

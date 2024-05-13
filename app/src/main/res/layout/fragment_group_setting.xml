@@ -2,7 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/group_activity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -36,7 +37,25 @@
             android:text="조력자 추가" />
 
         <Button
-            android:id="@+id/del_gourpbtn"
+            android:id="@+id/selectZone_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="안전구역 및 위험구역 설정" />
+
+        <Button
+            android:id="@+id/child_id_find_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="아이 아이디 찾기" />
+
+        <Button
+            android:id="@+id/child_pw_find_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="아이 비밀번호 찾기" />
+
+        <Button
+            android:id="@+id/del_group_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="버튼 삭제" />
