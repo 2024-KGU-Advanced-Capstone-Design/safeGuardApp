@@ -2,6 +2,7 @@ package com.example.safeguardapp.Setting;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.StartScreenActivity;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -107,8 +109,8 @@ public class SettingFragment extends Fragment {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-//                                String token = "";
-//                                LogoutResponse(token);
+                                Intent intent = new Intent(getActivity(), StartScreenActivity.class);
+                                startActivity(intent);
                             }
                         })
                         .setNegativeButton("취소", null)
@@ -131,51 +133,4 @@ public class SettingFragment extends Fragment {
             }
         });
     }
-/*
-    public void LogoutResponse(String token) {
-        String logout = "logout";
-        String logoutType = "Member";
-
-        LogoutRequest logoutRequest = new LogoutRequest(token);
-
-        retrofitClient = RetrofitClient.getInstance(logout);
-        userRetrofitInterface = RetrofitClient.getInstance(logout).getUserRetrofitInterface();
-
-        Log.e("POST","client 생성");
-
-        Gson gson = new Gson();
-        String userInfo = gson.toJson(logoutRequest);
-
-        Call<LogoutResponse> call = userRetrofitInterface.logout(logoutRequest);
-        call.clone().enqueue(new Callback<LoginResponse>() {
-            @Override
-            public void onResponse(retrofit2.Call<LoginResponse> call, Response<LoginResponse> response) {
-                //통신 성공
-                if(response.isSuccessful()){
-                    Log.e("POST","통신 성공");
-                    LoginResponse result = response.body();
-                    String resultCode = result.getResultCode();
-
-                    Log.e("POST",resultCode);
-
-                    if(response.body()!=null) {
-                        String success = "200"; //성공
-                        if (resultCode.equals(success)) {
-                            Log.e("POST", "로그아웃 성공");
-                            Intent intent = new Intent(getActivity(), startScreenActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                }
-                else{
-                    Log.e("POST","통신 실패");
-                }
-            }
-            @Override
-            public void onFailure(retrofit2.Call<LoginResponse> call, Throwable t) {
-                Log.e("POST","에러");
-            }
-        });
-    }
-    */
 }
