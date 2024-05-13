@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,10 +25,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.safeguardapp.LogIn.LoginPageFragment;
+import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -37,14 +40,16 @@ import java.util.Optional;
 
 public class GroupSettingFragment extends Fragment {
     private String uuid;
+    private String childID;
     private GroupRepository repository;
     private LiveData<Optional<Group>> groupStream;
     private ChipGroup aideGroup;
 
-    public static GroupSettingFragment newInstance(String uuid) {
+    public static GroupSettingFragment newInstance(String uuid, String childID) {
         GroupSettingFragment fragment = new GroupSettingFragment();
         Bundle args = new Bundle();
         args.putString("uuid", uuid);
+        args.putString("childID", childID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,6 +60,7 @@ public class GroupSettingFragment extends Fragment {
 
         if (getArguments() != null) {
             uuid = getArguments().getString("uuid");
+            childID = getArguments().getString("childID");
         }
 
         if (TextUtils.isEmpty(uuid)) {
@@ -95,6 +101,20 @@ public class GroupSettingFragment extends Fragment {
         view.findViewById(R.id.del_group_btn).setOnClickListener(v -> remove());
 
         aideGroup = view.findViewById(R.id.chip_group);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로 가기 시 실행되는 코드
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                // 이동 시에는 이미 생성된 mapFragment를 사용하여 교체
+                transaction.replace(R.id.containers, ((MainActivity) requireActivity()).groupFragment);
+                transaction.commit();
+
+                BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
+                navigationView.setSelectedItemId(R.id.group);
+            }
+        });
 
         return view;
     }
@@ -183,9 +203,14 @@ public class GroupSettingFragment extends Fragment {
         msgDlg.show();
     }
     private void mapSectorSet() {
+        Bundle args = new Bundle();
+        args.putString("UUID", uuid);
+        args.putString("childID", childID);
+        SectorMapFragment sectorMapfragment = new SectorMapFragment();
+        sectorMapfragment.setArguments(args);
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.containers, new FindChildIDFragment());
+        fragmentTransaction.replace(R.id.containers, sectorMapfragment);
         fragmentTransaction.commit();
     }
 

@@ -29,6 +29,8 @@ public class GroupFragment extends Fragment {
     private GroupRepository repository;
     private RecyclerView groupListView;
     private Button addGroupBtn;
+    private String currentGroupUuid;
+    private String childID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,8 +44,6 @@ public class GroupFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         repository = GroupRepository.getInstance(requireContext());
-
-        // Inflate the layout for this fragment
         initializeView(view);
         setupListeners();
 
@@ -51,11 +51,11 @@ public class GroupFragment extends Fragment {
             groupListView.setAdapter(new GroupAdapter(groupList, new GroupAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(Group group) {
-                    // Assuming you have a method in your activity to handle the fragment transition
-                    if (getActivity() instanceof MainActivity) { // Replace MainActivity with your actual activity's class name
-                        MainActivity mainActivity = (MainActivity) getActivity();
-                        mainActivity.replaceFragment(GroupSettingFragment.newInstance(group.getUuid()));
-                    }
+                    currentGroupUuid = group.getUuid(); // 클릭한 그룹의 UUID를 저장
+                    childID = group.getId();
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childID));
+                    transaction.commit();
                 }
             }));
         });

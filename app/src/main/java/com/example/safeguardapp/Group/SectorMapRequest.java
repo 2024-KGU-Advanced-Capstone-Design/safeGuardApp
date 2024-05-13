@@ -5,7 +5,7 @@ public class SectorMapRequest {
     private String ChildName;
 
     public SectorMapRequest(double xOfPointA, double yOfPointA, double xOfPointB, double yOfPointB,
-                            double xOfPointC, double yOfPointC, double xOfPointD, double yOfPointD){
+                            double xOfPointC, double yOfPointC, double xOfPointD, double yOfPointD, String ChildName){
         this.xOfPointA = xOfPointA;
         this.yOfPointA = yOfPointA;
         this.xOfPointB = xOfPointB;
@@ -14,5 +14,6 @@ public class SectorMapRequest {
         this.yOfPointC = yOfPointC;
         this.xOfPointD = xOfPointD;
         this.yOfPointD = yOfPointD;
+        this.ChildName = ChildName;
     }
 }
