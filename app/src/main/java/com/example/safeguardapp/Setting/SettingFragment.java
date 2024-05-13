@@ -76,18 +76,6 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        // 위험구역 및 안전구역 설정 버튼에 대한 클릭 이벤트 처리
-        view.findViewById(R.id.selectZone_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SectorMapFragment sectorMapFragment = new SectorMapFragment();
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containers, sectorMapFragment);
-                fragmentTransaction.commit();
-            }
-        });
-
         // 내 정보 수정 버튼에 대한 클릭 이벤트 처리
         view.findViewById(R.id.editName_btn).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -62,19 +62,6 @@
                 android:text="비밀번호 변경" />
 
             <Button
-                android:id="@+id/selectZone_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="#2196F3"
-                android:text="아이의 위험구역 및 안전구역 설정" />
-
-
-
-            <Button
                 android:id="@+id/logout_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
