@@ -24,6 +24,7 @@ import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -60,22 +61,16 @@ public class ChangePWFragment extends Fragment {
         cancel_btn = view.findViewById(R.id.cancel_btn);
         resettingPW_btn = view.findViewById(R.id.resettingPW_btn);
         spacePW = view.findViewById(R.id.X_space_PW);
+
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> previous());
+        view.findViewById(R.id.cancel_btn).setOnClickListener(v -> previous());
     }
 
     private void setupListeners() {
         //retrofit 생성
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
-
-        // 취소 버튼 클릭 시 비밀번호 찾기 인증 화면으로 전환
-        cancel_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.containers, ((MainActivity) requireActivity()).settingFragment);
-                transaction.commit();
-            }
-        });
 
         resettingPW_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,14 +171,10 @@ public class ChangePWFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // 뒤로 가기 시 실행되는 코드
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.containers, ((MainActivity) requireActivity()).settingFragment);
-                transaction.commit();
+                previous();
             }
         });
     }
@@ -195,7 +186,13 @@ public class ChangePWFragment extends Fragment {
     }
 
     private void updateSignUpButtonState() {
-        resettingPW_btn.setEnabled(isPasswordValid && isPasswordValid2);
+        resettingPW_btn.setEnabled(isPasswordValid && isPasswordValid2 && isSpacePWValid);
+    }
+
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.containers, ((MainActivity) requireActivity()).settingFragment);
+        transaction.commit();
     }
 }
 

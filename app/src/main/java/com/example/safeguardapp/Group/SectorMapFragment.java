@@ -16,11 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
@@ -32,7 +30,7 @@ import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
-import com.example.safeguardapp.data.model.Group;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,14 +47,12 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
+    private String mParam1, mParam2;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
-    private String currentGroupUuid;
-    private String childName;
+    private String currentGroupUuid, childName;
 
     private List<LatLng> polygonPoints = new ArrayList<>();
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
@@ -172,6 +168,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
+
                             xOfPointA = polygonPoints.get(0).longitude;
                             yOfPointA = polygonPoints.get(0).latitude;
                             xOfPointB = polygonPoints.get(1).longitude;
@@ -181,36 +178,46 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             xOfPointD = polygonPoints.get(3).longitude;
                             yOfPointD = polygonPoints.get(3).latitude;
 
-                            SectorMapRequest MapDTO = new SectorMapRequest(xOfPointA, yOfPointA, xOfPointB, yOfPointB,
+                            SafeSectorRequest SafeMapDTO = new SafeSectorRequest(xOfPointA, yOfPointA, xOfPointB, yOfPointB,
                                     xOfPointC, yOfPointC, xOfPointD, yOfPointD, childName);
                             Gson gson = new Gson();
-                            String mapInfo = gson.toJson(MapDTO);
+                            String mapInfo = gson.toJson(SafeMapDTO);
 
                             Log.e("JSON", mapInfo);
 
                             retrofitClient = RetrofitClient.getInstance();
                             userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
-                            Call<SectorMapResponse> call = userRetrofitInterface.sectorSafe(MapDTO);
-                            call.clone().enqueue(new Callback<SectorMapResponse>() {
+                            Call<ResponseBody> call = userRetrofitInterface.sectorSafe(SafeMapDTO);
+                            call.clone().enqueue(new Callback<ResponseBody>() {
                                 @Override
-                                public void onResponse(Call<SectorMapResponse> call, Response<SectorMapResponse> response) {
-                                    Log.e("POST", "통신 성공");
-                                    SectorMapResponse result = response.body();
-                                    if(result==null){
-                                        Log.e("POST", "null 값");
-                                    }
-                                    else{
-                                        String state = result.getResultCode();
-                                        Log.e("JSON", state);
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        Log.e("POST", "전달 성공");
+                                        // 응답 본문 로그 추가
+                                        try {
+                                            String responseBody = response.body().string();
+                                            Log.e("POST", "Response Body: " + responseBody);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        Log.e("POST", "전달 실패, HTTP Status: " + response.code());
+                                        try {
+                                            String responseBody = response.errorBody().string();
+                                            Log.e("POST", "Error Body: " + responseBody);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Call<SectorMapResponse> call, Throwable t) {
-                                    Log.e("POST", "통신 실패");
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Log.e("POST", "통신 실패", t);
                                 }
                             });
+
 
                             polygonPoints.clear();
                             greenMarkerList.clear();
@@ -251,6 +258,58 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             polygonOverlay.setMap(mNaverMap);
                             Toast.makeText(getContext(), "위험구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
 
+                            //retrofit 데이터 전송
+                            double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
+
+                            xOfPointA = polygonPoints.get(0).longitude;
+                            yOfPointA = polygonPoints.get(0).latitude;
+                            xOfPointB = polygonPoints.get(1).longitude;
+                            yOfPointB = polygonPoints.get(1).latitude;
+                            xOfPointC = polygonPoints.get(2).longitude;
+                            yOfPointC = polygonPoints.get(2).latitude;
+                            xOfPointD = polygonPoints.get(3).longitude;
+                            yOfPointD = polygonPoints.get(3).latitude;
+
+                            DangerSectorRequest DangerMapDTO = new DangerSectorRequest(xOfPointA, yOfPointA, xOfPointB, yOfPointB,
+                                    xOfPointC, yOfPointC, xOfPointD, yOfPointD, childName);
+                            Gson gson = new Gson();
+                            String mapInfo = gson.toJson(DangerMapDTO);
+
+                            Log.e("JSON", mapInfo);
+
+                            retrofitClient = RetrofitClient.getInstance();
+                            userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
+                            Call<ResponseBody> call = userRetrofitInterface.sectorDanger(DangerMapDTO);
+                            call.clone().enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        Log.e("POST", "전달 성공");
+                                        // 응답 본문 로그 추가
+                                        try {
+                                            String responseBody = response.body().string();
+                                            Log.e("POST", "Response Body: " + responseBody);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        Log.e("POST", "전달 실패, HTTP Status: " + response.code());
+                                        try {
+                                            String responseBody = response.errorBody().string();
+                                            Log.e("POST", "Error Body: " + responseBody);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Log.e("POST", "통신 실패", t);
+                                }
+                            });
+
                             polygonPoints.clear();
                             redMarkerList.clear();
                         }
@@ -262,16 +321,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (currentGroupUuid != null) {
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
-                    transaction.commit();
-                } else {
-                    if (isEnabled()) {
-                        setEnabled(false);
-                        requireActivity().onBackPressed();
-                    }
-                }
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
+                transaction.commit();
             }
         });
     }

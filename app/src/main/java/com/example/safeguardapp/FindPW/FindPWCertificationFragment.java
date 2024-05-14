@@ -89,6 +89,7 @@ public class FindPWCertificationFragment extends Fragment {
             public void onClick(View view) {
                 sendID = findPWToID.getText().toString();
                 EmailRequest emailRequest = new EmailRequest(sendID);
+                Log.e("POST", sendID);
 
                 Call<ResponseBody> call = userRetrofitInterface.sendCode(emailRequest);
 
