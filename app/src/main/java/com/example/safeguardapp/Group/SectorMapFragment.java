@@ -66,7 +66,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> greenMarkerList = new ArrayList<>();
     private List<InfoWindow> greenInfoWindowList = new ArrayList<>();
     private List<InfoWindow> redInfoWindowList = new ArrayList<>();
-    private ArrayList<Integer> deleteGreenPolygonIndex = new ArrayList<>();
     private int greenIndex = 0;
     private int redIndex = 0;
 
@@ -376,11 +375,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
                 for(int i = 0; i < greenPolygonOverlays.size(); i++){
                     popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
-//                    for(int j = 0; j < deleteGreenPolygonIndex.size(); j++){
-//                        if(deleteGreenPolygonIndex.get(j) == greenPolygonOverlays.indexOf(i)){
-//                            popupMenu.getMenu().getItem(i).setVisible(false); // 해당 항목을 메뉴에서 숨김
-//                        }
-//                    }
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -391,7 +385,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         greenInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
 //                        greenInfoWindowList.remove(index);
                         popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
-                        deleteGreenPolygonIndex.add(index);
                         return true;
                     }
                 });
@@ -415,10 +408,11 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int index = item.getItemId(); // 해당 PolygonOverlay를 선택하여 처리
-                        removePolygonOverlay(index); // Polygon 제거
+                        redPolygonOverlays.get(index).setMap(null); // Polygon 제거
                         redInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
-                        redInfoWindowList.remove(index);
+//                        redInfoWindowList.remove(index);
                         popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
+
                         return true;
                     }
                 });
