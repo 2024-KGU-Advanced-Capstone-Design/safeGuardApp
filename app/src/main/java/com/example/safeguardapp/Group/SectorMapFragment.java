@@ -4,9 +4,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -25,6 +29,7 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
@@ -55,9 +60,15 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private String currentGroupUuid, childName;
 
     private List<LatLng> polygonPoints = new ArrayList<>();
-    private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
+    private List<PolygonOverlay> greenPolygonOverlays = new ArrayList<>();
+    private List<PolygonOverlay> redPolygonOverlays = new ArrayList<>();
     private List<Marker> redMarkerList = new ArrayList<>();
     private List<Marker> greenMarkerList = new ArrayList<>();
+    private List<InfoWindow> greenInfoWindowList = new ArrayList<>();
+    private List<InfoWindow> redInfoWindowList = new ArrayList<>();
+    private ArrayList<Integer> deleteGreenPolygonIndex = new ArrayList<>();
+    private int greenIndex = 0;
+    private int redIndex = 0;
 
     public SectorMapFragment() {
     }
@@ -166,6 +177,24 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             polygonOverlay.setMap(mNaverMap);
                             Toast.makeText(getContext(), "안전구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
 
+                            InfoWindow infoWindow = new InfoWindow();
+                            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                                @NonNull
+                                @Override
+                                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                    return "안전구역 " + greenIndex;
+                                }
+                            });
+                            infoWindow.open(marker);
+                            infoWindow.setPosition(new LatLng(polygonPoints.get(2).latitude, polygonPoints.get(2).longitude));
+                            infoWindow.open(mNaverMap);
+                            greenInfoWindowList.add(infoWindow);
+
+                            for(Marker eraseMarker: greenMarkerList){
+                                eraseMarker.setMap(null);
+                            }
+                            greenPolygonOverlays.add(polygonOverlay);
+
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
 
@@ -219,6 +248,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             });
 
 
+                            greenIndex++;
                             polygonPoints.clear();
                             greenMarkerList.clear();
                         }
@@ -257,6 +287,24 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             polygonOverlay.setColor(Color.argb(75, 100, 0, 0));
                             polygonOverlay.setMap(mNaverMap);
                             Toast.makeText(getContext(), "위험구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
+
+                            InfoWindow infoWindow = new InfoWindow();
+                            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                                @NonNull
+                                @Override
+                                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                    return "위험구역 " + redIndex;
+                                }
+                            });
+                            infoWindow.open(marker);
+                            infoWindow.setPosition(new LatLng(polygonPoints.get(2).latitude, polygonPoints.get(2).longitude));
+                            infoWindow.open(mNaverMap);
+                            redInfoWindowList.add(infoWindow);
+
+                            for(Marker eraseMarker: redMarkerList){
+                                eraseMarker.setMap(null);
+                            }
+                            redPolygonOverlays.add(polygonOverlay);
 
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
@@ -310,11 +358,78 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                 }
                             });
 
+                            redIndex++;
                             polygonPoints.clear();
                             redMarkerList.clear();
                         }
                     });
                 }
+            }
+        });
+
+        Button greenSectorDeleteBtn = view.findViewById(R.id.green_sector_delete_btn);
+        greenSectorDeleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(getContext(), v);
+                popupMenu.getMenuInflater().inflate(R.menu.green_polygon_overlay_menu, popupMenu.getMenu());
+
+                for(int i = 0; i < greenPolygonOverlays.size(); i++){
+                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
+//                    for(int j = 0; j < deleteGreenPolygonIndex.size(); j++){
+//                        if(deleteGreenPolygonIndex.get(j) == greenPolygonOverlays.indexOf(i)){
+//                            popupMenu.getMenu().getItem(i).setVisible(false); // 해당 항목을 메뉴에서 숨김
+//                        }
+//                    }
+                }
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int index = item.getItemId(); // 해당 PolygonOverlay를 선택하여 처리
+                        greenPolygonOverlays.get(index).setMap(null); // Polygon 제거
+                        greenInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
+//                        greenInfoWindowList.remove(index);
+                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
+                        deleteGreenPolygonIndex.add(index);
+                        return true;
+                    }
+                });
+
+                popupMenu.show();
+            }
+        });
+
+        Button redSectorDeleteBtn = view.findViewById(R.id.red_sector_delete_btn);
+        redSectorDeleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(getContext(), v);
+                popupMenu.getMenuInflater().inflate(R.menu.red_polygon_overlay_menu, popupMenu.getMenu());
+
+                for(int i = 0; i < redPolygonOverlays.size(); i++){
+                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + i);
+                }
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int index = item.getItemId(); // 해당 PolygonOverlay를 선택하여 처리
+                        removePolygonOverlay(index); // Polygon 제거
+                        redInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
+                        redInfoWindowList.remove(index);
+                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
+                        return true;
+                    }
+                });
+
+                popupMenu.show();
+            }
+
+            // PolygonOverlay 제거 시 호출되는 메서드
+            private void removePolygonOverlay(int index) {
+                redPolygonOverlays.get(index).setMap(null); // PolygonOverlay 제거하는 코드
+                redPolygonOverlays.remove(index);
             }
         });
 
