@@ -6,8 +6,8 @@ import com.example.safeguardapp.FindPW.CodeRequest;
 import com.example.safeguardapp.FindPW.EmailRequest;
 import com.example.safeguardapp.FindPW.ResetPwRequest;
 import com.example.safeguardapp.Group.ChildDTO;
-import com.example.safeguardapp.Group.SectorMapRequest;
-import com.example.safeguardapp.Group.SectorMapResponse;
+import com.example.safeguardapp.Group.DangerSectorRequest;
+import com.example.safeguardapp.Group.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
@@ -40,6 +40,9 @@ public interface UserRetrofitInterface {
     Call<ResponseBody> child(@Body ChildDTO jsonUser);
 
     @POST("add-safe")
-    Call<SectorMapResponse> sectorSafe(@Body SectorMapRequest jsonUser);
+    Call<ResponseBody> sectorSafe(@Body SafeSectorRequest jsonUser);
+
+    @POST("add-danger")
+    Call<ResponseBody> sectorDanger(@Body DangerSectorRequest jsonUser);
 
 }
