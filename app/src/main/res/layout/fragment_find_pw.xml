@@ -1,87 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:layout_marginTop="150dp">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/resetPW"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="재설정할 비밀번호를 입력해주세요"
-        android:inputType="textPassword" />
-    <FrameLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/X_PW"
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="비밀번호는 8자리 이상으로 설정해주세요"
-            android:textColor="#ff0000"
-            android:textSize="12sp"
-            android:visibility="invisible" />
+            app:navigationIcon="?attr/homeAsUpIndicator" />
 
-        <TextView
-            android:id="@+id/X_PW2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="특수문자, 알파벳, 숫자 중 2가지 이상 사용해야 합니다"
-            android:textColor="#ff0000"
-            android:textSize="12sp"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/X_space_PW"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
-            android:textColor="#ff0000"
-            android:textSize="12sp"
-            android:visibility="invisible" />
-    </FrameLayout>
-
-    <EditText
-        android:id="@+id/resetPW_re"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="비밀번호를 한번 더 입력해주세요"
-        android:inputType="textPassword" />
-    <TextView
-        android:id="@+id/X_PW_re"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="다시 입력해주세요"
-        android:textColor="#ff0000"
-        android:textSize="12sp"
-        android:visibility="invisible"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp">
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <android.widget.Button
-            android:id="@+id/cancel_btn"
+        <EditText
+            android:id="@+id/resetPW"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="취소"
-            android:layout_weight="1"/>
+            android:hint="재설정할 비밀번호를 입력해주세요"
+            android:inputType="textPassword" />
 
-        <android.widget.Button
-            android:id="@+id/resettingPW_btn"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/X_PW"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="비밀번호는 8자리 이상으로 설정해주세요"
+                android:textColor="#ff0000"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/X_PW2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="특수문자, 알파벳, 숫자 중 2가지 이상 사용해야 합니다"
+                android:textColor="#ff0000"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/X_space_PW"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
+                android:textColor="#ff0000"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/resetPW_re"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="확인"
-            android:layout_weight="1"
-            android:enabled="false"/>
+            android:layout_marginTop="15dp"
+            android:hint="비밀번호를 한번 더 입력해주세요"
+            android:inputType="textPassword" />
 
+        <TextView
+            android:id="@+id/X_PW_re"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="다시 입력해주세요"
+            android:textColor="#ff0000"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <android.widget.Button
+                android:id="@+id/cancel_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="취소" />
+
+            <android.widget.Button
+                android:id="@+id/resettingPW_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="확인" />
+
+        </LinearLayout>
     </LinearLayout>
 
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

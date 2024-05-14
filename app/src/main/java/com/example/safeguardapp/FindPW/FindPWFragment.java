@@ -21,6 +21,7 @@ import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -56,6 +57,9 @@ public class FindPWFragment extends Fragment {
         cancel_btn = view.findViewById(R.id.cancel_btn);
         resettingPW_btn = view.findViewById(R.id.resettingPW_btn);
         spacePW = view.findViewById(R.id.X_space_PW);
+
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> previous());
     }
 
     private void setupListeners() {
@@ -64,14 +68,7 @@ public class FindPWFragment extends Fragment {
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
         // 취소 버튼 클릭 시 비밀번호 찾기 인증 화면으로 전환
-        cancel_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new LoginPageFragment());
-                transaction.commit();
-            }
-        });
+        cancel_btn.setOnClickListener(v -> previous());
 
         resettingPW_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +187,13 @@ public class FindPWFragment extends Fragment {
     }
 
     private void updateSignUpButtonState() {
-        resettingPW_btn.setEnabled(isPasswordValid && isPasswordValid2);
+        resettingPW_btn.setEnabled(isPasswordValid && isPasswordValid2 && isSpacePWValid);
+    }
+
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.containers, new LoginPageFragment());
+        transaction.commit();
     }
 }
 

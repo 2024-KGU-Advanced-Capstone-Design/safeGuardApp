@@ -52,7 +52,7 @@
             android:id="@+id/child_pw_find_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="그룹 비밀번호 찾기" />
+            android:text="그룹 비밀번호 변경" />
 
         <Button
             android:id="@+id/del_group_btn"

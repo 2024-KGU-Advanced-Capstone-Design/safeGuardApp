@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.safeguardapp.FindPW.EmailRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
+import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -38,12 +42,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class GroupSettingFragment extends Fragment {
     private String uuid;
     private String childID;
     private GroupRepository repository;
     private LiveData<Optional<Group>> groupStream;
     private ChipGroup aideGroup;
+    private RetrofitClient retrofitClient;
+    private UserRetrofitInterface userRetrofitInterface;
 
     public static GroupSettingFragment newInstance(String uuid, String childID) {
         GroupSettingFragment fragment = new GroupSettingFragment();
@@ -92,6 +105,9 @@ public class GroupSettingFragment extends Fragment {
 
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> previous());
+
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
         view.findViewById(R.id.change_name_button).setOnClickListener(v -> edit());
         view.findViewById(R.id.add_aide_button).setOnClickListener(v -> addAide());
@@ -210,11 +226,11 @@ public class GroupSettingFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString("UUID", uuid);
         args.putString("childID", childID);
-        FindChildIDFragment FindChildIDFragment = new FindChildIDFragment();
-        FindChildIDFragment.setArguments(args);
+        SectorMapFragment SectorMapFragment = new SectorMapFragment();
+        SectorMapFragment.setArguments(args);
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.containers, FindChildIDFragment);
+        fragmentTransaction.replace(R.id.containers, SectorMapFragment);
         fragmentTransaction.commit();
     }
 
@@ -231,10 +247,16 @@ public class GroupSettingFragment extends Fragment {
 
     //아이 비밀번호 찾기
     private void findChildPW() {
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.containers, new FindChildPWFragment());
-        fragmentTransaction.commit();
+
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
+                .setTitle("인증번호 요청")
+                .setMessage("가입하신 이메일로 인증번호를 보내시겠습니까?")
+                .setPositiveButton("확인", (dialogInterface, i) -> {
+                    sendEmail();
+                })
+                .setNegativeButton("취소", null);
+        AlertDialog msgDlg = msgBuilder.create();
+        msgDlg.show();
     }
 
     //그룹 삭제
@@ -251,5 +273,38 @@ public class GroupSettingFragment extends Fragment {
 
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
+    }
+
+    private void sendEmail(){
+        String sendID = LoginPageFragment.saveID;
+        EmailRequest emailRequest = new EmailRequest(sendID);
+
+        Log.e("POST", sendID);
+        Call<ResponseBody> call = userRetrofitInterface.sendCode(emailRequest);
+
+        call.clone().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.e("POST","통신 성공");
+
+                if (response.isSuccessful()) {
+                    Bundle args = new Bundle();
+                    args.putString("UUID", uuid);
+                    args.putString("childID", childID);
+                    FindChildPWCertFragment FindChildPWCertFragment = new FindChildPWCertFragment();
+                    FindChildPWCertFragment.setArguments(args);
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.containers, FindChildPWCertFragment);
+                    fragmentTransaction.commit();
+                } else {
+                    Log.e("POST", "Error: " + response.errorBody().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("POST", "통신 실패", t);
+            }
+        });
     }
 }

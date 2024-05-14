@@ -2,6 +2,7 @@ package com.example.safeguardapp.Group;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -84,10 +85,10 @@ public class GroupFragment extends Fragment {
         addGroupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddGroupPopupFragment addGroupPopupFragment = new AddGroupPopupFragment();
-
-                // DialogFragment를 보여줍니다.
-                addGroupPopupFragment.show(getFragmentManager(), "addGroupPopupFragment");
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containers, new AddGroupPopupFragment());
+                fragmentTransaction.commit();
             }
         });
     }

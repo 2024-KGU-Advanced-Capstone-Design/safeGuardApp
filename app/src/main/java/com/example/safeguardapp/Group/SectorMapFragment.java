@@ -47,14 +47,12 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
+    private String mParam1, mParam2;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
-    private String currentGroupUuid;
-    private String childName;
+    private String currentGroupUuid, childName;
 
     private List<LatLng> polygonPoints = new ArrayList<>();
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
@@ -323,16 +321,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (currentGroupUuid != null) {
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
-                    transaction.commit();
-                } else {
-                    if (isEnabled()) {
-                        setEnabled(false);
-                        requireActivity().onBackPressed();
-                    }
-                }
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
+                transaction.commit();
             }
         });
     }
