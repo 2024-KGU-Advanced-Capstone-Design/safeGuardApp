@@ -46,13 +46,13 @@
             android:id="@+id/child_id_find_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="아이 아이디 찾기" />
+            android:text="그룹 아이디 확인" />
 
         <Button
             android:id="@+id/child_pw_find_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="아이 비밀번호 찾기" />
+            android:text="그룹 비밀번호 찾기" />
 
         <Button
             android:id="@+id/del_group_btn"

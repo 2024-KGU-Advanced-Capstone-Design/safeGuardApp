@@ -196,30 +196,37 @@ public class GroupSettingFragment extends Fragment {
                     repository.editGroup(group);
 
                     Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
+
+
                 })
                 .setNegativeButton("취소", null);
 
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
     }
+
+    //안전 구역 및 위험 구역 설정
     private void mapSectorSet() {
         Bundle args = new Bundle();
         args.putString("UUID", uuid);
         args.putString("childID", childID);
-        SectorMapFragment sectorMapfragment = new SectorMapFragment();
-        sectorMapfragment.setArguments(args);
+        FindChildIDFragment FindChildIDFragment = new FindChildIDFragment();
+        FindChildIDFragment.setArguments(args);
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.containers, sectorMapfragment);
+        fragmentTransaction.replace(R.id.containers, FindChildIDFragment);
         fragmentTransaction.commit();
     }
 
-    //아이 아이디 찾기
+    //그룹 아이디 찾기
     private void findChildID() {
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.containers, new FindChildIDFragment());
-        fragmentTransaction.commit();
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
+                .setTitle("그룹 아이디")
+                .setMessage("그룹의 아이디는 " + childID + "입니다")
+                .setPositiveButton("확인", (dialogInterface, i) -> {
+                });
+        AlertDialog msgDlg = msgBuilder.create();
+        msgDlg.show();
     }
 
     //아이 비밀번호 찾기
