@@ -7,6 +7,7 @@ import com.example.safeguardapp.FindPW.EmailRequest;
 import com.example.safeguardapp.FindPW.ResetPwRequest;
 import com.example.safeguardapp.Group.ChildDTO;
 import com.example.safeguardapp.Group.DangerSectorRequest;
+import com.example.safeguardapp.Group.GroupRemoveRequest;
 import com.example.safeguardapp.Group.ResetChildPWRequest;
 import com.example.safeguardapp.Group.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
@@ -48,4 +49,7 @@ public interface UserRetrofitInterface {
 
     @POST("chose-child")
     Call<ResponseBody> childResetPW(@Body ResetChildPWRequest jsonUser);
+
+    @POST("childremove")
+    Call<ResponseBody> removeGroup(@Body GroupRemoveRequest jsonUser);
 }

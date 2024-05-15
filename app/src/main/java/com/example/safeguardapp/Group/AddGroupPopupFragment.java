@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,8 +66,7 @@ public class AddGroupPopupFragment extends Fragment {
                 String username = nameEditText.getText().toString().trim();
                 String userid = idEditText.getText().toString().trim();
                 String userpw = passwordEditText.getText().toString().trim();
-                addNewButton(username, userid, userpw);
-                transmitChildData(userid,userpw);
+                transmitChildData(username, userid,userpw);
             }
         });
 
@@ -179,7 +179,7 @@ public class AddGroupPopupFragment extends Fragment {
         signUp_btn.setBackground(getResources().getDrawable(signUp_btn.isEnabled() ? R.drawable.signup_button_blue_version : R.drawable.signup_button_grey_version));
     }
 
-    private void transmitChildData(String id, String password) {
+    private void transmitChildData(String name, String id, String password) {
         //retrofit 생성
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
@@ -199,9 +199,13 @@ public class AddGroupPopupFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Log.e("POST", "성공");
+                    addNewButton(name, id, password);
                     previous();
-                } else
+                }
+                else {
                     Log.e("POST", "not success");
+                    Toast.makeText(getContext(), "이미 존재하는 아이디입니다.", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override

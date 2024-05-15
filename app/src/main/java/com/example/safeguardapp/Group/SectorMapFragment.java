@@ -231,6 +231,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                         }
                                     } else {
                                         Log.e("POST", "전달 실패, HTTP Status: " + response.code());
+                                        Toast.makeText(getContext(), "서버와 통신에 실패하였습니다. 구역에 다시 지정해주세요.", Toast.LENGTH_SHORT).show();
                                         try {
                                             String responseBody = response.errorBody().string();
                                             Log.e("POST", "Error Body: " + responseBody);

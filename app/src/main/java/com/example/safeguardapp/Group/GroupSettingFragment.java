@@ -37,7 +37,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -114,7 +116,7 @@ public class GroupSettingFragment extends Fragment {
         view.findViewById(R.id.selectZone_btn).setOnClickListener(v -> mapSectorSet());
         view.findViewById(R.id.child_id_find_button).setOnClickListener(v -> findChildID());
         view.findViewById(R.id.child_pw_find_button).setOnClickListener(v -> findChildPW());
-        view.findViewById(R.id.del_group_btn).setOnClickListener(v -> remove());
+        view.findViewById(R.id.del_group_btn).setOnClickListener(v -> transmitRemove());
 
         aideGroup = view.findViewById(R.id.chip_group);
 
@@ -301,6 +303,33 @@ public class GroupSettingFragment extends Fragment {
                     Log.e("POST", "Error: " + response.errorBody().toString());
                 }
             }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("POST", "통신 실패", t);
+            }
+        });
+    }
+    private void transmitRemove(){
+        GroupRemoveRequest RemoveDTO = new GroupRemoveRequest(childID);
+        Gson gson = new Gson();
+        String removeInfo = gson.toJson(RemoveDTO);
+
+        Log.e("JSON", removeInfo);
+
+        Call<ResponseBody> call = userRetrofitInterface.removeGroup(RemoveDTO);
+        call.clone().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Log.e("POST", "전달 성공");
+                    // 응답 본문 로그 추가
+                    remove();
+                } else {
+                    Log.e("POST", "전달 실패, HTTP Status: " + response.code());
+
+                }
+            }
+
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("POST", "통신 실패", t);
