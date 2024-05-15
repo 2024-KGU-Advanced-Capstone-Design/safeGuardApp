@@ -116,7 +116,7 @@ public class GroupSettingFragment extends Fragment {
         view.findViewById(R.id.selectZone_btn).setOnClickListener(v -> mapSectorSet());
         view.findViewById(R.id.child_id_find_button).setOnClickListener(v -> findChildID());
         view.findViewById(R.id.child_pw_find_button).setOnClickListener(v -> findChildPW());
-        view.findViewById(R.id.del_group_btn).setOnClickListener(v -> transmitRemove());
+        view.findViewById(R.id.del_group_btn).setOnClickListener(v -> remove());
 
         aideGroup = view.findViewById(R.id.chip_group);
 
@@ -267,9 +267,7 @@ public class GroupSettingFragment extends Fragment {
                 .setTitle("그룹 삭제")
                 .setMessage("그룹을 삭제 하시겠습니까?")
                 .setPositiveButton("삭제", (dialogInterface, i) -> {
-                    previous();
-                    GroupRepository.getInstance(getContext()).removeGroup(uuid);
-                    Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    transmitRemove();
                 })
                 .setNegativeButton("취소", null);
 
@@ -322,6 +320,9 @@ public class GroupSettingFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Log.e("POST", "전달 성공");
+                    previous();
+                    GroupRepository.getInstance(getContext()).removeGroup(uuid);
+                    Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     // 응답 본문 로그 추가
                     remove();
                 } else {

@@ -59,6 +59,7 @@ public class FindChildPWCertFragment extends Fragment {
     private void setupListeners(View view){
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+        cancel_btn.setOnClickListener(v -> previous());
         positive_btn.setOnClickListener(v -> clickOK(view));
     }
 
