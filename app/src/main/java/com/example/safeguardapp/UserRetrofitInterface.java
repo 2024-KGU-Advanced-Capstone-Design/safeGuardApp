@@ -43,7 +43,7 @@ public interface UserRetrofitInterface {
     @POST("add-safe")
     Call<ResponseBody> sectorSafe(@Body SafeSectorRequest jsonUser);
 
-    @POST("add-danger")
+    @POST("add-dangerous")
     Call<ResponseBody> sectorDanger(@Body DangerSectorRequest jsonUser);
 
     @POST("chose-child")
