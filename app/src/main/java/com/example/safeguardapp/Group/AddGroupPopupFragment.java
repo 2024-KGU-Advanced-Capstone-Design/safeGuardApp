@@ -190,7 +190,6 @@ public class AddGroupPopupFragment extends Fragment {
         Gson gson = new Gson();
         String userInfo = gson.toJson(childDTO);
 
-
         Log.e("JSON", userInfo);
 
         Call<ResponseBody> call = userRetrofitInterface.child(childDTO);
