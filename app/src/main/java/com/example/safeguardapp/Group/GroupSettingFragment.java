@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -104,6 +105,14 @@ public class GroupSettingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_setting, container, false);
+
+        TextView groupNameTextView = view.findViewById(R.id.groupName);
+        groupStream.observe(getViewLifecycleOwner(), groupOptional -> {
+            if (groupOptional.isPresent()) {
+                Group group = groupOptional.get();
+                groupNameTextView.setText(group.getName());
+            }
+        });
 
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> previous());
