@@ -28,11 +28,36 @@
                 android:text="SafeGuard"
                 android:textSize="48sp" />
 
+            <RadioGroup
+                android:layout_height="48dp"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/setGroup"
+                android:paddingHorizontal="10dp">
+
+                <RadioButton
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/setMember"
+                    android:text="보호자"
+                    android:textSize="15sp"
+                    android:layout_marginHorizontal="10dp"
+                    android:checked="true"/>
+                <RadioButton
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/setChild"
+                    android:text="피보호자"
+                    android:textSize="15sp"
+                    android:layout_marginHorizontal="10dp"/>
+            </RadioGroup>
+
             <EditText
                 android:id="@+id/editTextID"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/signup_edittext_design"
                 android:ems="10"
                 android:hint="아이디"

@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +40,7 @@ public class LoginPageFragment extends Fragment {
     private UserRetrofitInterface userRetrofitInterface;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
+    private String loginType;
 
 
     @Nullable
@@ -54,6 +57,8 @@ public class LoginPageFragment extends Fragment {
         EditText editTextID = view.findViewById(R.id.editTextID);
         EditText editTextPW = view.findViewById(R.id.editTextPW);
         TextView checkIDPW = view.findViewById(R.id.X_IDPW);
+        RadioButton isMember = view.findViewById(R.id.setMember);
+        RadioButton isChild =view.findViewById(R.id.setChild);
         CheckBox checkBox = view.findViewById(R.id.autoLogin);
 
         // 로그인 버튼에 대한 클릭 이벤트 처리
@@ -62,8 +67,11 @@ public class LoginPageFragment extends Fragment {
             public void onClick(View v) {
                 String id = editTextID.getText().toString();
                 String pw = editTextPW.getText().toString();
+                if(isMember.isChecked()){
+                    loginType="Member";
+                }else loginType="Child";
 
-                LoginResponse(id,pw,checkIDPW);
+                LoginResponse(v,id,pw,checkIDPW);
             }
         });
 
@@ -98,8 +106,7 @@ public class LoginPageFragment extends Fragment {
         });
     }
 
-    public void LoginResponse(String id, String pw, TextView CheckIDPW){
-        String loginType = "Member";
+    public void LoginResponse(View v,String id, String pw, TextView CheckIDPW){
 
         //loginRequest에 id,pw 저장
         LoginRequest loginRequest = new LoginRequest(id,pw,loginType);
@@ -135,8 +142,10 @@ public class LoginPageFragment extends Fragment {
 
                             saveID = id;
 
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            startActivity(intent);
+                            if(loginType.equals("Member")) {
+                                Intent intent = new Intent(getActivity(), MainActivity.class);
+                                startActivity(intent);
+                            }else Toast.makeText(v.getContext(), "Child 로그인 성공", Toast.LENGTH_LONG).show();
                         }
                     }
                 }
