@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.safeguardapp.FindPW.CodeRequest;
@@ -49,8 +50,15 @@ public class FindChildPWCertFragment extends Fragment {
         certNum = view.findViewById(R.id.input_cert_num);
         cancel_btn = view.findViewById(R.id.cancel_btn);
         positive_btn = view.findViewById(R.id.positive_btn);
-        currentGroupUuid = getArguments().getString("UUID");
-        childName = getArguments().getString("childID");
+
+        if (getArguments() != null) {
+            currentGroupUuid = getArguments().getString("UUID");
+            childName = getArguments().getString("childID");
+        } else {
+            Log.e("FindChildPWFragment", "getArguments() returned null");
+            // 적절한 오류 처리를 추가하세요 (예: 사용자에게 알림, 기본 값 설정 등)
+        }
+
 
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> previous());
@@ -72,7 +80,16 @@ public class FindChildPWCertFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
-                    transScreen(new FindChildPWFragment());
+                    Bundle args = new Bundle();
+                    args.putString("UUID", sendID);
+                    args.putString("childID", childName);
+                    FindChildPWFragment FindChildPWFragment = new FindChildPWFragment();
+                    FindChildPWFragment.setArguments(args);
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.containers, FindChildPWFragment);
+                    fragmentTransaction.commit();
+                    Log.e("POST", "인증 성공");
                 }
                 else Toast.makeText(view.getContext(), "인증번호를 다시 확인해주세요!", Toast.LENGTH_LONG).show();
             }
@@ -95,12 +112,6 @@ public class FindChildPWCertFragment extends Fragment {
                 previous();
             }
         });
-    }
-
-    private void transScreen(Fragment fragment){
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.containers, fragment);
-        transaction.commit();
     }
 
     private void previous(){
