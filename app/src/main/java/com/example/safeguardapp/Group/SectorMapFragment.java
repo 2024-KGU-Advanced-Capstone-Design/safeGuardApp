@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -60,12 +61,12 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private String currentGroupUuid, childName;
 
     private List<LatLng> polygonPoints = new ArrayList<>();
-    private List<PolygonOverlay> greenPolygonOverlays = new ArrayList<>();
-    private List<PolygonOverlay> redPolygonOverlays = new ArrayList<>();
+    private HashMap<Integer, PolygonOverlay> greenPolygonOverlays = new HashMap<>();
+    private HashMap<Integer, PolygonOverlay> redPolygonOverlays = new HashMap<>();
     private List<Marker> redMarkerList = new ArrayList<>();
     private List<Marker> greenMarkerList = new ArrayList<>();
-    private List<InfoWindow> greenInfoWindowList = new ArrayList<>();
-    private List<InfoWindow> redInfoWindowList = new ArrayList<>();
+    private HashMap<Integer, InfoWindow> greenInfoWindowList = new HashMap<>();
+    private HashMap<Integer, InfoWindow> redInfoWindowList = new HashMap<>();
     private int greenIndex = 0;
     private int redIndex = 0;
 
@@ -156,7 +157,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         eraseMarker.setMap(null);
                     }
 
-                    mNaverMap.setOnMapLongClickListener((point, coord) -> {
+                    mNaverMap.setOnMapClickListener((point, coord) -> {
 
                         Marker marker = new Marker();
                         greenMarkerList.add(marker);
@@ -187,12 +188,13 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             infoWindow.open(marker);
                             infoWindow.setPosition(new LatLng(polygonPoints.get(2).latitude, polygonPoints.get(2).longitude));
                             infoWindow.open(mNaverMap);
-                            greenInfoWindowList.add(infoWindow);
+                            greenInfoWindowList.put(greenIndex, infoWindow);
 
                             for(Marker eraseMarker: greenMarkerList){
                                 eraseMarker.setMap(null);
                             }
-                            greenPolygonOverlays.add(polygonOverlay);
+//                            greenPolygonOverlays.add(polygonOverlay);
+                            greenPolygonOverlays.put(greenIndex, polygonOverlay);
 
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
@@ -268,7 +270,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         eraseMarker.setMap(null);
                     }
 
-                    mNaverMap.setOnMapLongClickListener((point, coord) -> {
+                    mNaverMap.setOnMapClickListener((point, coord) -> {
                         Marker marker = new Marker();
 
                         redMarkerList.add(marker);
@@ -299,12 +301,12 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             infoWindow.open(marker);
                             infoWindow.setPosition(new LatLng(polygonPoints.get(2).latitude, polygonPoints.get(2).longitude));
                             infoWindow.open(mNaverMap);
-                            redInfoWindowList.add(infoWindow);
+                            redInfoWindowList.put(redIndex, infoWindow);
 
                             for(Marker eraseMarker: redMarkerList){
                                 eraseMarker.setMap(null);
                             }
-                            redPolygonOverlays.add(polygonOverlay);
+                            redPolygonOverlays.put(redIndex, polygonOverlay);
 
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
@@ -370,23 +372,31 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
         Button greenSectorDeleteBtn = view.findViewById(R.id.green_sector_delete_btn);
         greenSectorDeleteBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.green_polygon_overlay_menu, popupMenu.getMenu());
-
-                for(int i = 0; i < greenPolygonOverlays.size(); i++){
-                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
+//                for(int i = 0; i < greenPolygonOverlays.size(); i++){
+//                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
+//                }
+                for(int i = 0; i < greenIndex; i++){
+                    if(greenPolygonOverlays.size() != 0){
+                        if(greenPolygonOverlays.containsKey(i)){
+                            popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
+                        }
+                    }
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int index = item.getItemId(); // 해당 PolygonOverlay를 선택하여 처리
-                        greenPolygonOverlays.get(index).setMap(null); // Polygon 제거
+                        greenPolygonOverlays.get(index).setMap(null); // 지도에서 PolygonOverlay 제거
+                        greenPolygonOverlays.remove(index);
                         greenInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
-//                        greenInfoWindowList.remove(index);
-                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
+                        greenInfoWindowList.remove(index);
+//                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
                         return true;
                     }
                 });
@@ -402,30 +412,31 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.red_polygon_overlay_menu, popupMenu.getMenu());
 
-                for(int i = 0; i < redPolygonOverlays.size(); i++){
-                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + i);
+//                for(int i = 0; i < redPolygonOverlays.size(); i++){
+//                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + i);
+//                }
+                for(int i = 0; i < redIndex; i++){
+                    if(redPolygonOverlays.size() != 0){
+                        if(redPolygonOverlays.containsKey(i)){
+                            popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + i);
+                        }
+                    }
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int index = item.getItemId(); // 해당 PolygonOverlay를 선택하여 처리
-                        redPolygonOverlays.get(index).setMap(null); // Polygon 제거
+                        redPolygonOverlays.get(index).setMap(null); // 지도에서 PolygonOverlay 제거
+                        redPolygonOverlays.remove(index);
                         redInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
-//                        redInfoWindowList.remove(index);
-                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
-
+                        redInfoWindowList.remove(index);
+//                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
                         return true;
                     }
                 });
 
                 popupMenu.show();
-            }
-
-            // PolygonOverlay 제거 시 호출되는 메서드
-            private void removePolygonOverlay(int index) {
-                redPolygonOverlays.get(index).setMap(null); // PolygonOverlay 제거하는 코드
-                redPolygonOverlays.remove(index);
             }
         });
 
