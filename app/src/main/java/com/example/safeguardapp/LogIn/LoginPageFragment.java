@@ -147,7 +147,7 @@ public class LoginPageFragment extends Fragment {
                             Log.e("POST", "로그인 성공");
 
                             saveID = id;
-                            PreferenceManager.setPreference(context,id,pw,loginType);
+                            if(checkBox.isChecked()) PreferenceManager.setPreference(context,id,pw,loginType);
 
                             if(loginType.equals("Member")) {
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
