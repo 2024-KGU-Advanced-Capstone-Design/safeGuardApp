@@ -76,6 +76,9 @@ public class AddGroupPopupFragment extends Fragment {
         cancel_btn.setOnClickListener(v -> previous());
         toolbar.setNavigationOnClickListener(v -> previous());
 
+        // RetrofitClient와 UserRetrofitInterface 초기화
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = retrofitClient.getUserRetrofitInterface();
         checkID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
