@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -30,8 +31,8 @@ import retrofit2.Response;
 
 public class SignUpFragment extends Fragment {
     private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
-    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2, spaceID, spacePW;
-    private Button signUp_btn, cancel_btn;
+    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2, spaceID, spacePW, X_CheckID, O_CheckID;
+    private Button signUp_btn, cancel_btn, checkID;
 
     // 회원 가입 버튼 활성화 조건들의 변수 선언
     private boolean isEmailValid = false;
@@ -63,6 +64,8 @@ public class SignUpFragment extends Fragment {
         inputEmail = view.findViewById(R.id.inputEmail);
         O_email = view.findViewById(R.id.O_email);
         X_email = view.findViewById(R.id.X_email);
+        O_CheckID = view.findViewById(R.id.O_CheckID);
+        X_CheckID = view.findViewById(R.id.X_CheckID);
         inputPW = view.findViewById(R.id.inputPW);
         X_PW = view.findViewById(R.id.X_PW);
         inputPW_re = view.findViewById(R.id.inputPW_re);
@@ -72,6 +75,7 @@ public class SignUpFragment extends Fragment {
         cancel_btn = view.findViewById(R.id.cancel_btn);
         spaceID = view.findViewById(R.id.X_space_ID);
         spacePW = view.findViewById(R.id.X_space_PW);
+        checkID = view.findViewById(R.id.checkID);
     }
 
     private void setupListeners() {
@@ -207,6 +211,31 @@ public class SignUpFragment extends Fragment {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                             Log.e("POST","실패");
+                    }
+                });
+            }
+        });
+
+        checkID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckMemberID checkMemberID = new CheckMemberID(inputId.getText().toString());
+                Call<ResponseBody> call = userRetrofitInterface.memberIDCheck(checkMemberID);
+
+                O_CheckID.setVisibility(View.INVISIBLE);
+                X_CheckID.setVisibility(View.INVISIBLE);
+
+                call.clone().enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.isSuccessful()){
+                            O_CheckID.setVisibility(View.VISIBLE);
+                        }else X_CheckID.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(view.getContext(), "통신오류", Toast.LENGTH_LONG).show();
                     }
                 });
             }

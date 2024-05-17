@@ -3,6 +3,7 @@ package com.example.safeguardapp.Group;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.android.material.appbar.MaterialToolbar;
+
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -84,6 +87,14 @@ public class FindChildPWFragment extends Fragment {
                         if (response.isSuccessful()) {
                             Toast.makeText(v.getContext(), "비밀번호가 변경되었습니다. 다시 로그인 해주세요", Toast.LENGTH_LONG).show();
                             previous();
+                        }
+                        else {
+                            try {
+                                String errorMessage = response.errorBody().string();
+                                Log.e("ResetPW", "Password reset failed: " + errorMessage);
+                            } catch (IOException e) {
+                                Log.e("ResetPW", "Error reading error body", e);
+                            }
                         }
                     }
 
