@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;

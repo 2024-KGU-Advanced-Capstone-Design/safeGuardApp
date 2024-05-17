@@ -2,9 +2,6 @@ package com.example.safeguardapp.Group;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,12 +14,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.safeguardapp.LogIn.LoginInfo;
-import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;

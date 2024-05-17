@@ -15,8 +15,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.safeguardapp.Group.AddGroupPopupFragment;
-import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.data.model.Group;
