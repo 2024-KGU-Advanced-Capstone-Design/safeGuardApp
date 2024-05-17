@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:id="@+id/main_activity">
+
+
+    <FrameLayout
+        android:id="@+id/containers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:translationZ="1dp">
+
+        <LinearLayout
+            android:id="@+id/mapModeNav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#BFFFFFFF"
+            android:translationZ="5dp">
+
+            <TextView
+                android:id="@+id/label_map_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="130dp"
+                android:layout_marginEnd="15dp"
+                android:text="@string/label_map_type" />
+
+            <Spinner
+                android:id="@+id/map_type"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/child_bottom_navigationview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:itemBackground="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/child_button_menu" />
+
+</LinearLayout>
