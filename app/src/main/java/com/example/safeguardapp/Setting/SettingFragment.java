@@ -1,8 +1,10 @@
 package com.example.safeguardapp.Setting;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
+import com.example.safeguardapp.PreferenceManager;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.StartScreenActivity;
@@ -39,6 +42,7 @@ public class SettingFragment extends Fragment {
     private Button changeName, changePW, logout, withdraw;
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +86,7 @@ public class SettingFragment extends Fragment {
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        PreferenceManager.clear(getContext());
                         transScreen();
                     }
                 })
@@ -109,6 +114,7 @@ public class SettingFragment extends Fragment {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 if(response.isSuccessful()){
                                     Log.e("POST", "탈퇴 성공");
+                                    PreferenceManager.clear(getContext());
                                     transScreen();
                                 } else {
                                     Log.e("POST", "Server Response: " + response.code() + " " + response.message());
