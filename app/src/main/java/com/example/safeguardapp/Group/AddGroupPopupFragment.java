@@ -40,9 +40,9 @@ public class AddGroupPopupFragment extends Fragment {
 
     RetrofitClient retrofitClient;
     UserRetrofitInterface userRetrofitInterface;
-    private TextView X_space_ID, X_PW, X_PW2, X_space_PW, X_PW_re;
+    private TextView X_space_ID, X_PW, X_PW2, X_space_PW, X_PW_re, O_Check_ID, X_Check_ID;
     private boolean isSpaceIDValid, isIDValid, isPWValid, isPWMatch, isSpacePWValid = false;
-    private Button signUp_btn, cancel_btn;
+    private Button signUp_btn, cancel_btn, checkID;
 
 
     @Nullable
@@ -55,6 +55,9 @@ public class AddGroupPopupFragment extends Fragment {
         EditText rePWEditText = ((EditText) view.findViewById(R.id.re_password_edit_text));
         signUp_btn = view.findViewById(R.id.signUp_btn);
         cancel_btn = view.findViewById(R.id.cancel_btn);
+        O_Check_ID = view.findViewById(R.id.O_CheckID);
+        X_Check_ID = view.findViewById(R.id.X_CheckID);
+        checkID = view.findViewById(R.id.checkID);
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
 
         IDValid(idEditText);
@@ -72,6 +75,30 @@ public class AddGroupPopupFragment extends Fragment {
 
         cancel_btn.setOnClickListener(v -> previous());
         toolbar.setNavigationOnClickListener(v -> previous());
+
+        checkID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckChildID checkChildID =new CheckChildID(idEditText.getText().toString());
+                Call<ResponseBody> call = userRetrofitInterface.childIDCheck(checkChildID);
+                O_Check_ID.setVisibility(View.INVISIBLE);
+                X_Check_ID.setVisibility(View.INVISIBLE);
+
+                call.clone().enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.isSuccessful()){
+                            O_Check_ID.setVisibility(View.VISIBLE);
+                        }else X_Check_ID.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(view.getContext(), "통신오류", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
 
         return view;
     }
