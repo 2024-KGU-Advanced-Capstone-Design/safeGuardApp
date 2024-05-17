@@ -193,7 +193,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             for(Marker eraseMarker: greenMarkerList){
                                 eraseMarker.setMap(null);
                             }
-//                            greenPolygonOverlays.add(polygonOverlay);
                             greenPolygonOverlays.put(greenIndex, polygonOverlay);
 
                             //retrofit 데이터 전송
@@ -377,9 +376,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.green_polygon_overlay_menu, popupMenu.getMenu());
-//                for(int i = 0; i < greenPolygonOverlays.size(); i++){
-//                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
-//                }
+
                 for(int i = 0; i < greenIndex; i++){
                     if(greenPolygonOverlays.size() != 0){
                         if(greenPolygonOverlays.containsKey(i)){
@@ -396,7 +393,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         greenPolygonOverlays.remove(index);
                         greenInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
                         greenInfoWindowList.remove(index);
-//                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
                         return true;
                     }
                 });
@@ -412,9 +408,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.red_polygon_overlay_menu, popupMenu.getMenu());
 
-//                for(int i = 0; i < redPolygonOverlays.size(); i++){
-//                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + i);
-//                }
                 for(int i = 0; i < redIndex; i++){
                     if(redPolygonOverlays.size() != 0){
                         if(redPolygonOverlays.containsKey(i)){
@@ -431,7 +424,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         redPolygonOverlays.remove(index);
                         redInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
                         redInfoWindowList.remove(index);
-//                        popupMenu.getMenu().removeItem(index); // 메뉴에서 항목 제거
                         return true;
                     }
                 });
