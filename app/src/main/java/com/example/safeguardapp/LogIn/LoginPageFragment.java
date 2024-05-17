@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.safeguardapp.Child.ChildMainActivity;
 import com.example.safeguardapp.FindID.FindIDFragment;
 import com.example.safeguardapp.FindPW.FindPWCertificationFragment;
 import com.example.safeguardapp.MainActivity;
@@ -152,7 +153,11 @@ public class LoginPageFragment extends Fragment {
                             if(loginType.equals("Member")) {
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
                                 startActivity(intent);
-                            }else Toast.makeText(v.getContext(), "Child 로그인 성공", Toast.LENGTH_LONG).show();
+                            }else{
+                                Intent intent = new Intent(getActivity(), ChildMainActivity.class);
+                                startActivity(intent);
+                            }
+
                         }
                     }
                 }

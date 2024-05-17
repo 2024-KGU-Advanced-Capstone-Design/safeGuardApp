@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.safeguardapp.FindPW.EmailRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
+import com.example.safeguardapp.PreferenceManager;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.StartScreenActivity;
 
@@ -75,6 +76,7 @@ public class ChildSettingFragment extends Fragment {
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        PreferenceManager.clear(getContext());
                         transScreen();
                     }
                 })

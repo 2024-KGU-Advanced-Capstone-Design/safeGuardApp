@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.safeguardapp.Child.ChildMainActivity;
 import com.example.safeguardapp.LogIn.LoginInfo;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.LogIn.LoginRequest;
@@ -67,13 +68,18 @@ public class StartScreenActivity extends AppCompatActivity {
                                 LoginPageFragment.saveID = loginID;
 
                                 if (loginType.equals("Member")) {
+                                    Toast.makeText(StartScreenActivity.this, "자동 로그인 성공", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(StartScreenActivity.this, MainActivity.class);
                                     startActivity(intent);
-                                } else
-                                    Toast.makeText(StartScreenActivity.this, "Child 로그인 성공", Toast.LENGTH_LONG).show();
+                                } else{
+                                    Toast.makeText(StartScreenActivity.this, "자동 로그인 성공", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(StartScreenActivity.this, ChildMainActivity.class);
+                                    startActivity(intent);
+                                }
+
                             }
                         }
-                    } else Log.e("POST", "통신 실패");
+                    } else Toast.makeText(StartScreenActivity.this, "자동 로그인 실패", Toast.LENGTH_LONG).show();
                 }
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
