@@ -333,7 +333,6 @@ public class GroupSettingFragment extends Fragment {
                     GroupRepository.getInstance(getContext()).removeGroup(uuid);
                     Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     // 응답 본문 로그 추가
-                    remove();
                 } else {
                     Log.e("POST", "전달 실패, HTTP Status: " + response.code());
 
