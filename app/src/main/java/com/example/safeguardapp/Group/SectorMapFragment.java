@@ -1,5 +1,6 @@
 package com.example.safeguardapp.Group;
 
+import android.Manifest;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -25,6 +27,7 @@ import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.OnMapReadyCallback;
@@ -67,8 +70,13 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> greenMarkerList = new ArrayList<>();
     private HashMap<Integer, InfoWindow> greenInfoWindowList = new HashMap<>();
     private HashMap<Integer, InfoWindow> redInfoWindowList = new HashMap<>();
-    private int greenIndex = 0;
-    private int redIndex = 0;
+    private int greenIndex = 1;
+    private int redIndex = 1;
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    private static final String[] PERMISSIONS = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
 
     public SectorMapFragment() {
     }
@@ -117,7 +125,10 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
         UiSettings uiSettings = mNaverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
-        mNaverMap.getUiSettings().setLocationButtonEnabled(true);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+        // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
+        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
 
     }
 
