@@ -6,7 +6,6 @@
     android:orientation="vertical"
     >
 
-
     <FrameLayout
         android:id="@+id/sectorMapScreen"
         android:layout_width="match_parent"
@@ -18,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#80FFFFFF"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:translationZ="5dp">
 
             <RadioGroup
@@ -59,6 +58,16 @@
                     android:text="위험구역 삭제"
                     android:textSize="12sp" />
             </RadioGroup>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="구역을 설정하시려면 4개의 지점을 클릭하세요"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>
