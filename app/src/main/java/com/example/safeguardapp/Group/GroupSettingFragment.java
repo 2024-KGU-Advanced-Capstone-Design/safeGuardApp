@@ -203,19 +203,22 @@ public class GroupSettingFragment extends Fragment {
                 .setView(dialogView)
                 .setPositiveButton("추가", (dialogInterface, i) -> {
                     String id = editText.getText().toString().trim();
-                    if (TextUtils.isEmpty(id)) return;
+                    if(id.equals(LoginPageFragment.saveID))
+                        Toast.makeText(getContext(), "본인은 추가할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    else {
+                        if (TextUtils.isEmpty(id)) return;
 
-                    Group group = groupStream.getValue().get();
-                    if (group.getAide().contains(id)) return;
+                        Group group = groupStream.getValue().get();
+                        if (group.getAide().contains(id)) return;
 
-                    ArrayList<String> aideList = new ArrayList<>(group.getAide());
-                    aideList.add(id);
-                    group.setAide(aideList);
+                        ArrayList<String> aideList = new ArrayList<>(group.getAide());
+                        aideList.add(id);
+                        group.setAide(aideList);
 
-                    repository.editGroup(group);
+                        repository.editGroup(group);
 
-                    Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
 
                 })
                 .setNegativeButton("취소", null);
