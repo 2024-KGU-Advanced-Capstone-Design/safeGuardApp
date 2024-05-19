@@ -3,11 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+
+
     <application
+
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -36,8 +41,10 @@
             android:name=".Child.ChildMainActivity"
             android:exported="true" />
 
-        <activity
-            android:name=".Group.GroupSettingActivity"
+        <service
+            android:name=".Child.LocationService"
+            android:foregroundServiceType="location"
+            android:enabled="true"
             android:exported="false" />
 
         <meta-data
