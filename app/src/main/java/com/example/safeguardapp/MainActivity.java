@@ -1,5 +1,8 @@
 package com.example.safeguardapp;
 
+import static com.naver.maps.map.NaverMap.MapType.Basic;
+import static com.naver.maps.map.NaverMap.MapType.Hybrid;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +27,7 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.widget.CompassView;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     public MapFragment mapFragment;
@@ -90,15 +94,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         // -----^----- BottomNavigationView 구현 -----^-----
 
-        //지도 객체 생성
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-        /* 이 코드 때문에 한 화면에 지도가 두 번 생성 되는 듯?
-        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.home); */
-//        if(mapFragment == null){
-//            mapFragment = MapFragment.newInstance();
-//            fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
-//        }
-
         //getMapAsync 호출해 비동기로 onMapReady 콜백 메서드 호출
         //onMapReady에서 NaverMap 객체를 받음.
         mapFragment.getMapAsync(this);
@@ -119,8 +114,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 CharSequence mapType = adapter.getItem(position);
-                if (mapType != null) {
-                    naverMap.setMapType(NaverMap.MapType.valueOf(mapType.toString()));
+
+                if(mapType.equals("일반지도")){
+                    naverMap.setMapType(Basic);
+                }else if(mapType.equals("위성지도")){
+                    naverMap.setMapType(Hybrid);
                 }
             }
 
@@ -138,8 +136,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         uiSettings.setLocationButtonEnabled(true);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
+        // CompassView를 NaverMap에 바인딩
+        CompassView compassView = findViewById(R.id.compass);
+        uiSettings.setCompassEnabled(false); // 기본 나침반 비활성화
+        compassView.setMap(naverMap); // 커스텀 나침반 설정
+
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
+
+//        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
+//        locationOverlay.setVisible(true);
+//        locationOverlay.setIcon(OverlayImage.fromResource(R.drawable.minhwan_cropped));
+//        locationOverlay.setBearing(0);
+//        locationOverlay.setIconWidth(100);
+//        locationOverlay.setIconHeight(100);
 
     }
 
