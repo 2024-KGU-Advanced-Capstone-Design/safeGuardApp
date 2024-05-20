@@ -69,5 +69,13 @@
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
+        <com.naver.maps.map.widget.CompassView
+            android:id="@+id/compass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:translationZ="5dp" />
     </FrameLayout>
 </LinearLayout>
