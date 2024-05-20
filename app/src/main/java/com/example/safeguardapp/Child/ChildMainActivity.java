@@ -1,5 +1,8 @@
 package com.example.safeguardapp.Child;
 
+import static com.naver.maps.map.NaverMap.MapType.Basic;
+import static com.naver.maps.map.NaverMap.MapType.Hybrid;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -154,8 +157,10 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 CharSequence mapType = adapter.getItem(position);
-                if (mapType != null) {
-                    naverMap.setMapType(NaverMap.MapType.valueOf(mapType.toString()));
+                if(mapType.equals("일반지도")){
+                    naverMap.setMapType(Basic);
+                }else if(mapType.equals("위성지도")){
+                    naverMap.setMapType(Hybrid);
                 }
             }
 
