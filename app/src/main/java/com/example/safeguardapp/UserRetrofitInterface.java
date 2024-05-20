@@ -1,5 +1,6 @@
 package com.example.safeguardapp;
 
+import com.example.safeguardapp.Child.LocationSendRequest;
 import com.example.safeguardapp.FindID.FindIDRequest;
 import com.example.safeguardapp.FindID.FindIDResponse;
 import com.example.safeguardapp.FindPW.CodeRequest;
@@ -65,4 +66,6 @@ public interface UserRetrofitInterface {
     @POST("memberremove")
     Call<ResponseBody> withdrawMember(@Body MemberWithdrawRequest jsonUser);
 
+    @POST("update-coordinate")
+    Call<ResponseBody> sendLocation(@Body LocationSendRequest locationSendRequest);
 }

@@ -29,6 +29,7 @@ import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.StartScreenActivity;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import okhttp3.ResponseBody;
@@ -152,6 +153,8 @@ public class SettingFragment extends Fragment {
                 transaction.replace(R.id.containers, ((MainActivity) requireActivity()).mapFragment);
                 transaction.commit();
 
+                BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
+                navigationView.setSelectedItemId(R.id.map);
             }
         });
     }

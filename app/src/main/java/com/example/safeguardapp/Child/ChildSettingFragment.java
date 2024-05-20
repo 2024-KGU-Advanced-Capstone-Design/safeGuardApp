@@ -1,9 +1,11 @@
 package com.example.safeguardapp.Child;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +80,13 @@ public class ChildSettingFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         PreferenceManager.clear(getContext());
                         transScreen();
+                        Context context = getActivity();
+                        if (context != null) {
+                            Intent serviceIntent = new Intent(context, LocationService.class);
+                            context.stopService(serviceIntent);
+                        } else {
+                            Log.e("MyFragment", "Context is null, cannot stop service");
+                        }
                     }
                 })
                 .setNegativeButton("취소", null)
