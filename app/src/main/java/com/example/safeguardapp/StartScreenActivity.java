@@ -2,6 +2,7 @@ package com.example.safeguardapp;
 
 import static android.app.PendingIntent.getActivity;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -9,6 +10,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -36,12 +39,12 @@ public class StartScreenActivity extends AppCompatActivity {
 
         SharedPreferences auto = getSharedPreferences("appdata", Activity.MODE_PRIVATE);
 
-        loginID = auto.getString("inputID",null);
-        loginPW = auto.getString("inputPW",null);
-        loginType = auto.getString("loginType",null);
+        loginID = auto.getString("inputID", null);
+        loginPW = auto.getString("inputPW", null);
+        loginType = auto.getString("loginType", null);
 
-        if(loginID !=null&&loginPW!=null&&loginType!=null){
-            LoginRequest loginRequest = new LoginRequest(loginID,loginPW,loginType);
+        if (loginID != null && loginPW != null && loginType != null) {
+            LoginRequest loginRequest = new LoginRequest(loginID, loginPW, loginType);
             LoginInfo.setLoginID(loginID);
 
             //retrofit 생성
@@ -71,7 +74,7 @@ public class StartScreenActivity extends AppCompatActivity {
                                     Toast.makeText(StartScreenActivity.this, "자동 로그인 성공", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(StartScreenActivity.this, MainActivity.class);
                                     startActivity(intent);
-                                } else{
+                                } else {
                                     Toast.makeText(StartScreenActivity.this, "자동 로그인 성공", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(StartScreenActivity.this, ChildMainActivity.class);
                                     startActivity(intent);
@@ -79,17 +82,25 @@ public class StartScreenActivity extends AppCompatActivity {
 
                             }
                         }
-                    } else Toast.makeText(StartScreenActivity.this, "자동 로그인 실패", Toast.LENGTH_LONG).show();
+                    } else
+                        Toast.makeText(StartScreenActivity.this, "자동 로그인 실패", Toast.LENGTH_LONG).show();
                 }
+
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
                     Log.e("POST", "에러");
                 }
             });
-        }else {
+        } else {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.start_activity, new LoginPageFragment());
             transaction.commit();
         }
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finishAffinity(); // 현재 액티비티와 관련된 모든 액티비티를 종료
+            }
+        });
     }
 }

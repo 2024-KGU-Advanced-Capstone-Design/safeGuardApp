@@ -3,20 +3,28 @@ package com.example.safeguardapp;
 import static com.naver.maps.map.NaverMap.MapType.Basic;
 import static com.naver.maps.map.NaverMap.MapType.Hybrid;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.safeguardapp.Child.ChildMainActivity;
 import com.example.safeguardapp.Group.GroupFragment;
 import com.example.safeguardapp.Notice.NoticeFragment;
 import com.example.safeguardapp.Setting.SettingFragment;
@@ -38,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
+    private Boolean doubleBackToExitPressedOnce = false;
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
@@ -100,6 +109,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
+
+        SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
+        Boolean isAutoLogin = sharedPreferences2.getBoolean("autoLogin", false);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (doubleBackToExitPressedOnce) {
+                    if(isAutoLogin) {
+                        finishAffinity(); // 현재 액티비티와 관련된 모든 액티비티를 종료
+                        return;
+                    }
+                    else{
+                        Intent intent = new Intent(MainActivity.this, StartScreenActivity.class);
+                        startActivity(intent);
+                    }
+                }
+
+                doubleBackToExitPressedOnce = true;
+                Toast.makeText(MainActivity.this, "앱을 종료하시려면 한번 더 눌러주세요", Toast.LENGTH_SHORT).show();
+
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000); // 2초 안에 두 번 눌러야 종료
+            }
+        });
     }
 
     @Override
