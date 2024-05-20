@@ -38,6 +38,7 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.widget.CompassView;
 
 public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCallback {
     public MapFragment childMapFragment;
@@ -177,6 +178,11 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+        // CompassView를 NaverMap에 바인딩
+        CompassView compassView = findViewById(R.id.compass);
+        uiSettings.setCompassEnabled(false); // 기본 나침반 비활성화
+        compassView.setMap(naverMap); // 커스텀 나침반 설정
 
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
