@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,12 +17,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.safeguardapp.LogIn.LoginPageFragment;
+import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
+import com.example.safeguardapp.StartScreenActivity;
 import com.google.android.material.navigation.NavigationBarView;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
@@ -37,6 +44,8 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
     private double latitude, longitude;
+    private boolean doubleBackToExitPressedOnce = false;
+    private Intent serviceIntent;
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
@@ -47,6 +56,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_child_main);
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
@@ -83,29 +93,55 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
+        SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
+        Boolean isAutoLogin = sharedPreferences2.getBoolean("autoLogin", false);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-/*
             startLocationService();
-*/
-        } else {
+        } else
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
-        }
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (doubleBackToExitPressedOnce) {
+                    if(isAutoLogin) {
+                        finishAffinity(); // 현재 액티비티와 관련된 모든 액티비티를 종료
+                        return;
+                    }
+                    else{
+                        stopService(serviceIntent);
+                        Intent intent = new Intent(ChildMainActivity.this, StartScreenActivity.class);
+                        startActivity(intent);
+                    }
+                }
+
+                doubleBackToExitPressedOnce = true;
+                Toast.makeText(ChildMainActivity.this, "앱을 종료하시려면 한번 더 눌러주세요", Toast.LENGTH_SHORT).show();
+
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000); // 2초 안에 두 번 눌러야 종료
+            }
+        });
     }
 
-    /*private void startLocationService() {
+
+    private void startLocationService() {
         Log.e("POST", "Latitude: " + latitude + ", Longitude: " + longitude);
 
-        Intent serviceIntent = new Intent(this, LocationService.class);
-        serviceIntent.putExtra("latitude", latitude);
-        serviceIntent.putExtra("longitude", longitude);
+        serviceIntent = new Intent(this, LocationService.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         } else {
             startService(serviceIntent);
         }
-    }*/
+    }
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
@@ -144,8 +180,8 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             latitude = location.getLatitude();
             longitude = location.getLongitude();
 
-            SharedPreferences sharedPreferences = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+            SharedPreferences sharedPreferences1 = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences1.edit();
             editor.putLong("latitude_v2", Double.doubleToLongBits(latitude));
             editor.putLong("longitude_v2", Double.doubleToLongBits(longitude));
             editor.apply();

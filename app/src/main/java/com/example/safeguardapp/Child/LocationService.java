@@ -1,4 +1,3 @@
-/*
 package com.example.safeguardapp.Child;
 
 import android.app.Notification;
@@ -35,6 +34,7 @@ public class LocationService extends Service {
     private static final int INTERVAL = 10000; // 10초
     private Handler handler = new Handler();
     private Runnable runnable;
+    private String id;
 
     @Override
     public void onCreate() {
@@ -42,11 +42,14 @@ public class LocationService extends Service {
         createNotificationChannel();
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        SharedPreferences sharedPreferences = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
-        final double latitude = Double.longBitsToDouble(sharedPreferences.getLong("latitude_v2", Double.doubleToLongBits(0.0)));
-        final double longitude = Double.longBitsToDouble(sharedPreferences.getLong("longitude_v2", Double.doubleToLongBits(0.0)));
+        SharedPreferences sharedPreferences1 = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
+        final double latitude = Double.longBitsToDouble(sharedPreferences1.getLong("latitude_v2", Double.doubleToLongBits(0.0)));
+        final double longitude = Double.longBitsToDouble(sharedPreferences1.getLong("longitude_v2", Double.doubleToLongBits(0.0)));
+        SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
+        id = sharedPreferences2.getString("saveID", null);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Location Service")
@@ -81,7 +84,6 @@ public class LocationService extends Service {
 
     private void transmitCoordinate(double latitude, double longitude) {
         String type = "Child";
-        String id = LoginPageFragment.saveID;
         LocationSendRequest locationDTO = new LocationSendRequest(type, id, latitude, longitude);
         RetrofitClient retrofitClient = RetrofitClient.getInstance();
         UserRetrofitInterface userRetrofitInterface = retrofitClient.getUserRetrofitInterface();
@@ -138,4 +140,4 @@ public class LocationService extends Service {
         }
     }
 }
-*/
+
