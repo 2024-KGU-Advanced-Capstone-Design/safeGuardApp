@@ -3,14 +3,12 @@ package com.example.safeguardapp.Map;
 import com.google.gson.annotations.SerializedName;
 
 public class ChildLocationRequest {
-    @SerializedName("type")
     private String type;
 
-    @SerializedName("childId")
-    private String childId;
+    private String id;
 
-    public ChildLocationRequest(String type, String childId){
+    public ChildLocationRequest(String type, String id){
         this.type = type;
-        this.childId = childId;
+        this.id = id;
     }
 }

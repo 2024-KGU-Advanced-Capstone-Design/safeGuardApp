@@ -6,13 +6,23 @@ import java.util.HashMap;
 
 public class ChildLocationResponse {
 
-    @SerializedName("status")
-    private String resultCode;
+    private double latitude;
+    private double longitude;
 
-    @SerializedName("return-coordinate")
-    private HashMap<String, Double> childCoordinate;
 
-    public String getResultCode() { return resultCode; }
+    public double getLatitude() {
+        return latitude;
+    }
 
-    public HashMap<String, Double> getChildCoordinate() { return childCoordinate; }
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 }

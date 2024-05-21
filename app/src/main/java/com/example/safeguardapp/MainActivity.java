@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
         // -----v----- BottomNavigationView 구현 -----v-----
@@ -91,26 +94,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.map){
+                if (item.getItemId() == R.id.map) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
                     mapFragment.getMapAsync(MainActivity.this);
                     // mapFragment를 실행시 mapModeNav 보이게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.VISIBLE);
                     return true;
-                }else if(item.getItemId() == R.id.setting){
+                } else if (item.getItemId() == R.id.setting) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
                     // SettingFragment로 실행시 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.GONE);
                     return true;
-                }else if(item.getItemId() == R.id.notice){
+                } else if (item.getItemId() == R.id.notice) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, noticeFragment).commit();
                     // NoticeFragment로 실행시 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.GONE);
                     return true;
-                }else if(item.getItemId() == R.id.group){
+                } else if (item.getItemId() == R.id.group) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, groupFragment).commit();
                     // GroupFragment로 넘어가면 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
@@ -136,11 +139,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void handleOnBackPressed() {
                 if (doubleBackToExitPressedOnce) {
-                    if(isAutoLogin) {
+                    if (isAutoLogin) {
                         finishAffinity(); // 현재 액티비티와 관련된 모든 액티비티를 종료
                         return;
-                    }
-                    else{
+                    } else {
                         Intent intent = new Intent(MainActivity.this, StartScreenActivity.class);
                         startActivity(intent);
                     }
@@ -172,9 +174,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 CharSequence mapType = adapter.getItem(position);
 
-                if(mapType.equals("일반지도")){
+                if (mapType.equals("일반지도")) {
                     naverMap.setMapType(Basic);
-                }else if(mapType.equals("위성지도")){
+                } else if (mapType.equals("위성지도")) {
                     naverMap.setMapType(Hybrid);
                 }
             }
@@ -200,57 +202,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
-
-        String getChildId, type;
-        getChildId = "child99";
-        type = "Child";
-        ChildLocationRequest childLocationRequest = new ChildLocationRequest(type, getChildId);
-        Gson gson = new Gson();
-        String childInfo = gson.toJson(childLocationRequest);
-
-        Log.e("JSON", childInfo);
-
-        retrofitClient = RetrofitClient.getInstance();
-        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
-
-        Call<ChildLocationResponse> call = userRetrofitInterface.getChildLocation(childLocationRequest);
-        call.clone().enqueue(new Callback<ChildLocationResponse>() {
-            @Override
-            public void onResponse(Call<ChildLocationResponse> call, Response<ChildLocationResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "통신 성공");
-
-                    ChildLocationResponse result = response.body();
-                    String state = result.getResultCode();
-                    HashMap<String, Double> childCoordinate = result.getChildCoordinate();
-
-                    if (childCoordinate != null) {
-                        Log.e("JSON", state);
-                        Log.e("JSON", childCoordinate.get("latitude").toString() + childCoordinate.get("longitude").toString());
-
-                        Double latitude = childCoordinate.get("latitude");
-                        Double longitude = childCoordinate.get("longitude");
-
-                        Marker childMarker = new Marker();
-                        childMarker.setPosition(new LatLng(latitude, longitude));
-                        childMarker.setMap(mNaverMap);
-                    } else {
-                        Log.e("POST", "Child coordinate is null");
-                    }
-                } else {
-                    Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ChildLocationResponse> call, Throwable t) {
-                Log.e("POST", "통신 실패: " + t.getMessage());
-            }
-        });
-
-
-
+        getChildLocation();
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -261,5 +216,47 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
             }
         }
+    }
+
+    private void getChildLocation(){
+        String getChildId, type;
+        getChildId = "kim111";
+        type = "Child";
+        ChildLocationRequest childLocationRequest = new ChildLocationRequest(type, getChildId);
+        Gson gson = new Gson();
+        String childInfo = gson.toJson(childLocationRequest);
+
+        Log.e("JSON", childInfo);
+
+        Call<ChildLocationResponse> call = userRetrofitInterface.getChildLocation(childLocationRequest);
+        call.clone().enqueue(new Callback<ChildLocationResponse>() {
+            @Override
+            public void onResponse(Call<ChildLocationResponse> call, Response<ChildLocationResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e("POST", "통신 성공");
+
+                    ChildLocationResponse result = response.body();
+                    Log.e("POST", "Response: " + gson.toJson(result)); // 전체 응답 로그
+
+                    double latitude = result.getLatitude();
+                    double longitude = result.getLongitude();
+
+                    Log.e("JSON", "Coordinates: " + latitude + ", " + longitude);
+
+                    Marker childMarker = new Marker();
+                    childMarker.setPosition(new LatLng(latitude, longitude));
+                    childMarker.setMap(mNaverMap);
+                    }
+
+                else {
+                    Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChildLocationResponse> call, Throwable t) {
+                Log.e("POST", "통신 실패: " + t.getMessage());
+            }
+        });
     }
 }
