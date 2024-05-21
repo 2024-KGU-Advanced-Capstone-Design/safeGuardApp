@@ -36,6 +36,7 @@ public class AddGroupPopupFragment extends Fragment {
     RetrofitClient retrofitClient;
     UserRetrofitInterface userRetrofitInterface;
     private TextView X_space_ID, X_PW, X_PW2, X_space_PW, X_PW_re, O_Check_ID, X_Check_ID;
+    private EditText IDinput;
     private boolean isSpaceIDValid, isIDValid, isPWValid, isPWMatch, isSpacePWValid = false;
     private Button signUp_btn, cancel_btn, checkID;
 
@@ -48,6 +49,7 @@ public class AddGroupPopupFragment extends Fragment {
         EditText idEditText = ((EditText) view.findViewById(R.id.id_edit_text));
         EditText passwordEditText = ((EditText) view.findViewById(R.id.password_edit_text));
         EditText rePWEditText = ((EditText) view.findViewById(R.id.re_password_edit_text));
+        IDinput = view.findViewById(R.id.id_edit_text);
         signUp_btn = view.findViewById(R.id.signUp_btn);
         cancel_btn = view.findViewById(R.id.cancel_btn);
         O_Check_ID = view.findViewById(R.id.O_CheckID);
@@ -77,7 +79,10 @@ public class AddGroupPopupFragment extends Fragment {
         checkID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckChildID checkChildID =new CheckChildID(idEditText.getText().toString());
+                CheckChildID checkChildID =new CheckChildID(IDinput.getText().toString());
+                Gson gson =new Gson();
+                String s = gson.toJson(checkChildID);
+                Log.e("JSON",s);
                 Call<ResponseBody> call = userRetrofitInterface.childIDCheck(checkChildID);
                 O_Check_ID.setVisibility(View.INVISIBLE);
                 X_Check_ID.setVisibility(View.INVISIBLE);

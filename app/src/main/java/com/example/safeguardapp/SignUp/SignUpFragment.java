@@ -22,6 +22,9 @@ import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 import okhttp3.ResponseBody;
@@ -94,11 +97,10 @@ public class SignUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String inputID = editable.toString();
-                if(inputID.contains(" ")){
+                if (inputID.contains(" ")) {
                     isSpaceIDValid = false;
                     spaceID.setVisibility(View.VISIBLE);
-                }
-                else{
+                } else {
                     isSpaceIDValid = true;
                     spaceID.setVisibility(View.INVISIBLE);
                 }
@@ -124,28 +126,25 @@ public class SignUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String password = editable.toString();
-                if(password.contains(" ")){
+                if (password.contains(" ")) {
                     isSpacePWValid = false;
                     spacePW.setVisibility(View.VISIBLE);
                     X_PW.setVisibility(View.INVISIBLE);
                     X_PW2.setVisibility(View.INVISIBLE);
-                }
-                else{
+                } else {
                     isSpacePWValid = true;
                     spacePW.setVisibility(View.INVISIBLE);
 
-                    if (password.length() >= 8){
+                    if (password.length() >= 8) {
                         X_PW.setVisibility(View.INVISIBLE);
-                        if (PasswordValidFunc(password)){
+                        if (PasswordValidFunc(password)) {
                             X_PW2.setVisibility(View.INVISIBLE);
                             isPasswordValid = true;
-                        }
-                        else {
+                        } else {
                             X_PW2.setVisibility(View.VISIBLE);
                             isPasswordValid = false;
                         }
-                    }
-                    else {
+                    } else {
                         X_PW.setVisibility(View.VISIBLE);
                         X_PW2.setVisibility(View.INVISIBLE);
                         isPasswordValid = false;
@@ -194,14 +193,14 @@ public class SignUpFragment extends Fragment {
                 Gson gson = new Gson();
                 String userInfo = gson.toJson(userDTO);
 
-                Log.e("JSON",userInfo);
+                Log.e("JSON", userInfo);
 
                 Call<ResponseBody> call = userRetrofitInterface.signUp(userDTO);
                 call.clone().enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()){
-                            Log.e("POST","성공");
+                        if (response.isSuccessful()) {
+                            Log.e("POST", "성공");
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.start_activity, new LoginPageFragment());
                             transaction.commit();
@@ -210,7 +209,7 @@ public class SignUpFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Log.e("POST","실패");
+                        Log.e("POST", "실패");
                     }
                 });
             }
@@ -228,9 +227,9 @@ public class SignUpFragment extends Fragment {
                 call.clone().enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             O_CheckID.setVisibility(View.VISIBLE);
-                        }else X_CheckID.setVisibility(View.VISIBLE);
+                        } else X_CheckID.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -263,9 +262,12 @@ public class SignUpFragment extends Fragment {
     // TextWatcher 중복 제거
     public abstract static class SimpleTextWatcher implements TextWatcher {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
     }
 
     // 뒤로가기 버튼 오류 해결 -> 뒤로 가기 눌렀을 때 어플이 꺼지는 것을 방지하고 이전 화면인 로그인 페이지로 넘어감
@@ -283,5 +285,4 @@ public class SignUpFragment extends Fragment {
             }
         });
     }
-
 }

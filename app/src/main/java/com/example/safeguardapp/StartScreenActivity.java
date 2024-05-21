@@ -1,5 +1,6 @@
 package com.example.safeguardapp;
 
+import androidx.annotation.NonNull;
 import static android.app.PendingIntent.getActivity;
 
 import androidx.activity.OnBackPressedCallback;
@@ -7,13 +8,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.safeguardapp.Child.ChildMainActivity;
@@ -21,15 +24,22 @@ import com.example.safeguardapp.LogIn.LoginInfo;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StartScreenActivity extends AppCompatActivity {
-    String loginID, loginPW, loginType;
+    String loginID, loginPW, loginType, fcmToken;
+    public static String token = null;
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
+    private PermissionUtils permission;
 
 
     @Override
@@ -37,14 +47,38 @@ public class StartScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
 
+//        permissionCheck();
+
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (!task.isSuccessful()) {
+                    Log.w("FCM", "failed", task.getException());
+                    return;
+                }
+                token = task.getResult().toString();
+                Log.e("String", token);
+            }
+        });
+
+        if(Build.VERSION.SDK_INT >= 33){
+            //알람 채널 생성
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationChannel notificationChannel = new NotificationChannel("default_notification_channel_id","알람 채널",NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("알람 테스트");
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
         SharedPreferences auto = getSharedPreferences("appdata", Activity.MODE_PRIVATE);
 
-        loginID = auto.getString("inputID", null);
-        loginPW = auto.getString("inputPW", null);
-        loginType = auto.getString("loginType", null);
+        loginID = auto.getString("inputID",null);
+        loginPW = auto.getString("inputPW",null);
+        loginType = auto.getString("loginType",null);
+        fcmToken = auto.getString("fcmToken", null);
 
-        if (loginID != null && loginPW != null && loginType != null) {
-            LoginRequest loginRequest = new LoginRequest(loginID, loginPW, loginType);
+
+        if(loginID !=null&&loginPW!=null&&loginType!=null){
+            LoginRequest loginRequest = new LoginRequest(loginID, loginPW, loginType, fcmToken);
             LoginInfo.setLoginID(loginID);
 
             //retrofit 생성
@@ -74,7 +108,7 @@ public class StartScreenActivity extends AppCompatActivity {
                                     Toast.makeText(StartScreenActivity.this, "자동 로그인 성공", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(StartScreenActivity.this, MainActivity.class);
                                     startActivity(intent);
-                                } else {
+                                } else{
                                     Toast.makeText(StartScreenActivity.this, "자동 로그인 성공", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(StartScreenActivity.this, ChildMainActivity.class);
                                     startActivity(intent);
@@ -82,16 +116,14 @@ public class StartScreenActivity extends AppCompatActivity {
 
                             }
                         }
-                    } else
-                        Toast.makeText(StartScreenActivity.this, "자동 로그인 실패", Toast.LENGTH_LONG).show();
+                    } else Toast.makeText(StartScreenActivity.this, "자동 로그인 실패", Toast.LENGTH_LONG).show();
                 }
-
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
                     Log.e("POST", "에러");
                 }
             });
-        } else {
+        }else {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.start_activity, new LoginPageFragment());
             transaction.commit();
@@ -103,4 +135,23 @@ public class StartScreenActivity extends AppCompatActivity {
             }
         });
     }
+
+//    //권한 체크
+//    private void permissionCheck(){
+//        if(Build.VERSION.SDK_INT>=23){
+//            permission = new PermissionUtils(this,this);
+//
+//            if(!permission.checkPermission())
+//                permission.requestPermission();
+//        }
+//    }
+//
+//    //Request Permission 결과 값
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults){
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        if(!permission.permissionResult(requestCode, permissions, grantResults))
+//            permission.requestPermission();
+//    }
 }
