@@ -15,6 +15,8 @@ import com.example.safeguardapp.Group.ResetChildPWRequest;
 import com.example.safeguardapp.Group.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
+import com.example.safeguardapp.Map.ChildLocationRequest;
+import com.example.safeguardapp.Map.ChildLocationResponse;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
@@ -68,4 +70,7 @@ public interface UserRetrofitInterface {
 
     @POST("update-coordinate")
     Call<ResponseBody> sendLocation(@Body LocationSendRequest locationSendRequest);
+
+    @POST("return-coordinate")
+    Call<ChildLocationResponse> getChildLocation(@Body ChildLocationRequest childLocationRequest);
 }
