@@ -1,10 +1,10 @@
-package com.example.safeguardapp.Group;
+package com.example.safeguardapp.Group.Sector;
 
-public class DangerSectorRequest {
+public class SafeSectorRequest {
     private double xOfPointA, yOfPointA, xOfPointB, yOfPointB, xOfPointC, yOfPointC, xOfPointD, yOfPointD;
     private String childName;
 
-    public DangerSectorRequest(double xOfPointA, double yOfPointA, double xOfPointB, double yOfPointB,
+    public SafeSectorRequest(double xOfPointA, double yOfPointA, double xOfPointB, double yOfPointB,
                              double xOfPointC, double yOfPointC, double xOfPointD, double yOfPointD, String childName){
         this.xOfPointA = xOfPointA;
         this.yOfPointA = yOfPointA;

@@ -8,11 +8,13 @@ import com.example.safeguardapp.FindPW.EmailRequest;
 import com.example.safeguardapp.FindPW.ResetPwRequest;
 import com.example.safeguardapp.Group.CheckChildID;
 import com.example.safeguardapp.Group.ChildDTO;
-import com.example.safeguardapp.Group.DangerSectorRequest;
+import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
 import com.example.safeguardapp.Group.GroupRemoveRequest;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
 import com.example.safeguardapp.Group.ResetChildPWRequest;
-import com.example.safeguardapp.Group.SafeSectorRequest;
+import com.example.safeguardapp.Group.Sector.SafeSectorRequest;
+import com.example.safeguardapp.Group.Sector.SectorInquireResponse;
+import com.example.safeguardapp.Group.Sector.SectorInquireRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
 import com.example.safeguardapp.Map.ChildLocationRequest;
@@ -20,6 +22,7 @@ import com.example.safeguardapp.Map.ChildLocationResponse;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -73,4 +76,7 @@ public interface UserRetrofitInterface {
 
     @POST("return-coordinate")
     Call<ChildLocationResponse> getChildLocation(@Body ChildLocationRequest childLocationRequest);
+
+    @POST("read-areas")
+    Call<ResponseBody> getSectorLocation(@Body RequestBody body);
 }

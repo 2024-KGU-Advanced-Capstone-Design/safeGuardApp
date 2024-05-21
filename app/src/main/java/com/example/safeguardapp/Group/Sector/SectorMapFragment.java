@@ -1,4 +1,4 @@
-package com.example.safeguardapp.Group;
+package com.example.safeguardapp.Group.Sector;
 
 import android.Manifest;
 import android.graphics.Color;
@@ -22,10 +22,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
@@ -39,13 +43,19 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,6 +123,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
             getChildFragmentManager().beginTransaction().add(R.id.sectorMapScreen, mapFragment).commit();
         }
 
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
         mapFragment.getMapAsync(this);
 
         return inflater.inflate(R.layout.fragment_sector_map, container, false);
@@ -163,6 +176,8 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        sectorInquire();
+
         RadioButton safeZoneRadioButton = view.findViewById(R.id.safeZone);
         safeZoneRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -207,7 +222,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             infoWindow.open(mNaverMap);
                             greenInfoWindowList.put(greenIndex, infoWindow);
 
-                            for(Marker eraseMarker: greenMarkerList){
+                            for (Marker eraseMarker : greenMarkerList) {
                                 eraseMarker.setMap(null);
                             }
                             greenPolygonOverlays.put(greenIndex, polygonOverlay);
@@ -230,9 +245,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             String mapInfo = gson.toJson(SafeMapDTO);
 
                             Log.e("JSON", mapInfo);
-
-                            retrofitClient = RetrofitClient.getInstance();
-                            userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
                             Call<ResponseBody> call = userRetrofitInterface.sectorSafe(SafeMapDTO);
                             call.clone().enqueue(new Callback<ResponseBody>() {
@@ -319,7 +331,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             infoWindow.open(mNaverMap);
                             redInfoWindowList.put(redIndex, infoWindow);
 
-                            for(Marker eraseMarker: redMarkerList){
+                            for (Marker eraseMarker : redMarkerList) {
                                 eraseMarker.setMap(null);
                             }
                             redPolygonOverlays.put(redIndex, polygonOverlay);
@@ -342,9 +354,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             String mapInfo = gson.toJson(DangerMapDTO);
 
                             Log.e("JSON", mapInfo);
-
-                            retrofitClient = RetrofitClient.getInstance();
-                            userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
                             Call<ResponseBody> call = userRetrofitInterface.sectorDanger(DangerMapDTO);
                             call.clone().enqueue(new Callback<ResponseBody>() {
@@ -394,9 +403,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.green_polygon_overlay_menu, popupMenu.getMenu());
 
-                for(int i = 0; i < greenIndex; i++){
-                    if(greenPolygonOverlays.size() != 0){
-                        if(greenPolygonOverlays.containsKey(i)){
+                for (int i = 0; i < greenIndex; i++) {
+                    if (greenPolygonOverlays.size() != 0) {
+                        if (greenPolygonOverlays.containsKey(i)) {
                             popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
                         }
                     }
@@ -425,9 +434,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.red_polygon_overlay_menu, popupMenu.getMenu());
 
-                for(int i = 0; i < redIndex; i++){
-                    if(redPolygonOverlays.size() != 0){
-                        if(redPolygonOverlays.containsKey(i)){
+                for (int i = 0; i < redIndex; i++) {
+                    if (redPolygonOverlays.size() != 0) {
+                        if (redPolygonOverlays.containsKey(i)) {
                             popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + i);
                         }
                     }
@@ -455,6 +464,84 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
                 transaction.commit();
+            }
+        });
+    }
+
+    private void sectorInquire() {
+        final Gson gson = new Gson();
+
+        // 요청 JSON 로그 출력
+        SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childName);
+        String requestJson = gson.toJson(sectorInquireDTO);
+        Log.e("Request JSON", requestJson);
+
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
+        Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    LinkedHashMap<String, SectorDetails> sectors = new LinkedHashMap<>();
+
+                    try {
+                        JSONObject json = new JSONObject(response.body().string());
+
+                        for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                            String key = keys.next();
+
+                            SectorDetails sector = gson.fromJson(json.getJSONObject(key).toString(), SectorDetails.class);
+                            sectors.put(key, sector);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    if (sectors.isEmpty()) {
+                        Log.e("SectorInquire", "No sectors found or sectorResponse is null");
+                        return;
+                    }
+
+                    for (Map.Entry<String, SectorDetails> entry : sectors.entrySet()) {
+                        String coordinateId = entry.getKey(); // 키 값 저장
+                        SectorDetails details = entry.getValue();
+                        boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
+
+                        // 로그 출력
+                        Log.e("Coordinate ID", coordinateId);
+
+                        // 좌표를 가져와서 LatLng 리스트를 생성합니다.
+                        List<LatLng> polygonCoords = new ArrayList<>();
+                        polygonCoords.add(new LatLng(details.getYofPointA(), details.getXofPointA()));
+                        polygonCoords.add(new LatLng(details.getYofPointB(), details.getXofPointB()));
+                        polygonCoords.add(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                        polygonCoords.add(new LatLng(details.getYofPointD(), details.getXofPointD()));
+
+                        // 폴리곤 오버레이 생성
+                        PolygonOverlay polygonOverlay = new PolygonOverlay();
+                        polygonOverlay.setCoords(polygonCoords);
+
+                        // 색상 설정
+                        if (isLiving) {
+                            polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 초록색
+                        } else {
+                            polygonOverlay.setColor(Color.argb(75, 100, 0, 0)); // 빨간색
+                        }
+
+                        // 폴리곤을 지도에 추가
+                        polygonOverlay.setMap(mNaverMap);
+                    }
+                } else {
+                    // 응답 본문이 null일 때 처리
+                    Log.e("SectorInquire", "Response body is null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // 요청 실패 처리
+                Log.e("SectorInquire", "Request failed", t);
             }
         });
     }
