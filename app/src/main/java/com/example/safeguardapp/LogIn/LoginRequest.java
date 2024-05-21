@@ -11,33 +11,16 @@ public class LoginRequest{
     public String editTextPW;
 
     @SerializedName("loginType")
-    public String loginType = "Member";
+    public String loginType;
 
-    public LoginRequest(String editTextID, String editTextPW) {
-        this.editTextID=editTextID;
-        this.editTextPW=editTextPW;
-    }
+    @SerializedName("fcmToken")
+    public String fcmToken;
 
-    public LoginRequest(String editTextID, String editTextPW, String loginType){
-        this.editTextID=editTextID;
-        this.editTextPW=editTextPW;
-        this.loginType=loginType;
-    }
-
-    public String getEditTextPW() {
-        return editTextPW;
-    }
-
-    public String getEditTextID() {
-        return editTextID;
-    }
-
-    public void setEditTextID(String editTextID) {
+    public LoginRequest(String editTextID, String editTextPW, String loginType, String fcmToken){
         this.editTextID = editTextID;
-    }
-
-    public void setEditTextPW(String editTextPW) {
         this.editTextPW = editTextPW;
+        this.loginType = loginType;
+        this.fcmToken = fcmToken;
     }
 }
 

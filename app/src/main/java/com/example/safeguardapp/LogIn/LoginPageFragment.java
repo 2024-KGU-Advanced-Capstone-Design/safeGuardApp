@@ -29,6 +29,7 @@ import com.example.safeguardapp.PreferenceManager;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.SignUp.SignUpFragment;
+import com.example.safeguardapp.StartScreenActivity;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.gson.Gson;
 
@@ -116,7 +117,7 @@ public class LoginPageFragment extends Fragment {
     }
     public void ToLogin(View v, String id, String pw, Context context){
         //loginRequest에 id,pw 저장
-        LoginRequest loginRequest = new LoginRequest(id,pw,loginType);
+        LoginRequest loginRequest = new LoginRequest(id, pw, loginType, StartScreenActivity.token);
         LoginInfo.setLoginID(id);
 
         //retrofit 생성
@@ -148,7 +149,7 @@ public class LoginPageFragment extends Fragment {
                             Log.e("POST", "로그인 성공");
 
                             saveID = id;
-                            if(checkBox.isChecked()) PreferenceManager.setPreference(context,id,pw,loginType);
+                            if(checkBox.isChecked()) PreferenceManager.setPreference(context,id,pw,loginType,StartScreenActivity.token);
 
                             if(loginType.equals("Member")) {
                                 Intent intent = new Intent(getActivity(), MainActivity.class);

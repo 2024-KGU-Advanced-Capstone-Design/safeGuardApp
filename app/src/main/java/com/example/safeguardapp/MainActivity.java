@@ -55,23 +55,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                if(!task.isSuccessful()) {
-                    Log.w("FCM", "failed", task.getException());
-                    return;
-                }
-                String token = task.getResult().toString();
-                Log.e("String", token);
-            }
-        });
-
-
-
-
-
-
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
         // -----v----- BottomNavigationView 구현 -----v-----

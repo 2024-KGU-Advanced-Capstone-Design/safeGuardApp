@@ -67,4 +67,6 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-messaging:24.0.0'
     implementation 'com.google.firebase:firebase-analytics:22.0.0'
+    //알림
+    implementation 'com.android.support:support-compat:28.0.0'
 }

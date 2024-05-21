@@ -13,13 +13,14 @@ public class PreferenceManager {
         return context.getSharedPreferences(preferenceName,Context.MODE_PRIVATE);
     }
 
-    public static void setPreference(Context context, String ID, String PW, String loginType){
+    public static void setPreference(Context context, String ID, String PW, String loginType, String fcmToken){
         prefs = getPreferences(context);
         editor = prefs.edit();
 
         editor.putString("inputID",ID);
         editor.putString("inputPW",PW);
         editor.putString("loginType",loginType);
+        editor.putString("fcmToken",fcmToken);
 
         editor.commit();
     }
