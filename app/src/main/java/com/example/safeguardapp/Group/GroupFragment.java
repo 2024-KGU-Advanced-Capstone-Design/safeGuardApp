@@ -1,6 +1,8 @@
 package com.example.safeguardapp.Group;
 
 import android.os.Bundle;
+import android.text.GetChars;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceControl;
 import android.view.View;
@@ -15,8 +17,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
+import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -24,7 +29,14 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class GroupFragment extends Fragment {
+    RetrofitClient retrofitClient;
+    UserRetrofitInterface userRetrofitInterface;
     private GroupRepository repository;
     private RecyclerView groupListView;
     private Button addGroupBtn;
@@ -77,6 +89,7 @@ public class GroupFragment extends Fragment {
     private void initializeView(View view) {
         addGroupBtn = view.findViewById(R.id.add_group_btn);
         groupListView = view.findViewById(R.id.recycler_view);
+        getChildID();
     }
 
     private void setupListeners() {
@@ -143,4 +156,33 @@ public class GroupFragment extends Fragment {
         }
     }
 
+    private void getChildID() {
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
+        String memberID = LoginPageFragment.saveID;
+        GetChildIDRequest memberIDDTO = new GetChildIDRequest(memberID);
+
+        Call<GetChildIDResponse> call = userRetrofitInterface.getChildID(memberIDDTO);
+        call.enqueue(new Callback<GetChildIDResponse>() {
+            @Override
+            public void onResponse(Call<GetChildIDResponse> call, Response<GetChildIDResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<GetChildIDResponse.Child> children = response.body().getChildren();
+                    // 응답 처리 로직
+                    for (GetChildIDResponse.Child child : children) {
+                        Log.e("POST","Name: " + child.getName());
+                    }
+                } else {
+                    // 오류 처리 로직
+                    System.err.println("Response error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetChildIDResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
 }

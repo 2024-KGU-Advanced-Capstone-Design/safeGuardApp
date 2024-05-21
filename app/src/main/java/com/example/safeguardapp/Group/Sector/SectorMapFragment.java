@@ -134,6 +134,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         mNaverMap = naverMap;
+        if (mNaverMap == null) {
+            return;
+        }
         mNaverMap.setLocationSource(locationSource);
         mNaverMap.setIndoorEnabled(true);
 
@@ -187,6 +190,10 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
                     for (Marker eraseMarker : redMarkerList) {
                         eraseMarker.setMap(null);
+                    }
+
+                    if (mNaverMap == null) {
+                        return;
                     }
 
                     mNaverMap.setOnMapClickListener((point, coord) -> {
@@ -296,6 +303,10 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
                     for (Marker eraseMarker : greenMarkerList) {
                         eraseMarker.setMap(null);
+                    }
+
+                    if (mNaverMap == null) {
+                        return;
                     }
 
                     mNaverMap.setOnMapClickListener((point, coord) -> {
