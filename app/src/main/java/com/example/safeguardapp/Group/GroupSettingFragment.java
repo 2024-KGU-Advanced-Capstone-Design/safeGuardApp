@@ -22,6 +22,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.safeguardapp.FindPW.EmailRequest;
+import com.example.safeguardapp.Group.Sector.SectorMapFragment;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
