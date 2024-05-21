@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.safeguardapp.Child.ChildMainActivity;
+import com.example.safeguardapp.Child.LocationService;
 import com.example.safeguardapp.FindID.FindIDFragment;
 import com.example.safeguardapp.FindPW.FindPWCertificationFragment;
 import com.example.safeguardapp.MainActivity;
@@ -147,6 +148,17 @@ public class LoginPageFragment extends Fragment {
                         String success = "200"; //성공
                         if (resultCode.equals(success)) {
                             Log.e("POST", "로그인 성공");
+
+                            Context context = getActivity();
+                            if (context != null) {
+                                SharedPreferences sharedPreferences = context.getSharedPreferences("loginID", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("saveID", id);
+                                editor.putBoolean("autoLogin", checkBox.isChecked());
+                                editor.apply();
+                            } else {
+                                Log.e("LoginPageFragment", "Context is null, cannot save ID");
+                            }
 
                             saveID = id;
                             if(checkBox.isChecked()) PreferenceManager.setPreference(context,id,pw,loginType,StartScreenActivity.token);

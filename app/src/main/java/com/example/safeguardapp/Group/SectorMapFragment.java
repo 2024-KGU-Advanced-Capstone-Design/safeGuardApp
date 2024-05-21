@@ -37,6 +37,7 @@ import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
+import com.naver.maps.map.widget.CompassView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -126,6 +127,11 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
         UiSettings uiSettings = mNaverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+        // CompassView를 NaverMap에 바인딩
+        CompassView compassView = getView().findViewById(R.id.compass);
+        uiSettings.setCompassEnabled(false); // 기본 나침반 비활성화
+        compassView.setMap(naverMap); // 커스텀 나침반 설정
 
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);

@@ -20,23 +20,35 @@
             android:id="@+id/mapModeNav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:background="#BFFFFFFF"
             android:translationZ="5dp">
 
-            <TextView
-                android:id="@+id/label_map_type"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="130dp"
-                android:layout_marginEnd="15dp"
-                android:text="@string/label_map_type" />
+                android:layout_height="match_parent">
 
-            <Spinner
-                android:id="@+id/map_type"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp" />
-
+                <TextView
+                    android:id="@+id/label_map_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/label_map_type" />
+                <Spinner
+                    android:id="@+id/map_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="20dp"/>
+            </LinearLayout>
         </LinearLayout>
+        <com.naver.maps.map.widget.CompassView
+            android:id="@+id/compass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:translationZ="5dp" />
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -44,6 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="@color/white"
         app:itemBackground="@color/white"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/child_button_menu" />

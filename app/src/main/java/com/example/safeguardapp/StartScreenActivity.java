@@ -1,6 +1,9 @@
 package com.example.safeguardapp;
 
 import androidx.annotation.NonNull;
+import static android.app.PendingIntent.getActivity;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -11,6 +14,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -123,6 +128,12 @@ public class StartScreenActivity extends AppCompatActivity {
             transaction.replace(R.id.start_activity, new LoginPageFragment());
             transaction.commit();
         }
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finishAffinity(); // 현재 액티비티와 관련된 모든 액티비티를 종료
+            }
+        });
     }
 
 //    //권한 체크

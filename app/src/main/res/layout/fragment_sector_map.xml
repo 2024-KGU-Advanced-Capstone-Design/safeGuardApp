@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/sectorMapScreen"
@@ -30,9 +30,12 @@
                     android:id="@+id/safeZone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:text="안전구역 설정"
-                    android:textSize="14sp" />
+                    android:textColor="#4CAF50"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
                 <RadioButton
                     android:id="@+id/dangerZone"
@@ -40,34 +43,55 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="위험구역 설정"
-                    android:textSize="14sp" />
+                    android:textColor="#F44336"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/green_sector_delete_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
                     android:layout_weight="1"
+                    android:backgroundTint="#4CAF50"
                     android:text="안전구역 삭제"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    app:cornerRadius="10dp" />
 
                 <Button
                     android:id="@+id/red_sector_delete_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
                     android:layout_weight="1"
+                    android:backgroundTint="#F44336"
                     android:text="위험구역 삭제"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    app:cornerRadius="10dp" />
             </RadioGroup>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="#80FFFFFF">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
                     android:gravity="center"
-                    android:text="구역을 설정하시려면 4개의 지점을 클릭하세요"
-                    android:textSize="16sp" />
+                    android:text="구역을 설정하시려면 설정모드 선택 후 4개의 지점을 클릭하세요"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
+
+        <com.naver.maps.map.widget.CompassView
+            android:id="@+id/compass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:translationZ="5dp" />
     </FrameLayout>
 </LinearLayout>
