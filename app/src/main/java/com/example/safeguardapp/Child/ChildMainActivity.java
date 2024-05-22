@@ -74,6 +74,8 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private double latitude, longitude;
     private boolean doubleBackToExitPressedOnce = false;
     private Intent serviceIntent;
+    private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
+
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
@@ -238,6 +240,8 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private void sectorInquire() {
         final Gson gson = new Gson();
 
+        removeAllPolygons();
+
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
@@ -301,6 +305,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
 
                         // 폴리곤을 지도에 추가
                         polygonOverlay.setMap(mNaverMap);
+                        polygonOverlays.add(polygonOverlay);
                     }
                 } else {
                     // 응답 본문이 null일 때 처리
@@ -314,5 +319,11 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                 Log.e("SectorInquire", "Request failed", t);
             }
         });
+    }
+    private void removeAllPolygons() {
+        for (PolygonOverlay overlay : polygonOverlays) {
+            overlay.setMap(null);
+        }
+        polygonOverlays.clear();
     }
 }
