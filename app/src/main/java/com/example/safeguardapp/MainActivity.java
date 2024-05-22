@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.os.Handler;
@@ -43,8 +44,10 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.Align;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 
 import java.util.HashMap;
@@ -71,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
+
+    private Handler handler;
+    private Runnable updateMarkerRunnable;
+    private Marker childMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +141,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
         Boolean isAutoLogin = sharedPreferences2.getBoolean("autoLogin", false);
+
+        handler = new Handler(Looper.getMainLooper());
+        childMarker = new Marker();
+
+        // 마커를 업데이트하는 Runnable 정의
+        updateMarkerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                getChildLocation();
+                handler.postDelayed(this, 5000); // 5초마다 실행
+            }
+        };
+
+        // 주기적인 마커 업데이트 시작
+        handler.post(updateMarkerRunnable);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -202,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
-        getChildLocation();
+//        getChildLocation();
     }
 
 
@@ -219,9 +241,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getChildLocation(){
-        String getChildId, type;
-        getChildId = "kim111";
-        type = "Child";
+        String getChildId = "kim111";
+        String type = "Child";
         ChildLocationRequest childLocationRequest = new ChildLocationRequest(type, getChildId);
         Gson gson = new Gson();
         String childInfo = gson.toJson(childLocationRequest);
@@ -243,11 +264,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     Log.e("JSON", "Coordinates: " + latitude + ", " + longitude);
 
-                    Marker childMarker = new Marker();
+
+                    childMarker.setCaptionText(getChildId);
+                    childMarker.setCaptionAligns(Align.Top);
+                    childMarker.setCaptionOffset(10);
+                    childMarker.setIcon(MarkerIcons.BLACK);
+                    childMarker.setIconTintColor(Color.argb(0, 234, 234, 0));
+                    childMarker.setHideCollidedSymbols(true);
+                    childMarker.setCaptionTextSize(16);
                     childMarker.setPosition(new LatLng(latitude, longitude));
                     childMarker.setMap(mNaverMap);
-                    }
-
+                }
                 else {
                     Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
                 }
@@ -258,5 +285,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("POST", "통신 실패: " + t.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(updateMarkerRunnable); // 액티비티가 종료될 때 주기적인 업데이트를 중지
     }
 }
