@@ -91,6 +91,20 @@ public class GroupRepository {
         // LiveData를 업데이트
         this.groupList.postValue(groupList);
     }
+    public boolean isChildExists(String child) {
+        List<Group> groups = getGroupList();
+        for (Group group : groups) {
+            if (TextUtils.equals(group.getId(), child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeAllGroups() {
+        prefs.edit().remove("list").apply();
+        groupList.postValue(Collections.emptyList());
+    }
 
     public LiveData<List<Group>> getGroupListStream() {
         return groupList;

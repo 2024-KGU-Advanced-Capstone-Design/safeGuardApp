@@ -9,7 +9,6 @@ import com.example.safeguardapp.FindPW.ResetPwRequest;
 import com.example.safeguardapp.Group.CheckChildID;
 import com.example.safeguardapp.Group.ChildDTO;
 import com.example.safeguardapp.Group.GetChildIDRequest;
-import com.example.safeguardapp.Group.GetChildIDResponse;
 import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
 import com.example.safeguardapp.Group.GroupRemoveRequest;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
@@ -80,6 +79,7 @@ public interface UserRetrofitInterface {
     @POST("read-areas")
     Call<ResponseBody> getSectorLocation(@Body RequestBody body);
 
-    @POST("group")
-    Call<GetChildIDResponse> getChildID(@Body GetChildIDRequest getChildIDRequest);
+    @POST("find-child-list")
+    Call<ResponseBody> getChildID(@Body GetChildIDRequest request);
 }
+

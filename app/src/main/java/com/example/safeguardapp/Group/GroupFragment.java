@@ -26,9 +26,20 @@ import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,10 +53,13 @@ public class GroupFragment extends Fragment {
     private Button addGroupBtn;
     private String currentGroupUuid;
     private String childID;
+    private ArrayList<String> childList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getChildID();
+
         View view = inflater.inflate(R.layout.fragment_group, container, false);
         return view;
     }
@@ -89,7 +103,9 @@ public class GroupFragment extends Fragment {
     private void initializeView(View view) {
         addGroupBtn = view.findViewById(R.id.add_group_btn);
         groupListView = view.findViewById(R.id.recycler_view);
-        getChildID();
+        for (String child : childList) {
+            Log.e("Child List Item", child);
+        }
     }
 
     private void setupListeners() {
@@ -162,27 +178,68 @@ public class GroupFragment extends Fragment {
 
         String memberID = LoginPageFragment.saveID;
         GetChildIDRequest memberIDDTO = new GetChildIDRequest(memberID);
+        Gson gson = new Gson();
+        String memberInfo = gson.toJson(memberIDDTO);
+        Log.e("JSON", memberInfo);
 
-        Call<GetChildIDResponse> call = userRetrofitInterface.getChildID(memberIDDTO);
-        call.enqueue(new Callback<GetChildIDResponse>() {
+        Call<ResponseBody> call = userRetrofitInterface.getChildID(memberIDDTO);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<GetChildIDResponse> call, Response<GetChildIDResponse> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<GetChildIDResponse.Child> children = response.body().getChildren();
-                    // 응답 처리 로직
-                    for (GetChildIDResponse.Child child : children) {
-                        Log.e("POST","Name: " + child.getName());
+                    Log.e("POST", "응답성공");
+                    try {
+                        // 응답 본문을 문자열로 변환
+                        String responseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(responseBodyString);
+                        Log.e("Response JSON", json.toString());
+                        Log.e("POST", "응답성공");
+
+                        // 각 키-값 쌍을 처리
+                        for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                            String key = keys.next();
+                            String value = json.getString(key);
+                            if(key.equals("status")){
+                            }
+                            else{
+                                childList.add(value);
+                            }
+
+                            Log.e("Child ID", "Key: " + key + ", Value: " + value);
+                        }
+                        addGroupFromServer();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } else {
-                    // 오류 처리 로직
-                    System.err.println("Response error: " + response.code());
+                    Log.e("getChildID", "Response body is null or request failed");
                 }
             }
 
             @Override
-            public void onFailure(Call<GetChildIDResponse> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 t.printStackTrace();
+                Log.e("getChildID", "Request failed", t);
             }
         });
     }
+
+    private void addGroupFromServer() {
+        GroupRepository groupRepository = GroupRepository.getInstance(requireContext());
+        String name = "1";
+        int number = Integer.parseInt(name);
+
+        for (String child : childList) {
+            if (!groupRepository.isChildExists(child)) {
+                Group group = new Group(child, child);
+                groupRepository.addGroup(group);
+
+                number++;
+                name = Integer.toString(number);
+            } else {
+                Log.e("addGroupFromServer", "Group for child " + child + " already exists.");
+            }
+        }
+    }
+
 }

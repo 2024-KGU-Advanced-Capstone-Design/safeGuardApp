@@ -33,6 +33,7 @@ import com.example.safeguardapp.Map.ChildLocationRequest;
 import com.example.safeguardapp.Map.ChildLocationResponse;
 import com.example.safeguardapp.Notice.NoticeFragment;
 import com.example.safeguardapp.Setting.SettingFragment;
+import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationBarView;
@@ -165,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         finishAffinity(); // 현재 액티비티와 관련된 모든 액티비티를 종료
                         return;
                     } else {
+                        GroupRepository groupRepository = GroupRepository.getInstance(MainActivity.this);
+                        groupRepository.removeAllGroups();
                         Intent intent = new Intent(MainActivity.this, StartScreenActivity.class);
                         startActivity(intent);
                     }

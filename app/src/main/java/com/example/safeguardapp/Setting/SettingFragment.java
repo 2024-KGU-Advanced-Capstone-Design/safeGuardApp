@@ -29,6 +29,7 @@ import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.StartScreenActivity;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
@@ -87,6 +88,8 @@ public class SettingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         PreferenceManager.clear(getContext());
+                        GroupRepository groupRepository = GroupRepository.getInstance(requireContext());
+                        groupRepository.removeAllGroups();
                         transScreen();
                     }
                 })

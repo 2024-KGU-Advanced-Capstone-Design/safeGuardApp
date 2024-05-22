@@ -183,8 +183,8 @@ public class AddGroupPopupFragment extends Fragment {
     }
 
 
-    private void addNewButton(String name, String id, String password) {
-        Group group = new Group(name, id, password);
+    private void addNewButton(String name, String id) {
+        Group group = new Group(name, id);
         GroupRepository.getInstance(requireContext()).addGroup(group);
     }
 
@@ -228,7 +228,7 @@ public class AddGroupPopupFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Log.e("POST", "성공");
-                    addNewButton(name, id, password);
+                    addNewButton(name, id);
                     previous();
                 }
                 else {

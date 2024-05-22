@@ -14,10 +14,9 @@ public class Group {
     public Group() {
     }
 
-    public Group(String name, String id, String password) {
+    public Group(String name, String id) {
         this.name = name;
         this.id = id;
-        this.password = password;
     }
 
     public String getUuid() {
