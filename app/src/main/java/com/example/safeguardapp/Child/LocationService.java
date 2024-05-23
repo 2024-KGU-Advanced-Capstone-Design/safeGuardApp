@@ -3,23 +3,31 @@ package com.example.safeguardapp.Child;
 import static com.example.safeguardapp.Child.ChildMainActivity.latitude;
 import static com.example.safeguardapp.Child.ChildMainActivity.longitude;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import com.example.safeguardapp.LogIn.LoginPageFragment;
-import com.example.safeguardapp.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.gson.Gson;
@@ -35,22 +43,49 @@ public class LocationService extends Service {
 
     private static final String CHANNEL_ID = "LocationServiceChannel";
     private static final int INTERVAL = 10000; // 10초
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable;
     private static String id;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
-    }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);  // 10초마다 위치 업데이트
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult != null) {
+                    double latitude = locationResult.getLastLocation().getLatitude();
+                    double longitude = locationResult.getLastLocation().getLongitude();
+                    transmitCoordinate(latitude, longitude);
+                }
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        SharedPreferences sharedPreferences1 = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
-//        final double latitude = Double.longBitsToDouble(sharedPreferences1.getLong("latitude_v2", Double.doubleToLongBits(0.0)));
-//        final double longitude = Double.longBitsToDouble(sharedPreferences1.getLong("longitude_v2", Double.doubleToLongBits(0.0)));
         SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
         id = sharedPreferences2.getString("saveID", null);
 
@@ -61,22 +96,13 @@ public class LocationService extends Service {
 
         startForeground(1, notification);
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                transmitCoordinate(latitude, longitude);
-                handler.postDelayed(this, INTERVAL);
-            }
-        };
-        handler.post(runnable);
-
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(runnable);
+        fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 
     @Nullable
@@ -143,4 +169,3 @@ public class LocationService extends Service {
         }
     }
 }
-

@@ -217,12 +217,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             LocationService.transmitCoordinate(latitude,longitude);
-
-            SharedPreferences sharedPreferences1 = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences1.edit();
-            editor.putLong("latitude_v2", Double.doubleToLongBits(latitude));
-            editor.putLong("longitude_v2", Double.doubleToLongBits(longitude));
-            editor.apply();
         });
         sectorInquire();
     }
