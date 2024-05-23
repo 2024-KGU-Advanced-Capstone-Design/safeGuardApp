@@ -78,8 +78,6 @@ public class ChildSettingFragment extends Fragment {
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PreferenceManager.clear(getContext());
-                        transScreen();
                         Context context = getActivity();
                         if (context != null) {
                             Intent serviceIntent = new Intent(context, LocationService.class);
@@ -87,6 +85,8 @@ public class ChildSettingFragment extends Fragment {
                         } else {
                             Log.e("MyFragment", "Context is null, cannot stop service");
                         }
+                        PreferenceManager.clear(getContext());
+                        transScreen();
                     }
                 })
                 .setNegativeButton("취소", null)
