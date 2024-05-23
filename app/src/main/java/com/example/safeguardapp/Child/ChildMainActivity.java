@@ -71,7 +71,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
-    private double latitude, longitude;
+    public static double latitude, longitude;
     private boolean doubleBackToExitPressedOnce = false;
     private Intent serviceIntent;
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
@@ -216,6 +216,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         mNaverMap.addOnLocationChangeListener(location -> {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+            LocationService.transmitCoordinate(latitude,longitude);
 
             SharedPreferences sharedPreferences1 = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences1.edit();

@@ -1,5 +1,8 @@
 package com.example.safeguardapp.Child;
 
+import static com.example.safeguardapp.Child.ChildMainActivity.latitude;
+import static com.example.safeguardapp.Child.ChildMainActivity.longitude;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -34,7 +37,7 @@ public class LocationService extends Service {
     private static final int INTERVAL = 10000; // 10초
     private Handler handler = new Handler();
     private Runnable runnable;
-    private String id;
+    private static String id;
 
     @Override
     public void onCreate() {
@@ -46,8 +49,8 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         SharedPreferences sharedPreferences1 = getSharedPreferences("LocationPrefs", Context.MODE_PRIVATE);
-        final double latitude = Double.longBitsToDouble(sharedPreferences1.getLong("latitude_v2", Double.doubleToLongBits(0.0)));
-        final double longitude = Double.longBitsToDouble(sharedPreferences1.getLong("longitude_v2", Double.doubleToLongBits(0.0)));
+//        final double latitude = Double.longBitsToDouble(sharedPreferences1.getLong("latitude_v2", Double.doubleToLongBits(0.0)));
+//        final double longitude = Double.longBitsToDouble(sharedPreferences1.getLong("longitude_v2", Double.doubleToLongBits(0.0)));
         SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
         id = sharedPreferences2.getString("saveID", null);
 
@@ -82,7 +85,7 @@ public class LocationService extends Service {
         return null;
     }
 
-    private void transmitCoordinate(double latitude, double longitude) {
+    public static void transmitCoordinate(double latitude, double longitude) {
         String type = "Child";
         LocationSendRequest locationDTO = new LocationSendRequest(type, id, latitude, longitude);
         RetrofitClient retrofitClient = RetrofitClient.getInstance();
