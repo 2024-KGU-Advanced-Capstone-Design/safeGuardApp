@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GroupFragment;
+import com.example.safeguardapp.Group.Sector.SectorDetails;
+import com.example.safeguardapp.Group.Sector.SectorInquireRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.Map.ChildLocationRequest;
 import com.example.safeguardapp.Map.ChildLocationResponse;
@@ -44,6 +46,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Align;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
@@ -53,8 +56,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Boolean doubleBackToExitPressedOnce = false;
 
     private ArrayList<String> childList = new ArrayList<>();
+
     private Map<Integer, String> dynamicVariables = new HashMap<>();
+    private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -291,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 //        getChildLocation();
+        sectorInquire();
     }
 
 
@@ -359,6 +368,97 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
         }
+    }
+
+    private void sectorInquire() {
+        final Gson gson = new Gson();
+
+        removeAllPolygons();
+
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+        for(String childId : childList) {
+            // 요청 JSON 로그 출력
+            SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childId);
+            String requestJson = gson.toJson(sectorInquireDTO);
+            Log.e("Request JSON", requestJson);
+
+            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
+            Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        LinkedHashMap<String, SectorDetails> sectors = new LinkedHashMap<>();
+
+                        try {
+                            JSONObject json = new JSONObject(response.body().string());
+
+                            for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                                String key = keys.next();
+
+                                SectorDetails sector = gson.fromJson(json.getJSONObject(key).toString(), SectorDetails.class);
+                                sectors.put(key, sector);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
+
+                        if (sectors.isEmpty()) {
+                            Log.e("SectorInquire", "No sectors found or sectorResponse is null");
+                            return;
+                        }
+
+                        for (Map.Entry<String, SectorDetails> entry : sectors.entrySet()) {
+                            String coordinateId = entry.getKey(); // 키 값 저장
+                            SectorDetails details = entry.getValue();
+                            boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
+
+                            // 로그 출력
+                            Log.e("Coordinate ID", coordinateId);
+
+                            // 좌표를 가져와서 LatLng 리스트를 생성합니다.
+                            List<LatLng> polygonCoords = new ArrayList<>();
+                            polygonCoords.add(new LatLng(details.getYofPointA(), details.getXofPointA()));
+                            polygonCoords.add(new LatLng(details.getYofPointB(), details.getXofPointB()));
+                            polygonCoords.add(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                            polygonCoords.add(new LatLng(details.getYofPointD(), details.getXofPointD()));
+
+                            // 폴리곤 오버레이 생성
+                            PolygonOverlay polygonOverlay = new PolygonOverlay();
+                            polygonOverlay.setCoords(polygonCoords);
+
+                            // 색상 설정
+                            if (isLiving) {
+                                polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 초록색
+                            } else {
+                                polygonOverlay.setColor(Color.argb(75, 100, 0, 0)); // 빨간색
+                            }
+
+                            // 폴리곤을 지도에 추가
+                            polygonOverlay.setMap(mNaverMap);
+                            polygonOverlays.add(polygonOverlay);
+                        }
+                    } else {
+                        // 응답 본문이 null일 때 처리
+                        Log.e("SectorInquire", "Response body is null");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    // 요청 실패 처리
+                    Log.e("SectorInquire", "Request failed", t);
+                }
+            });
+        }
+    }
+    private void removeAllPolygons() {
+        for (PolygonOverlay overlay : polygonOverlays) {
+            overlay.setMap(null);
+        }
+        polygonOverlays.clear();
     }
 
     @Override
