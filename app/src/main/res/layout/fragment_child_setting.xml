@@ -25,13 +25,13 @@
                 android:src="@mipmap/ic_launcher" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/childId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:text="회원 이름"
-                android:textSize="20sp" />
+                android:textSize="24sp" />
         </LinearLayout>
 
         <LinearLayout
