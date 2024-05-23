@@ -18,28 +18,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GroupFragment;
+import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.Map.ChildLocationRequest;
 import com.example.safeguardapp.Map.ChildLocationResponse;
 import com.example.safeguardapp.Notice.NoticeFragment;
 import com.example.safeguardapp.Setting.SettingFragment;
 import com.example.safeguardapp.data.repository.GroupRepository;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
@@ -51,8 +48,14 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 
-import java.util.HashMap;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NaverMap mNaverMap;
     private Boolean doubleBackToExitPressedOnce = false;
 
+    private ArrayList<String> childList = new ArrayList<>();
+    private Map<Integer, String> dynamicVariables = new HashMap<>();
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.ACCESS_NOTIFICATION_POLICY
     };
+    private String markerName;
 
     private Handler handler;
     private Runnable updateMarkerRunnable;
@@ -146,6 +152,61 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Boolean isAutoLogin = sharedPreferences2.getBoolean("autoLogin", false);
 
         handler = new Handler(Looper.getMainLooper());
+
+        //childList Create
+        String memberID = LoginPageFragment.saveID;
+        GetChildIDRequest memberIDDTO = new GetChildIDRequest(memberID);
+        Gson ggson = new Gson();
+        String memberInfo = ggson.toJson(memberIDDTO);
+        Log.e("JSON", memberInfo);
+
+        Call<ResponseBody> childCall = userRetrofitInterface.getChildID(memberIDDTO);
+        childCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e("POST", "응답성공");
+                    try {
+                        // 응답 본문을 문자열로 변환
+                        String responseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(responseBodyString);
+                        Log.e("Response JSON", json.toString());
+                        Log.e("POST", "응답성공");
+
+                        // 각 키-값 쌍을 처리
+                        for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                            String key = keys.next();
+                            String value = json.getString(key);
+                            if(key.equals("status")){
+                            }
+                            else{
+                                childList.add(value);
+                            }
+
+                            Log.e("Child ID", "Key: " + key + ", Value: " + value);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("getChildID", "Response body is null or request failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                Log.e("getChildID", "Request failed", t);
+            }
+        });
+
+
+        for(int i = 0; i< childList.size(); i++){
+            dynamicVariables.put(i, childList.get(i));
+            markerName = dynamicVariables.get(i);
+            Marker markerName = new Marker();
+        }
+
         childMarker = new Marker();
 
         // 마커를 업데이트하는 Runnable 정의
@@ -246,50 +307,58 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getChildLocation(){
-        String getChildId = "kim111";
-        String type = "Child";
-        ChildLocationRequest childLocationRequest = new ChildLocationRequest(type, getChildId);
-        Gson gson = new Gson();
-        String childInfo = gson.toJson(childLocationRequest);
+        for(int i =0; i<childList.size(); i++){
+            String getChildId = childList.get(i);
+            String type = "Child";
 
-        Log.e("JSON", childInfo);
+            ChildLocationRequest childLocationRequest = new ChildLocationRequest(type, getChildId);
+            Gson gson = new Gson();
+            String childInfo = gson.toJson(childLocationRequest);
 
-        Call<ChildLocationResponse> call = userRetrofitInterface.getChildLocation(childLocationRequest);
-        call.clone().enqueue(new Callback<ChildLocationResponse>() {
-            @Override
-            public void onResponse(Call<ChildLocationResponse> call, Response<ChildLocationResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "통신 성공");
+            Log.e("JSON", childInfo);
 
-                    ChildLocationResponse result = response.body();
-                    Log.e("POST", "Response: " + gson.toJson(result)); // 전체 응답 로그
+            Call<ChildLocationResponse> call = userRetrofitInterface.getChildLocation(childLocationRequest);
+            int finalI = i;
+            call.clone().enqueue(new Callback<ChildLocationResponse>() {
+                @Override
+                public void onResponse(Call<ChildLocationResponse> call, Response<ChildLocationResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.e("POST", "통신 성공");
 
-                    double latitude = result.getLatitude();
-                    double longitude = result.getLongitude();
+                        ChildLocationResponse result = response.body();
+                        Log.e("POST", "Response: " + gson.toJson(result)); // 전체 응답 로그
 
-                    Log.e("JSON", "Coordinates: " + latitude + ", " + longitude);
+                        double latitude = result.getLatitude();
+                        double longitude = result.getLongitude();
+
+                        Log.e("JSON", "Coordinates: " + latitude + ", " + longitude);
+
+                        dynamicVariables.put(finalI, childList.get(finalI));
+                        markerName = dynamicVariables.get(finalI);
+                        Marker markerName = new Marker();
 
 
-                    childMarker.setCaptionText(getChildId);
-                    childMarker.setCaptionAligns(Align.Top);
-                    childMarker.setCaptionOffset(10);
-                    childMarker.setIcon(MarkerIcons.BLACK);
-                    childMarker.setIconTintColor(Color.argb(0, 234, 234, 0));
-                    childMarker.setHideCollidedSymbols(true);
-                    childMarker.setCaptionTextSize(16);
-                    childMarker.setPosition(new LatLng(latitude, longitude));
-                    childMarker.setMap(mNaverMap);
+                        markerName.setCaptionText(getChildId);
+                        markerName.setCaptionAligns(Align.Top);
+                        markerName.setCaptionOffset(10);
+                        markerName.setIcon(MarkerIcons.BLACK);
+                        markerName.setIconTintColor(Color.argb(0, 234, 234, 0));
+                        markerName.setHideCollidedSymbols(true);
+                        markerName.setCaptionTextSize(16);
+                        markerName.setPosition(new LatLng(latitude, longitude));
+                        markerName.setMap(mNaverMap);
+                    }
+                    else {
+                        Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
+                    }
                 }
-                else {
-                    Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ChildLocationResponse> call, Throwable t) {
-                Log.e("POST", "통신 실패: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<ChildLocationResponse> call, Throwable t) {
+                    Log.e("POST", "통신 실패: " + t.getMessage());
+                }
+            });
+        }
     }
 
     @Override
