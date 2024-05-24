@@ -81,6 +81,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> greenMarkerList = new ArrayList<>();
     private HashMap<Integer, InfoWindow> greenInfoWindowList = new HashMap<>();
     private HashMap<Integer, InfoWindow> redInfoWindowList = new HashMap<>();
+    private HashMap<String, PolygonOverlay> sectorPolygons = new HashMap<>();
     private int greenIndex = 1;
     private int redIndex = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -414,22 +415,43 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.green_polygon_overlay_menu, popupMenu.getMenu());
 
-                for (int i = 0; i < greenIndex; i++) {
-                    if (greenPolygonOverlays.size() != 0) {
-                        if (greenPolygonOverlays.containsKey(i)) {
-                            popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + i);
+                // LinkedHashMap의 키 목록을 가져옴
+                List<String> keys = new ArrayList<>(sectorPolygons.keySet());
+                Log.e("POST", keys.get(0));
+                Log.e("POST", keys.get(1));
+                // keys가 비어있지 않을 때 메뉴에 항목 추가
+                if (keys != null && !keys.isEmpty()) {
+                    for (int i = 0; i < keys.size(); i++) {
+                        String key = keys.get(i);
+                        Log.e("POST", "Key: " + key); // 각 key를 로그에 출력
+                        if (sectorPolygons.containsKey(key)) {
+                            // 고유한 ID 생성
+                            popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + key);
                         }
                     }
+                } else {
+                    Log.e("POST", "No keys found in sectorPolygons.");
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        int index = item.getItemId(); // 해당 PolygonOverlay를 선택하여 처리
-                        greenPolygonOverlays.get(index).setMap(null); // 지도에서 PolygonOverlay 제거
-                        greenPolygonOverlays.remove(index);
-                        greenInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
-                        greenInfoWindowList.remove(index);
+                        int index = item.getItemId(); // 메뉴 항목의 인덱스 가져오기
+                        String selectedKey = keys.get(index); // 인덱스를 사용하여 키 가져오기
+
+                        // 지도에서 PolygonOverlay 제거
+                        if (sectorPolygons.containsKey(selectedKey)) {
+                            sectorPolygons.get(selectedKey).setMap(null);
+                            sectorPolygons.remove(selectedKey);
+                        }
+
+                        // 지도에서 InfoWindow 제거
+                        if (greenInfoWindowList.containsKey(selectedKey)) {
+                            greenInfoWindowList.get(selectedKey).close();
+                            greenInfoWindowList.remove(selectedKey);
+                        }
+
+                        Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
                         return true;
                     }
                 });
@@ -437,6 +459,8 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 popupMenu.show();
             }
         });
+
+
 
         Button redSectorDeleteBtn = view.findViewById(R.id.red_sector_delete_btn);
         redSectorDeleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -494,7 +518,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     LinkedHashMap<String, SectorDetails> sectors = new LinkedHashMap<>();
-
                     try {
                         JSONObject json = new JSONObject(response.body().string());
 
@@ -542,6 +565,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
                         // 폴리곤을 지도에 추가
                         polygonOverlay.setMap(mNaverMap);
+                        sectorPolygons.put(coordinateId, polygonOverlay);
                     }
                 } else {
                     // 응답 본문이 null일 때 처리
