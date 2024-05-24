@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> childList = new ArrayList<>();
 
     private Map<Integer, String> dynamicVariables = new HashMap<>();
+    private Map<String, Marker> childMarkers = new HashMap<>();
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
@@ -94,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Handler handler;
     private Runnable updateMarkerRunnable;
-    private Marker childMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,20 +221,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-        for(int i = 0; i< childList.size(); i++){
+        for(int i = 0; i < childList.size(); i++) {
             dynamicVariables.put(i, childList.get(i));
             markerName = dynamicVariables.get(i);
-            Marker markerName = new Marker();
         }
-
-        childMarker = new Marker();
 
         // 마커를 업데이트하는 Runnable 정의
         updateMarkerRunnable = new Runnable() {
             @Override
             public void run() {
                 getChildLocation();
-                handler.postDelayed(this, 5000); // 5초마다 실행
+                handler.postDelayed(this, 2000); // 2초마다 실행
             }
         };
 
@@ -310,7 +307,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
-//        getChildLocation();
         sectorInquire();
     }
 
@@ -328,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getChildLocation(){
-        for(int i =0; i<childList.size(); i++){
+        for(int i = 0; i < childList.size(); i++) {
             String getChildId = childList.get(i);
             String type = "Child";
 
@@ -344,30 +340,43 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onResponse(Call<ChildLocationResponse> call, Response<ChildLocationResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Log.e("POST", "통신 성공");
-
                         ChildLocationResponse result = response.body();
-                        Log.e("POST", "Response: " + gson.toJson(result)); // 전체 응답 로그
 
                         double latitude = result.getLatitude();
                         double longitude = result.getLongitude();
 
-                        Log.e("JSON", "Coordinates: " + latitude + ", " + longitude);
-
                         dynamicVariables.put(finalI, childList.get(finalI));
                         markerName = dynamicVariables.get(finalI);
-                        Marker markerName = new Marker();
 
+                        if(childMarkers.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
+                            Marker marker = new Marker();
+                            childMarkers.put(markerName, marker);
 
-                        markerName.setCaptionText(getChildId);
-                        markerName.setCaptionAligns(Align.Top);
-                        markerName.setCaptionOffset(10);
-                        markerName.setIcon(MarkerIcons.BLACK);
-                        markerName.setIconTintColor(Color.argb(0, 234, 234, 0));
-                        markerName.setHideCollidedSymbols(true);
-                        markerName.setCaptionTextSize(16);
-                        markerName.setPosition(new LatLng(latitude, longitude));
-                        markerName.setMap(mNaverMap);
+                            marker.setCaptionText(getChildId);
+                            marker.setCaptionAligns(Align.Top);
+                            marker.setCaptionOffset(10);
+                            marker.setIcon(MarkerIcons.BLACK);
+                            marker.setIconTintColor(Color.argb(0, 234, 234, 0));
+                            marker.setHideCollidedSymbols(true);
+                            marker.setCaptionTextSize(16);
+                            marker.setPosition(new LatLng(latitude, longitude));
+                            marker.setMap(mNaverMap);
+                        } else { // 해당 childMarker가 이미 생성되어 있는 경우
+                            childMarkers.get(markerName).setMap(null);
+
+                            Marker marker = new Marker();
+                            childMarkers.replace(markerName, marker);
+
+                            marker.setCaptionText(getChildId);
+                            marker.setCaptionAligns(Align.Top);
+                            marker.setCaptionOffset(10);
+                            marker.setIcon(MarkerIcons.BLACK);
+                            marker.setIconTintColor(Color.argb(0, 234, 234, 0));
+                            marker.setHideCollidedSymbols(true);
+                            marker.setCaptionTextSize(16);
+                            marker.setPosition(new LatLng(latitude, longitude));
+                            marker.setMap(mNaverMap);
+                        }
                     }
                     else {
                         Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
