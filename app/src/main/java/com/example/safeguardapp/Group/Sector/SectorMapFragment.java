@@ -439,19 +439,37 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         if (index >= 0 && index < keys.size()) {
                             String selectedKey = keys.get(index); // 인덱스를 사용하여 키 가져오기
 
-                            // 지도에서 PolygonOverlay 제거
-                            if (safeSectorPolygons.containsKey(selectedKey)) {
-                                safeSectorPolygons.get(selectedKey).setMap(null);
-                                safeSectorPolygons.remove(selectedKey);
-                            }
+                            DeleteSectorRequest deleteSectorDTO = new DeleteSectorRequest(selectedKey, childName, LoginPageFragment.saveID);
+                            Call<ResponseBody> call = userRetrofitInterface.deleteSector(deleteSectorDTO);
 
-                            // 지도에서 InfoWindow 제거
-                            if (greenInfoWindowList.containsKey(selectedKey)) {
-                                greenInfoWindowList.get(selectedKey).close();
-                                greenInfoWindowList.remove(selectedKey);
-                            }
+                            call.enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        // 지도에서 PolygonOverlay 제거
+                                        if (safeSectorPolygons.containsKey(selectedKey)) {
+                                            safeSectorPolygons.get(selectedKey).setMap(null);
+                                            safeSectorPolygons.remove(selectedKey);
+                                        }
 
-                            Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
+                                        // 지도에서 InfoWindow 제거
+                                        if (greenInfoWindowList.containsKey(selectedKey)) {
+                                            greenInfoWindowList.get(selectedKey).close();
+                                            greenInfoWindowList.remove(selectedKey);
+                                        }
+
+                                        Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
+                                    } else {
+                                        Log.e("POST", "Failed to delete sector on server." + response.code());
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Log.e("POST", "Failed to communicate with server: " + t.getMessage());
+                                }
+                            });
+
                             return true;
                         } else {
                             Log.e("POST", "Invalid index: " + index);
