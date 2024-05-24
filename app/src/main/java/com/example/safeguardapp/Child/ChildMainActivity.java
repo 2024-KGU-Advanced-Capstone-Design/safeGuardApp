@@ -106,12 +106,18 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                     // mapFragment를 실행시 mapModeNav 보이게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.VISIBLE);
+                    // mapFragment를 실행시 나침반 보이게 설정
+                    CompassView compassView = findViewById(R.id.compass);
+                    compassView.setVisibility(View.VISIBLE);
                     return true;
                 } else if (item.getItemId() == R.id.setting) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, childSettingFragment).commit();
-                    // SettingFragment로 실행시 mapModeNav를 사라지게 설정
+                    // SettingFragment를 실행시 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.GONE);
+                    // SettingFragment를 실행시 나침반 안 보이게 설정
+                    CompassView compassView = findViewById(R.id.compass);
+                    compassView.setVisibility(View.GONE);
                     return true;
                 }
                 return false;
