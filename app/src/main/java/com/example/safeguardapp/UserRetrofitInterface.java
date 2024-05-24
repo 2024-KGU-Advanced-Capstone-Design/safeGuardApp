@@ -6,9 +6,12 @@ import com.example.safeguardapp.FindID.FindIDResponse;
 import com.example.safeguardapp.FindPW.CodeRequest;
 import com.example.safeguardapp.FindPW.EmailRequest;
 import com.example.safeguardapp.FindPW.ResetPwRequest;
+import com.example.safeguardapp.Group.AddHelperRequest;
+import com.example.safeguardapp.Group.AddParentRequest;
 import com.example.safeguardapp.Group.CheckChildID;
 import com.example.safeguardapp.Group.ChildDTO;
 import com.example.safeguardapp.Group.GetChildIDRequest;
+import com.example.safeguardapp.Group.RemoveHelperRequest;
 import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
 import com.example.safeguardapp.Group.GroupRemoveRequest;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
@@ -85,5 +88,14 @@ public interface UserRetrofitInterface {
 
     @POST("delete-area")
     Call<ResponseBody> deleteSector(@Body DeleteSectorRequest jsonUser);
+
+    @POST("add-parent")
+    Call<ResponseBody> addParent(@Body AddParentRequest request);
+
+    @POST("addhelper")
+    Call<ResponseBody> addHelper(@Body AddHelperRequest request);
+
+    @POST("helperremove")
+    Call<ResponseBody> removeHelper(@Body RemoveHelperRequest request);
 }
 

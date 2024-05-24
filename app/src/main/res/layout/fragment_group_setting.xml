@@ -40,6 +40,12 @@
             android:text="그룹 명 변경" />
 
         <Button
+            android:id="@+id/add_parent_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="보호자 추가" />
+
+        <Button
             android:id="@+id/add_aide_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
