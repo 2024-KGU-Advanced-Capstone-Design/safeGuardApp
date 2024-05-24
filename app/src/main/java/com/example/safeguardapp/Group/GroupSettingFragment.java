@@ -114,6 +114,7 @@ public class GroupSettingFragment extends Fragment {
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
         view.findViewById(R.id.change_name_button).setOnClickListener(v -> edit());
+        view.findViewById(R.id.add_parent_button).setOnClickListener(v-> addParent());
         view.findViewById(R.id.add_aide_button).setOnClickListener(v -> addAide());
         view.findViewById(R.id.selectZone_btn).setOnClickListener(v -> mapSectorSet());
         view.findViewById(R.id.child_id_find_button).setOnClickListener(v -> findChildID());
@@ -153,8 +154,24 @@ public class GroupSettingFragment extends Fragment {
             chip.setCheckable(false);
             chip.setText(id);
             chip.setOnCloseIconClickListener(v -> {
-                aideList.remove(id);
-                repository.editGroup(group);
+                RemoveHelperRequest removeHelperRequest = new RemoveHelperRequest(id, childID);
+                Call<ResponseBody> call = userRetrofitInterface.removeHelper(removeHelperRequest);
+
+                call.clone().enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.isSuccessful()){
+                            aideList.remove(id);
+                            repository.editGroup(group);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+
             });
 
             aideGroup.addView(chip);
@@ -194,9 +211,50 @@ public class GroupSettingFragment extends Fragment {
         msgDlg.show();
     }
 
+    private void addParent() {
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add, null);
+        EditText editText = dialogView.findViewById(R.id.id_edit_text);
+        Group newGroup = groupStream.getValue().get();
+        List<String> newAideList = newGroup.getAide();
+
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
+                .setTitle("보호자 추가")
+                .setView(dialogView)
+                .setPositiveButton("추가", (dialogInterface, i) -> {
+                    String id = editText.getText().toString().trim();
+                    if(id.equals(LoginPageFragment.saveID))
+                        Toast.makeText(getContext(), "본인은 추가할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    else if (newAideList.contains(id)) {
+                        Toast.makeText(getContext(), "이미 헬퍼에 추가되어 있습니다.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        AddParentRequest addParentRequest = new AddParentRequest(id,childID);
+                        Call<ResponseBody> call = userRetrofitInterface.addParent(addParentRequest);
+
+                        call.clone().enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if(response.isSuccessful()){
+                                    Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
+                                }else Toast.makeText(getContext(), "이미 추가된 아이디입니다.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+                    }
+
+                })
+                .setNegativeButton("취소", null);
+
+        AlertDialog msgDlg = msgBuilder.create();
+        msgDlg.show();
+    }
+
     //아이 조력자 추가
     private void addAide() {
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_aide, null);
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add, null);
         EditText editText = dialogView.findViewById(R.id.id_edit_text);
 
         AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
@@ -207,18 +265,34 @@ public class GroupSettingFragment extends Fragment {
                     if(id.equals(LoginPageFragment.saveID))
                         Toast.makeText(getContext(), "본인은 추가할 수 없습니다.", Toast.LENGTH_SHORT).show();
                     else {
-                        if (TextUtils.isEmpty(id)) return;
 
-                        Group group = groupStream.getValue().get();
-                        if (group.getAide().contains(id)) return;
+                        AddHelperRequest addHelperRequest = new AddHelperRequest(id, childID);
+                        Call<ResponseBody> call = userRetrofitInterface.addHelper(addHelperRequest);
 
-                        ArrayList<String> aideList = new ArrayList<>(group.getAide());
-                        aideList.add(id);
-                        group.setAide(aideList);
+                        call.clone().enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if(response.isSuccessful()){
+                                    if (TextUtils.isEmpty(id)) return;
 
-                        repository.editGroup(group);
+                                    Group group = groupStream.getValue().get();
+                                    if (group.getAide().contains(id)) return;
 
-                        Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
+                                    ArrayList<String> aideList = new ArrayList<>(group.getAide());
+                                    aideList.add(id);
+                                    group.setAide(aideList);
+
+                                    repository.editGroup(group);
+
+                                    Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
+                                }else Toast.makeText(getContext(), "이미 추가된 아이디입니다.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
                     }
 
                 })
