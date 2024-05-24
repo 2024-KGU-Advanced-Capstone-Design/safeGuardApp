@@ -13,6 +13,7 @@ import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
 import com.example.safeguardapp.Group.GroupRemoveRequest;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
 import com.example.safeguardapp.Group.ResetChildPWRequest;
+import com.example.safeguardapp.Group.Sector.DeleteSectorRequest;
 import com.example.safeguardapp.Group.Sector.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
@@ -81,5 +82,8 @@ public interface UserRetrofitInterface {
 
     @POST("find-child-list")
     Call<ResponseBody> getChildID(@Body GetChildIDRequest request);
+
+    @POST("delete-area")
+    Call<ResponseBody> deleteSector(@Body DeleteSectorRequest jsonUser);
 }
 

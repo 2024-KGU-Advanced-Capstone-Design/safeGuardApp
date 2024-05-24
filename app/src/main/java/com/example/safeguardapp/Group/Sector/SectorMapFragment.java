@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.safeguardapp.Group.GroupSettingFragment;
+import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
@@ -43,6 +44,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -81,7 +83,8 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> greenMarkerList = new ArrayList<>();
     private HashMap<Integer, InfoWindow> greenInfoWindowList = new HashMap<>();
     private HashMap<Integer, InfoWindow> redInfoWindowList = new HashMap<>();
-    private HashMap<String, PolygonOverlay> sectorPolygons = new HashMap<>();
+    private HashMap<String, PolygonOverlay> safeSectorPolygons = new HashMap<>();
+    private HashMap<String, PolygonOverlay> dangerSectorPolygons = new HashMap<>();
     private int greenIndex = 1;
     private int redIndex = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -409,58 +412,57 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
         Button greenSectorDeleteBtn = view.findViewById(R.id.green_sector_delete_btn);
         greenSectorDeleteBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.green_polygon_overlay_menu, popupMenu.getMenu());
 
                 // LinkedHashMap의 키 목록을 가져옴
-                List<String> keys = new ArrayList<>(sectorPolygons.keySet());
-                Log.e("POST", keys.get(0));
-                Log.e("POST", keys.get(1));
-                // keys가 비어있지 않을 때 메뉴에 항목 추가
-                if (keys != null && !keys.isEmpty()) {
+                List<String> keys = new ArrayList<>(safeSectorPolygons.keySet());
+
+                // 키 목록이 비어 있지 않을 때만 메뉴에 항목 추가
+                if (!keys.isEmpty()) {
                     for (int i = 0; i < keys.size(); i++) {
                         String key = keys.get(i);
-                        Log.e("POST", "Key: " + key); // 각 key를 로그에 출력
-                        if (sectorPolygons.containsKey(key)) {
-                            // 고유한 ID 생성
+                        if (safeSectorPolygons.containsKey(key)) {
                             popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "안전구역 " + key);
                         }
                     }
                 } else {
-                    Log.e("POST", "No keys found in sectorPolygons.");
+                    Log.e("POST", "No keys found in safeSectorPolygons.");
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int index = item.getItemId(); // 메뉴 항목의 인덱스 가져오기
-                        String selectedKey = keys.get(index); // 인덱스를 사용하여 키 가져오기
+                        if (index >= 0 && index < keys.size()) {
+                            String selectedKey = keys.get(index); // 인덱스를 사용하여 키 가져오기
 
-                        // 지도에서 PolygonOverlay 제거
-                        if (sectorPolygons.containsKey(selectedKey)) {
-                            sectorPolygons.get(selectedKey).setMap(null);
-                            sectorPolygons.remove(selectedKey);
+                            // 지도에서 PolygonOverlay 제거
+                            if (safeSectorPolygons.containsKey(selectedKey)) {
+                                safeSectorPolygons.get(selectedKey).setMap(null);
+                                safeSectorPolygons.remove(selectedKey);
+                            }
+
+                            // 지도에서 InfoWindow 제거
+                            if (greenInfoWindowList.containsKey(selectedKey)) {
+                                greenInfoWindowList.get(selectedKey).close();
+                                greenInfoWindowList.remove(selectedKey);
+                            }
+
+                            Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
+                            return true;
+                        } else {
+                            Log.e("POST", "Invalid index: " + index);
+                            return false;
                         }
-
-                        // 지도에서 InfoWindow 제거
-                        if (greenInfoWindowList.containsKey(selectedKey)) {
-                            greenInfoWindowList.get(selectedKey).close();
-                            greenInfoWindowList.remove(selectedKey);
-                        }
-
-                        Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
-                        return true;
                     }
                 });
 
                 popupMenu.show();
             }
         });
-
-
 
         Button redSectorDeleteBtn = view.findViewById(R.id.red_sector_delete_btn);
         redSectorDeleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -469,23 +471,64 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.red_polygon_overlay_menu, popupMenu.getMenu());
 
-                for (int i = 0; i < redIndex; i++) {
-                    if (redPolygonOverlays.size() != 0) {
-                        if (redPolygonOverlays.containsKey(i)) {
-                            popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + i);
+                // LinkedHashMap의 키 목록을 가져옴
+                List<String> keys = new ArrayList<>(dangerSectorPolygons.keySet());
+
+                // 키 목록이 비어 있지 않을 때만 메뉴에 항목 추가
+                if (!keys.isEmpty()) {
+                    for (int i = 0; i < keys.size(); i++) {
+                        String key = keys.get(i);
+                        if (dangerSectorPolygons.containsKey(key)) {
+                            popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, "위험구역 " + key);
                         }
                     }
+                } else {
+                    Log.e("POST", "No keys found in dangerSectorPolygons.");
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        int index = item.getItemId(); // 해당 PolygonOverlay를 선택하여 처리
-                        redPolygonOverlays.get(index).setMap(null); // 지도에서 PolygonOverlay 제거
-                        redPolygonOverlays.remove(index);
-                        redInfoWindowList.get(index).close(); // 지도에서 infoWindow 닫기
-                        redInfoWindowList.remove(index);
-                        return true;
+                        int index = item.getItemId(); // 메뉴 항목의 인덱스 가져오기
+                        if (index >= 0 && index < keys.size()) {
+                            String selectedKey = keys.get(index); // 인덱스를 사용하여 키 가져오기
+
+                            DeleteSectorRequest deleteSectorDTO = new DeleteSectorRequest(selectedKey, childName, LoginPageFragment.saveID);
+                            Call<ResponseBody> call = userRetrofitInterface.deleteSector(deleteSectorDTO);
+
+                            call.enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        // 지도에서 PolygonOverlay 제거
+                                        if (dangerSectorPolygons.containsKey(selectedKey)) {
+                                            dangerSectorPolygons.get(selectedKey).setMap(null);
+                                            dangerSectorPolygons.remove(selectedKey);
+                                        }
+
+                                        // 지도에서 InfoWindow 제거
+                                        if (redInfoWindowList.containsKey(selectedKey)) {
+                                            redInfoWindowList.get(selectedKey).close();
+                                            redInfoWindowList.remove(selectedKey);
+                                        }
+
+                                        Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
+                                    } else {
+                                        Log.e("POST", "Failed to delete sector on server." + response.code());
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Log.e("POST", "Failed to communicate with server: " + t.getMessage());
+                                }
+                            });
+
+                            return true;
+                        } else {
+                            Log.e("POST", "Invalid index: " + index);
+                            return false;
+                        }
                     }
                 });
 
@@ -493,91 +536,94 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+
+
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
-                transaction.commit();
+                    @Override
+                    public void handleOnBackPressed() {
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
+                        transaction.commit();
+                    }
+                });
             }
-        });
-    }
 
-    private void sectorInquire() {
-        final Gson gson = new Gson();
+            private void sectorInquire() {
+                final Gson gson = new Gson();
 
-        // 요청 JSON 로그 출력
-        SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childName);
-        String requestJson = gson.toJson(sectorInquireDTO);
-        Log.e("Request JSON", requestJson);
+                // 요청 JSON 로그 출력
+                SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childName);
+                String requestJson = gson.toJson(sectorInquireDTO);
+                Log.e("Request JSON", requestJson);
 
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
-        Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    LinkedHashMap<String, SectorDetails> sectors = new LinkedHashMap<>();
-                    try {
-                        JSONObject json = new JSONObject(response.body().string());
+                RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
+                Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            LinkedHashMap<String, SectorDetails> sectors = new LinkedHashMap<>();
+                            try {
+                                JSONObject json = new JSONObject(response.body().string());
 
-                        for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
-                            String key = keys.next();
+                                for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                                    String key = keys.next();
 
-                            SectorDetails sector = gson.fromJson(json.getJSONObject(key).toString(), SectorDetails.class);
-                            sectors.put(key, sector);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
-                    }
+                                    SectorDetails sector = gson.fromJson(json.getJSONObject(key).toString(), SectorDetails.class);
+                                    sectors.put(key, sector);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return;
+                            }
 
-                    if (sectors.isEmpty()) {
-                        Log.e("SectorInquire", "No sectors found or sectorResponse is null");
-                        return;
-                    }
+                            if (sectors.isEmpty()) {
+                                Log.e("SectorInquire", "No sectors found or sectorResponse is null");
+                                return;
+                            }
 
-                    for (Map.Entry<String, SectorDetails> entry : sectors.entrySet()) {
-                        String coordinateId = entry.getKey(); // 키 값 저장
-                        SectorDetails details = entry.getValue();
-                        boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
+                            for (Map.Entry<String, SectorDetails> entry : sectors.entrySet()) {
+                                String coordinateId = entry.getKey(); // 키 값 저장
+                                SectorDetails details = entry.getValue();
+                                boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
 
-                        // 로그 출력
-                        Log.e("Coordinate ID", coordinateId);
+                                // 로그 출력
+                                Log.e("Coordinate ID", coordinateId);
 
-                        // 좌표를 가져와서 LatLng 리스트를 생성합니다.
-                        List<LatLng> polygonCoords = new ArrayList<>();
-                        polygonCoords.add(new LatLng(details.getYofPointA(), details.getXofPointA()));
-                        polygonCoords.add(new LatLng(details.getYofPointB(), details.getXofPointB()));
-                        polygonCoords.add(new LatLng(details.getYofPointC(), details.getXofPointC()));
-                        polygonCoords.add(new LatLng(details.getYofPointD(), details.getXofPointD()));
+                                // 좌표를 가져와서 LatLng 리스트를 생성합니다.
+                                List<LatLng> polygonCoords = new ArrayList<>();
+                                polygonCoords.add(new LatLng(details.getYofPointA(), details.getXofPointA()));
+                                polygonCoords.add(new LatLng(details.getYofPointB(), details.getXofPointB()));
+                                polygonCoords.add(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                                polygonCoords.add(new LatLng(details.getYofPointD(), details.getXofPointD()));
 
-                        // 폴리곤 오버레이 생성
-                        PolygonOverlay polygonOverlay = new PolygonOverlay();
-                        polygonOverlay.setCoords(polygonCoords);
+                                // 폴리곤 오버레이 생성
+                                PolygonOverlay polygonOverlay = new PolygonOverlay();
+                                polygonOverlay.setCoords(polygonCoords);
 
-                        // 색상 설정
-                        if (isLiving) {
-                            polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 초록색
+                                // 색상 설정
+                                if (isLiving) {
+                                    polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 초록색
+                                    safeSectorPolygons.put(coordinateId, polygonOverlay);
+                                } else {
+                                    polygonOverlay.setColor(Color.argb(75, 100, 0, 0)); // 빨간색
+                                    dangerSectorPolygons.put(coordinateId, polygonOverlay);
+                                }
+
+                                // 폴리곤을 지도에 추가
+                                polygonOverlay.setMap(mNaverMap);
+                            }
                         } else {
-                            polygonOverlay.setColor(Color.argb(75, 100, 0, 0)); // 빨간색
+                            // 응답 본문이 null일 때 처리
+                            Log.e("SectorInquire", "Response body is null");
                         }
-
-                        // 폴리곤을 지도에 추가
-                        polygonOverlay.setMap(mNaverMap);
-                        sectorPolygons.put(coordinateId, polygonOverlay);
                     }
-                } else {
-                    // 응답 본문이 null일 때 처리
-                    Log.e("SectorInquire", "Response body is null");
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // 요청 실패 처리
-                Log.e("SectorInquire", "Request failed", t);
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        // 요청 실패 처리
+                        Log.e("SectorInquire", "Request failed", t);
+                    }
+                });
             }
-        });
-    }
-}
+        }
