@@ -11,6 +11,7 @@ import com.example.safeguardapp.Group.AddParentRequest;
 import com.example.safeguardapp.Group.CheckChildID;
 import com.example.safeguardapp.Group.ChildDTO;
 import com.example.safeguardapp.Group.GetChildIDRequest;
+import com.example.safeguardapp.Group.GetMemberIDRequest;
 import com.example.safeguardapp.Group.RemoveHelperRequest;
 import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
 import com.example.safeguardapp.Group.GroupRemoveRequest;
@@ -86,6 +87,9 @@ public interface UserRetrofitInterface {
     @POST("find-child-list")
     Call<ResponseBody> getChildID(@Body GetChildIDRequest request);
 
+    @POST("find-member")
+    Call<ResponseBody> getMemberID(@Body GetMemberIDRequest request);
+
     @POST("delete-area")
     Call<ResponseBody> deleteSector(@Body DeleteSectorRequest jsonUser);
 
@@ -98,4 +102,3 @@ public interface UserRetrofitInterface {
     @POST("helperremove")
     Call<ResponseBody> removeHelper(@Body RemoveHelperRequest request);
 }
-

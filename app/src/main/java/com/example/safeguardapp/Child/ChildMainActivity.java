@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.safeguardapp.Group.GetMemberIDRequest;
 import com.example.safeguardapp.Group.Sector.SectorDetails;
 import com.example.safeguardapp.Group.Sector.SectorInquireRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
@@ -75,6 +76,8 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private boolean doubleBackToExitPressedOnce = false;
     private Intent serviceIntent;
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
+//    private Handler handler;
+//    private Runnable updateMarkerRunnable;
 
 
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -132,6 +135,53 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
         Boolean isAutoLogin = sharedPreferences2.getBoolean("autoLogin", false);
 
+//        handler = new Handler(Looper.getMainLooper());
+//
+//        String childID = LoginPageFragment.saveID;
+//        GetMemberIDRequest childIDDTO = new GetMemberIDRequest(childID);
+//        Gson gson = new Gson();
+//        String childInfo = gson.toJson(childIDDTO);
+//        Log.e("JSON", childInfo);
+//
+//        Call<ResponseBody> memberCall = userRetrofitInterface.getMemberID(childIDDTO);
+//        memberCall.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                if(response.isSuccessful() && response.body() != null){
+//                    Log.e("POST", "응답성공");
+//                    try {
+//                        // 응답 본문을 문자열로 변환
+//                        String responseBodyString = response.body().string();
+//                        JSONObject json = new JSONObject(responseBodyString);
+//                        Log.e("Response JSON", json.toString());
+//                        Log.e("POST", "응답성공");
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    Log.e("getMemberID", "Response body is null or request failed");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                t.printStackTrace();
+//                Log.e("getMemberID", "Request failed", t);
+//            }
+//        });
+//
+//        // 마커를 업데이트하는 Runnable 정의
+//        updateMarkerRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                getMemberLocation();
+//                handler.postDelayed(this, 2000); // 2초마다 실행
+//            }
+//        };
+//
+//        // 주기적인 마커 업데이트 시작
+//        handler.post(updateMarkerRunnable);
+//
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationService();
@@ -238,6 +288,12 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    //    private void getMemberLocation() {
+//        String getMemberId = "";
+//        String type = "Member";
+//
+//    }
+//
     private void sectorInquire() {
         final Gson gson = new Gson();
 
