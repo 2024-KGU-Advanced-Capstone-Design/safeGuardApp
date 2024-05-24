@@ -70,6 +70,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1, mParam2;
+    private Marker marker;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
@@ -202,7 +203,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
 
                     mNaverMap.setOnMapClickListener((point, coord) -> {
 
-                        Marker marker = new Marker();
+                        marker = new Marker();
                         greenMarkerList.add(marker);
                         marker.setPosition(coord);
                         marker.setIcon(MarkerIcons.BLACK);
@@ -213,6 +214,10 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         greenMarkerList.add(marker);
 
                         if (polygonPoints.size() == 4) {
+                            for (Marker eraseMarker : greenMarkerList) {
+                                eraseMarker.setMap(null);
+                            }
+                            greenMarkerList.clear();
                             sortPointsCounterClockwise(); // 점들을 정렬
                             PolygonOverlay polygonOverlay = new PolygonOverlay();
                             polygonOverlay.setCoords(polygonPoints);
@@ -220,23 +225,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             polygonOverlay.setMap(mNaverMap);
                             Toast.makeText(getContext(), "안전구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
 
-                            InfoWindow infoWindow = new InfoWindow();
-                            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-                                @NonNull
-                                @Override
-                                public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                                    return "안전구역 " + greenIndex;
-                                }
-                            });
-                            infoWindow.open(marker);
-                            infoWindow.setPosition(new LatLng(polygonPoints.get(2).latitude, polygonPoints.get(2).longitude));
-                            infoWindow.open(mNaverMap);
-                            greenInfoWindowList.put(greenIndex, infoWindow);
 
-                            for (Marker eraseMarker : greenMarkerList) {
-                                eraseMarker.setMap(null);
-                            }
-                            greenPolygonOverlays.put(greenIndex, polygonOverlay);
 
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
@@ -263,7 +252,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     if (response.isSuccessful()) {
                                         Log.e("POST", "전달 성공");
-                                        // 응답 본문 로그 추가
+                                        sectorInquire();
                                         try {
                                             String responseBody = response.body().string();
                                             Log.e("POST", "Response Body: " + responseBody);
@@ -287,11 +276,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                     Log.e("POST", "통신 실패", t);
                                 }
                             });
-
-
-                            greenIndex++;
                             polygonPoints.clear();
-                            greenMarkerList.clear();
                         }
                     });
                 }
@@ -326,30 +311,16 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                         polygonPoints.add(coord);
 
                         if (polygonPoints.size() == 4) {
+                            for (Marker eraseMarker : redMarkerList) {
+                                eraseMarker.setMap(null);
+                            }
+                            redMarkerList.clear();
                             sortPointsCounterClockwise(); // 점들을 정렬
                             PolygonOverlay polygonOverlay = new PolygonOverlay();
                             polygonOverlay.setCoords(polygonPoints);
                             polygonOverlay.setColor(Color.argb(75, 100, 0, 0));
                             polygonOverlay.setMap(mNaverMap);
                             Toast.makeText(getContext(), "위험구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
-
-                            InfoWindow infoWindow = new InfoWindow();
-                            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-                                @NonNull
-                                @Override
-                                public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                                    return "위험구역 " + redIndex;
-                                }
-                            });
-                            infoWindow.open(marker);
-                            infoWindow.setPosition(new LatLng(polygonPoints.get(2).latitude, polygonPoints.get(2).longitude));
-                            infoWindow.open(mNaverMap);
-                            redInfoWindowList.put(redIndex, infoWindow);
-
-                            for (Marker eraseMarker : redMarkerList) {
-                                eraseMarker.setMap(null);
-                            }
-                            redPolygonOverlays.put(redIndex, polygonOverlay);
 
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
@@ -377,6 +348,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                     if (response.isSuccessful()) {
                                         Log.e("POST", "전달 성공");
                                         // 응답 본문 로그 추가
+                                        sectorInquire();
                                         try {
                                             String responseBody = response.body().string();
                                             Log.e("POST", "Response Body: " + responseBody);
@@ -401,9 +373,7 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                 }
                             });
 
-                            redIndex++;
                             polygonPoints.clear();
-                            redMarkerList.clear();
                         }
                     });
                 }
@@ -622,9 +592,37 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                 // 색상 설정
                                 if (isLiving) {
                                     polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 초록색
+                                    InfoWindow infoWindow = new InfoWindow();
+                                    infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                                        @NonNull
+                                        @Override
+                                        public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                            return "안전구역 " + coordinateId;
+                                        }
+                                    });
+                                    infoWindow.open(marker);
+                                    infoWindow.setPosition(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                                    infoWindow.open(mNaverMap);
+
+                                    greenInfoWindowList.put(Integer.valueOf(coordinateId), infoWindow);
+                                    greenPolygonOverlays.put(Integer.valueOf(coordinateId), polygonOverlay);
                                     safeSectorPolygons.put(coordinateId, polygonOverlay);
                                 } else {
                                     polygonOverlay.setColor(Color.argb(75, 100, 0, 0)); // 빨간색
+                                    InfoWindow infoWindow = new InfoWindow();
+                                    infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                                        @NonNull
+                                        @Override
+                                        public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                            return "위험구역 " + coordinateId;
+                                        }
+                                    });
+                                    infoWindow.open(marker);
+                                    infoWindow.setPosition(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                                    infoWindow.open(mNaverMap);
+
+                                    redInfoWindowList.put(Integer.valueOf(coordinateId), infoWindow);
+                                    redPolygonOverlays.put(Integer.valueOf(coordinateId), polygonOverlay);
                                     dangerSectorPolygons.put(coordinateId, polygonOverlay);
                                 }
 
