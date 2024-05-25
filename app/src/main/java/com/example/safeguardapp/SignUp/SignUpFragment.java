@@ -24,6 +24,7 @@ import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
@@ -80,6 +81,9 @@ public class SignUpFragment extends Fragment {
         spacePW = view.findViewById(R.id.X_space_PW);
         checkID = view.findViewById(R.id.checkID);
         isIDnull = view.findViewById(R.id.isIDnull);
+
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> previous());
     }
 
     private void setupListeners() {
@@ -106,7 +110,6 @@ public class SignUpFragment extends Fragment {
                     isIDValid = false;
                     spaceID.setVisibility(View.INVISIBLE);
                     isIDnull.setVisibility(View.VISIBLE);
-                    checkID.setBackground(getResources().getDrawable(R.drawable.signup_button_grey_version));
                 }
                 else {
                     isIDnull.setVisibility(View.INVISIBLE);
@@ -114,12 +117,10 @@ public class SignUpFragment extends Fragment {
                         isSpaceIDValid = false;
                         checkID.setEnabled(false);
                         spaceID.setVisibility(View.VISIBLE);
-                        checkID.setBackground(getResources().getDrawable(R.drawable.signup_button_grey_version));
                     } else {
                         isSpaceIDValid = true;
                         checkID.setEnabled(true);
                         spaceID.setVisibility(View.INVISIBLE);
-                        checkID.setBackground(getResources().getDrawable(R.drawable.signup_button_blue_version));
                     }
                     updateSignUpButtonState();
                 }
@@ -269,7 +270,6 @@ public class SignUpFragment extends Fragment {
     // 회원 가입 버튼 활성화 및 비활성화 메서드
     private void updateSignUpButtonState() {
         signUp_btn.setEnabled(isEmailValid && isPasswordValid && isPasswordMatch && isNameValid && isIDValid && isSpaceIDValid && isSpacePWValid);
-        signUp_btn.setBackground(getResources().getDrawable(signUp_btn.isEnabled() ? R.drawable.signup_button_blue_version : R.drawable.signup_button_grey_version));
     }
 
     // 유효한 이메일 주소
@@ -303,11 +303,16 @@ public class SignUpFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // 뒤로 가기 시 실행되는 코드
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new LoginPageFragment());
-                transaction.commit();
+                // 뒤로 가기 시 실행되는
+                previous();
+
             }
         });
+    }
+
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.start_activity, new LoginPageFragment());
+        transaction.commit();
     }
 }
