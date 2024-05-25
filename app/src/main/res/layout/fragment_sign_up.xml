@@ -16,12 +16,12 @@
             android:id="@+id/signup_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="회원 가입하기"
-            android:textSize="24sp"
-            android:textStyle="bold"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            android:text="회원 가입하기"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/name_signup"
@@ -62,15 +62,18 @@
                 android:textSize="13sp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/signup_edittext_design" />
-            <Button
+
+            <android.widget.Button
                 android:id="@+id/checkID"
                 android:layout_width="80dp"
-                android:layout_height="match_parent"
+                android:layout_height="36dp"
+                android:layout_gravity="end"
+                android:layout_marginVertical="8.5dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/signup_button_grey_version"
+                android:enabled="false"
                 android:text="중복 확인"
-                android:textSize="13sp"
-                android:paddingHorizontal="0dp"
-                android:layout_marginVertical="0dp"
-                android:layout_gravity="end"/>
+                android:textSize="12sp" />
         </FrameLayout>
         <FrameLayout
             android:layout_width="match_parent"
@@ -99,6 +102,14 @@
                 android:layout_height="wrap_content"
                 android:text="사용 가능한 아이디 입니다."
                 android:textColor="#329632"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+            <TextView
+                android:id="@+id/isIDnull"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="아이디를 입력해주세요."
+                android:textColor="#ff0000"
                 android:textSize="12sp"
                 android:visibility="invisible" />
         </FrameLayout>
@@ -243,6 +254,7 @@
                 android:textSize="16sp"
                 android:background="@drawable/signup_button_grey_version"
                 android:layout_weight="1"
+                android:textColor="@color/black"
                 />
             <TextView
                 android:layout_width="wrap_content"

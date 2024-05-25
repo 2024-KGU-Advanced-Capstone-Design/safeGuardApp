@@ -34,7 +34,7 @@ import retrofit2.Response;
 
 public class SignUpFragment extends Fragment {
     private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
-    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2, spaceID, spacePW, X_CheckID, O_CheckID;
+    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2, spaceID, spacePW, X_CheckID, O_CheckID, isIDnull;
     private Button signUp_btn, cancel_btn, checkID;
 
     // 회원 가입 버튼 활성화 조건들의 변수 선언
@@ -79,6 +79,7 @@ public class SignUpFragment extends Fragment {
         spaceID = view.findViewById(R.id.X_space_ID);
         spacePW = view.findViewById(R.id.X_space_PW);
         checkID = view.findViewById(R.id.checkID);
+        isIDnull = view.findViewById(R.id.isIDnull);
     }
 
     private void setupListeners() {
@@ -97,15 +98,31 @@ public class SignUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String inputID = editable.toString();
-                if (inputID.contains(" ")) {
-                    isSpaceIDValid = false;
-                    spaceID.setVisibility(View.VISIBLE);
-                } else {
-                    isSpaceIDValid = true;
+                O_CheckID.setVisibility(View.INVISIBLE);
+                X_CheckID.setVisibility(View.INVISIBLE);
+                isIDValid = false;
+                if(inputID.isEmpty()) {
+                    checkID.setEnabled(false);
+                    isIDValid = false;
                     spaceID.setVisibility(View.INVISIBLE);
+                    isIDnull.setVisibility(View.VISIBLE);
+                    checkID.setBackground(getResources().getDrawable(R.drawable.signup_button_grey_version));
                 }
-                isIDValid = editable.length() > 0;
-                updateSignUpButtonState();
+                else {
+                    isIDnull.setVisibility(View.INVISIBLE);
+                    if (inputID.contains(" ")) {
+                        isSpaceIDValid = false;
+                        checkID.setEnabled(false);
+                        spaceID.setVisibility(View.VISIBLE);
+                        checkID.setBackground(getResources().getDrawable(R.drawable.signup_button_grey_version));
+                    } else {
+                        isSpaceIDValid = true;
+                        checkID.setEnabled(true);
+                        spaceID.setVisibility(View.INVISIBLE);
+                        checkID.setBackground(getResources().getDrawable(R.drawable.signup_button_blue_version));
+                    }
+                    updateSignUpButtonState();
+                }
             }
         });
 
@@ -227,9 +244,17 @@ public class SignUpFragment extends Fragment {
                 call.clone().enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        spaceID.setVisibility(View.INVISIBLE);
+                        isIDnull.setVisibility(View.INVISIBLE);
                         if (response.isSuccessful()) {
                             O_CheckID.setVisibility(View.VISIBLE);
-                        } else X_CheckID.setVisibility(View.VISIBLE);
+                            isIDValid = true;
+                            updateSignUpButtonState();
+                        } else {
+                            X_CheckID.setVisibility(View.VISIBLE);
+                            isIDValid = false;
+                            updateSignUpButtonState();
+                        }
                     }
 
                     @Override
