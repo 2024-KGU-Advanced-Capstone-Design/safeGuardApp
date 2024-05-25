@@ -226,7 +226,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             Toast.makeText(getContext(), "안전구역이 지정되었습니다.", Toast.LENGTH_SHORT).show();
 
 
-
                             //retrofit 데이터 전송
                             double xOfPointA, xOfPointB, xOfPointC, xOfPointD, yOfPointA, yOfPointB, yOfPointC, yOfPointD;
 
@@ -525,121 +524,104 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
-                        transaction.commit();
-                    }
-                });
+            @Override
+            public void handleOnBackPressed() {
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
+                transaction.commit();
             }
+        });
+    }
 
-            private void sectorInquire() {
-                final Gson gson = new Gson();
+    private void sectorInquire() {
+        final Gson gson = new Gson();
 
-                // 요청 JSON 로그 출력
-                SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childName);
-                String requestJson = gson.toJson(sectorInquireDTO);
-                Log.e("Request JSON", requestJson);
+        // 요청 JSON 로그 출력
+        SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childName);
+        String requestJson = gson.toJson(sectorInquireDTO);
+        Log.e("Request JSON", requestJson);
 
-                RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
-                Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            LinkedHashMap<String, SectorDetails> sectors = new LinkedHashMap<>();
-                            try {
-                                JSONObject json = new JSONObject(response.body().string());
-
-                                for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
-                                    String key = keys.next();
-
-                                    SectorDetails sector = gson.fromJson(json.getJSONObject(key).toString(), SectorDetails.class);
-                                    sectors.put(key, sector);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return;
-                            }
-
-                            if (sectors.isEmpty()) {
-                                Log.e("SectorInquire", "No sectors found or sectorResponse is null");
-                                return;
-                            }
-
-                            for (Map.Entry<String, SectorDetails> entry : sectors.entrySet()) {
-                                String coordinateId = entry.getKey(); // 키 값 저장
-                                SectorDetails details = entry.getValue();
-                                boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
-
-                                // 로그 출력
-                                Log.e("Coordinate ID", coordinateId);
-
-                                // 좌표를 가져와서 LatLng 리스트를 생성합니다.
-                                List<LatLng> polygonCoords = new ArrayList<>();
-                                polygonCoords.add(new LatLng(details.getYofPointA(), details.getXofPointA()));
-                                polygonCoords.add(new LatLng(details.getYofPointB(), details.getXofPointB()));
-                                polygonCoords.add(new LatLng(details.getYofPointC(), details.getXofPointC()));
-                                polygonCoords.add(new LatLng(details.getYofPointD(), details.getXofPointD()));
-
-                                // 폴리곤 오버레이 생성
-                                PolygonOverlay polygonOverlay = new PolygonOverlay();
-                                polygonOverlay.setCoords(polygonCoords);
-
-                                // 색상 설정
-                                if (isLiving) {
-                                    polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 초록색
-                                    InfoWindow infoWindow = new InfoWindow();
-                                    infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-                                        @NonNull
-                                        @Override
-                                        public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                                            return "안전구역 " + coordinateId;
-                                        }
-                                    });
-                                    infoWindow.open(marker);
-                                    infoWindow.setPosition(new LatLng(details.getYofPointC(), details.getXofPointC()));
-                                    infoWindow.open(mNaverMap);
-
-                                    greenInfoWindowList.put(Integer.valueOf(coordinateId), infoWindow);
-                                    greenPolygonOverlays.put(Integer.valueOf(coordinateId), polygonOverlay);
-                                    safeSectorPolygons.put(coordinateId, polygonOverlay);
-                                } else {
-                                    polygonOverlay.setColor(Color.argb(75, 100, 0, 0)); // 빨간색
-                                    InfoWindow infoWindow = new InfoWindow();
-                                    infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-                                        @NonNull
-                                        @Override
-                                        public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                                            return "위험구역 " + coordinateId;
-                                        }
-                                    });
-                                    infoWindow.open(marker);
-                                    infoWindow.setPosition(new LatLng(details.getYofPointC(), details.getXofPointC()));
-                                    infoWindow.open(mNaverMap);
-
-                                    redInfoWindowList.put(Integer.valueOf(coordinateId), infoWindow);
-                                    redPolygonOverlays.put(Integer.valueOf(coordinateId), polygonOverlay);
-                                    dangerSectorPolygons.put(coordinateId, polygonOverlay);
-                                }
-
-                                // 폴리곤을 지도에 추가
-                                polygonOverlay.setMap(mNaverMap);
-                            }
-                        } else {
-                            // 응답 본문이 null일 때 처리
-                            Log.e("SectorInquire", "Response body is null");
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
+        Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    LinkedHashMap<String, SectorDetails> sectors = new LinkedHashMap<>();
+                    try {
+                        JSONObject json = new JSONObject(response.body().string());
+                        for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                            String key = keys.next();
+                            SectorDetails sector = gson.fromJson(json.getJSONObject(key).toString(), SectorDetails.class);
+                            sectors.put(key, sector);
                         }
+                    } catch (Exception e) {
+                        Log.e("SectorInquire", "JSON Parsing Error", e);
+                        return;
                     }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        // 요청 실패 처리
-                        Log.e("SectorInquire", "Request failed", t);
+                    if (sectors.isEmpty()) {
+                        Log.e("SectorInquire", "No sectors found or sectorResponse is null");
+                        return;
                     }
-                });
+
+                    getActivity().runOnUiThread(() -> {
+                        for (Map.Entry<String, SectorDetails> entry : sectors.entrySet()) {
+                            String coordinateId = entry.getKey();
+                            SectorDetails details = entry.getValue();
+                            boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
+
+                            Log.e("Coordinate ID", coordinateId);
+
+                            List<LatLng> polygonCoords = new ArrayList<>();
+                            polygonCoords.add(new LatLng(details.getYofPointA(), details.getXofPointA()));
+                            polygonCoords.add(new LatLng(details.getYofPointB(), details.getXofPointB()));
+                            polygonCoords.add(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                            polygonCoords.add(new LatLng(details.getYofPointD(), details.getXofPointD()));
+
+                            PolygonOverlay polygonOverlay = new PolygonOverlay();
+                            polygonOverlay.setCoords(polygonCoords);
+
+                            InfoWindow infoWindow = new InfoWindow();
+                            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                                @NonNull
+                                @Override
+                                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                    return (isLiving ? "안전구역 " : "위험구역 ") + coordinateId;
+                                }
+                            });
+
+                            if (isLiving) {
+                                polygonOverlay.setColor(Color.argb(75, 0, 100, 0)); // 초록색
+                                infoWindow.setPosition(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                                infoWindow.open(mNaverMap);
+                                greenInfoWindowList.put(Integer.valueOf(coordinateId), infoWindow);
+                                greenPolygonOverlays.put(Integer.valueOf(coordinateId), polygonOverlay);
+                                safeSectorPolygons.put(coordinateId, polygonOverlay);
+                            } else {
+                                polygonOverlay.setColor(Color.argb(75, 100, 0, 0)); // 빨간색
+                                infoWindow.setPosition(new LatLng(details.getYofPointC(), details.getXofPointC()));
+                                infoWindow.open(mNaverMap);
+                                redInfoWindowList.put(Integer.valueOf(coordinateId), infoWindow);
+                                redPolygonOverlays.put(Integer.valueOf(coordinateId), polygonOverlay);
+                                dangerSectorPolygons.put(coordinateId, polygonOverlay);
+                            }
+
+                            // 폴리곤을 지도에 추가
+                            polygonOverlay.setMap(mNaverMap);
+                        }
+                    });
+
+                } else {
+                    Log.e("SectorInquire", "Response body is null or response unsuccessful");
+                }
             }
-        }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("SectorInquire", "Request failed", t);
+            }
+        });
+    }
+}
