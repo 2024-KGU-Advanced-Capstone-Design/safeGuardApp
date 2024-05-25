@@ -1,57 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/findIDToName"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:hint="이름을 입력해주세요"
-        android:inputType="textEmailAddress" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/findIDToEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="이메일을 입력해주세요"
-        android:inputType="textEmailAddress" />
-
-    <TextView
-        android:id="@+id/Check_Info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="이름과 이메일을 확인해주세요"
-        android:textColor="#ff0000"
-        android:textSize="12sp"
-        android:visibility="invisible" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp">
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <android.widget.Button
-            android:id="@+id/cancel_btn"
+        <EditText
+            android:id="@+id/findIDToName"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/signup_edittext_design"
+            android:hint="이름을 입력해주세요"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/findIDToEmail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="25dp"
+            android:hint="이메일을 입력해주세요"
+            android:background="@drawable/signup_edittext_design"
+            android:inputType="textEmailAddress" />
+
+        <TextView
+            android:id="@+id/Check_Info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="취소"
-            android:layout_weight="1"/>
+            android:text="이름과 이메일을 확인해주세요"
+            android:textColor="#ff0000"
+            android:textSize="12sp"
+            android:visibility="invisible" />
 
-        <android.widget.Button
-            android:id="@+id/find_btn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="아이디 찾기"
-            android:layout_weight="1"/>
+            android:layout_marginTop="12dp">
 
+            <android.widget.Button
+                android:id="@+id/cancel_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/signup_button_grey_version"
+                android:text="취소"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"/>
+
+
+            <android.widget.Button
+                android:id="@+id/find_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/signup_button_blue_version"
+                android:text="아이디 찾기" />
+
+        </LinearLayout>
     </LinearLayout>
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        app:title="아이디 찾기"
+        app:titleCentered="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@+id/appBarLayout"
+        app:layout_anchorGravity="center"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
