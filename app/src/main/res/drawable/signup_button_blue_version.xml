@@ -4,5 +4,4 @@
     <solid android:color="#0088E7" /> <!-- 수정: 버튼의 배경 색상 -->
     <padding android:left="0dp" android:top="0dp" android:right="0dp" android:bottom="0dp" />
     <size android:width="130dp" android:height="45dp" />
-    <stroke android:width="1.5dp" android:color="#183AB5" />
 </shape>

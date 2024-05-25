@@ -25,6 +25,7 @@ import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.SignUp.SignUpFragment;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -55,6 +56,9 @@ public class FindPWCertificationFragment extends Fragment {
         findPWToID = view.findViewById(R.id.findPWToID);
         cancel_btn = view.findViewById(R.id.cancel_btn);
         send_ANumber_btn = view.findViewById(R.id.send_ANumber_btn);
+
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> previous());
     }
 
     private void setupListeners() {
@@ -188,9 +192,7 @@ public class FindPWCertificationFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new LoginPageFragment());
-                transaction.commit();
+                previous();
             }
         });
     }
@@ -206,5 +208,11 @@ public class FindPWCertificationFragment extends Fragment {
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+    }
+
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.start_activity, new LoginPageFragment());
+        transaction.commit();
     }
 }

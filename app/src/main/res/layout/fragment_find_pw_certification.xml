@@ -1,43 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:layout_marginTop="150dp"
-    android:id="@+id/findPWFragment">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/findPWToID"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="아이디를 입력해주세요"
-        android:inputType="textEmailAddress" />
+        android:layout_height="wrap_content">
 
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            app:titleCentered="true"
+            app:title="비밀번호 찾기"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="?attr/homeAsUpIndicator" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp">
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <android.widget.Button
-            android:id="@+id/cancel_btn"
+        <EditText
+            android:id="@+id/findPWToID"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="아이디를 입력해주세요"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/signup_edittext_design"/>
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="취소"
-            android:layout_weight="1"/>
+            android:layout_marginTop="24dp">
 
-        <android.widget.Button
-            android:id="@+id/send_ANumber_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="인증번호 전송"
-            android:layout_weight="1"
-            android:enabled="false"/>
+            <android.widget.Button
+                android:id="@+id/cancel_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/signup_button_grey_version"
+                android:layout_weight="1"
+                android:text="취소"
+                android:textSize="18dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"/>
 
+            <android.widget.Button
+                android:id="@+id/send_ANumber_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:background="@drawable/signup_button_blue_version"
+                android:text="인증번호 전송"
+                android:textSize="18dp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
