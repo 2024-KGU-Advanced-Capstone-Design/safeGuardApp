@@ -1,10 +1,6 @@
 package com.example.safeguardapp.Map;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.HashMap;
-
-public class ChildLocationResponse {
+public class LocationResponse {
 
     private double latitude;
     private double longitude;

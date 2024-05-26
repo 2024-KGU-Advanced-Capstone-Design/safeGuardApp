@@ -21,8 +21,8 @@ import com.example.safeguardapp.Group.Sector.DeleteSectorRequest;
 import com.example.safeguardapp.Group.Sector.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
-import com.example.safeguardapp.Map.ChildLocationRequest;
-import com.example.safeguardapp.Map.ChildLocationResponse;
+import com.example.safeguardapp.Map.LocationRequest;
+import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
@@ -79,7 +79,10 @@ public interface UserRetrofitInterface {
     Call<ResponseBody> sendLocation(@Body LocationSendRequest locationSendRequest);
 
     @POST("return-coordinate")
-    Call<ChildLocationResponse> getChildLocation(@Body ChildLocationRequest childLocationRequest);
+    Call<LocationResponse> getLocation(@Body LocationRequest locationRequest);
+
+//    @POST("return-coordinate")
+//    Call<MemberLocationResponse> getMemberLocation(@Body MemberLocationRequest memberLocationRequest);
 
     @POST("read-areas")
     Call<ResponseBody> getSectorLocation(@Body RequestBody body);
@@ -87,7 +90,7 @@ public interface UserRetrofitInterface {
     @POST("find-child-list")
     Call<ResponseBody> getChildID(@Body GetChildIDRequest request);
 
-    @POST("find-member")
+    @POST("find-member-by-child")
     Call<ResponseBody> getMemberID(@Body GetMemberIDRequest request);
 
     @POST("delete-area")

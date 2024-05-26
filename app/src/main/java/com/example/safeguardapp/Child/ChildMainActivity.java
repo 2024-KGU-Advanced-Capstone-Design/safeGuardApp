@@ -32,7 +32,8 @@ import com.example.safeguardapp.Group.GetMemberIDRequest;
 import com.example.safeguardapp.Group.Sector.SectorDetails;
 import com.example.safeguardapp.Group.Sector.SectorInquireRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
-import com.example.safeguardapp.MainActivity;
+import com.example.safeguardapp.Map.LocationRequest;
+import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.StartScreenActivity;
@@ -45,13 +46,17 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.Align;
+import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,22 +80,30 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     public static double latitude, longitude;
     private boolean doubleBackToExitPressedOnce = false;
     private Intent serviceIntent;
+    private ArrayList<String> memberList = new ArrayList<>();
+    private Map<Integer, String> dynamicVariables = new HashMap<>();
+    private Map<String, Marker> memberMarkers = new HashMap<>();
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
-//    private Handler handler;
-//    private Runnable updateMarkerRunnable;
-
-
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.ACCESS_NOTIFICATION_POLICY
     };
+    private String markerName;
+    private Handler handler;
+    private Runnable updateMarkerRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_child_main);
+
+        // RetrofitClient 초기화
+        retrofitClient = RetrofitClient.getInstance();
+        userRetrofitInterface = retrofitClient.getUserRetrofitInterface();
+
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
         // -----v----- BottomNavigationView 구현 -----v-----
@@ -135,53 +148,72 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
         Boolean isAutoLogin = sharedPreferences2.getBoolean("autoLogin", false);
 
-//        handler = new Handler(Looper.getMainLooper());
-//
-//        String childID = LoginPageFragment.saveID;
-//        GetMemberIDRequest childIDDTO = new GetMemberIDRequest(childID);
-//        Gson gson = new Gson();
-//        String childInfo = gson.toJson(childIDDTO);
-//        Log.e("JSON", childInfo);
-//
-//        Call<ResponseBody> memberCall = userRetrofitInterface.getMemberID(childIDDTO);
-//        memberCall.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if(response.isSuccessful() && response.body() != null){
-//                    Log.e("POST", "응답성공");
-//                    try {
-//                        // 응답 본문을 문자열로 변환
-//                        String responseBodyString = response.body().string();
-//                        JSONObject json = new JSONObject(responseBodyString);
-//                        Log.e("Response JSON", json.toString());
-//                        Log.e("POST", "응답성공");
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    Log.e("getMemberID", "Response body is null or request failed");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                t.printStackTrace();
-//                Log.e("getMemberID", "Request failed", t);
-//            }
-//        });
-//
-//        // 마커를 업데이트하는 Runnable 정의
-//        updateMarkerRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                getMemberLocation();
-//                handler.postDelayed(this, 2000); // 2초마다 실행
-//            }
-//        };
-//
-//        // 주기적인 마커 업데이트 시작
-//        handler.post(updateMarkerRunnable);
-//
+        handler = new Handler(Looper.getMainLooper());
+
+        String childID = LoginPageFragment.saveID;
+        GetMemberIDRequest childIDDTO = new GetMemberIDRequest(childID);
+        Gson gson = new Gson();
+        String childInfo = gson.toJson(childIDDTO);
+        Log.e("JSON", childInfo + "Here");
+
+        Call<ResponseBody> memberCall = userRetrofitInterface.getMemberID(childIDDTO);
+        memberCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    Log.e("POST", "응답성공");
+                    try {
+                        // 응답 본문을 문자열로 변환
+                        String responseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(responseBodyString);
+                        Log.e("Response JSON", json.toString());
+
+                        // 최상위 키 순회
+                        for (Iterator<String> it = json.keys(); it.hasNext(); ) {
+                            String topKey = it.next();
+                            JSONObject innerJson = json.getJSONObject(topKey);
+
+                            // 내부 키 순회
+                            for (Iterator<String> innerIt = innerJson.keys(); innerIt.hasNext(); ) {
+                                String innerKey = innerIt.next();
+                                String value = innerJson.getString(innerKey);
+
+                                // 여기서 키와 값을 사용할 수 있습니다.
+                                Log.e("Parsed Data", "TopKey: " + topKey + ", InnerKey: " + innerKey + ", Value: " + value);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("getMemberID", "Response body is null or request failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                Log.e("getMemberID", "Request failed", t);
+            }
+        });
+
+        for(int i = 0; i < memberList.size(); i++) {
+            dynamicVariables.put(i, memberList.get(i));
+            markerName = dynamicVariables.get(i);
+        }
+
+        // 마커를 업데이트하는 Runnable 정의
+        updateMarkerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                getMemberLocation();
+                handler.postDelayed(this, 2000); // 2초마다 실행
+            }
+        };
+
+        // 주기적인 마커 업데이트 시작
+        handler.post(updateMarkerRunnable);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationService();
@@ -288,12 +320,74 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    //    private void getMemberLocation() {
-//        String getMemberId = "";
-//        String type = "Member";
-//
-//    }
-//
+    private void getMemberLocation() {
+        for(int i = 0; i < memberList.size(); i++){
+            String getMemberId = memberList.get(i);
+            String type = "Member";
+
+            LocationRequest locationRequest = new LocationRequest(type, getMemberId);
+            Gson gson = new Gson();
+            String memberInfo = gson.toJson(locationRequest);
+
+            Log.e("JSON", memberInfo);
+
+            Call<LocationResponse> call = userRetrofitInterface.getLocation(locationRequest);
+            int finalI = i;
+            call.clone().enqueue(new Callback<LocationResponse>() {
+                @Override
+                public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        LocationResponse result = response.body();
+
+                        double latitude = result.getLatitude();
+                        double longitude = result.getLongitude();
+
+                        dynamicVariables.put(finalI, memberList.get(finalI));
+                        markerName = dynamicVariables.get(finalI);
+
+                        if(memberMarkers.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
+                            Marker marker = new Marker();
+                            memberMarkers.put(markerName, marker);
+
+                            marker.setCaptionText(getMemberId);
+                            marker.setCaptionAligns(Align.Top);
+                            marker.setCaptionOffset(10);
+                            marker.setIcon(MarkerIcons.BLACK);
+                            marker.setIconTintColor(Color.argb(0, 234, 234, 0));
+                            marker.setHideCollidedSymbols(true);
+                            marker.setCaptionTextSize(16);
+                            marker.setPosition(new LatLng(latitude, longitude));
+                            marker.setMap(mNaverMap);
+                        } else { // 해당 childMarker가 이미 생성되어 있는 경우
+                            memberMarkers.get(markerName).setMap(null);
+
+                            Marker marker = new Marker();
+                            memberMarkers.replace(markerName, marker);
+
+                            marker.setCaptionText(getMemberId);
+                            marker.setCaptionAligns(Align.Top);
+                            marker.setCaptionOffset(10);
+                            marker.setIcon(MarkerIcons.BLACK);
+                            marker.setIconTintColor(Color.argb(0, 234, 234, 0));
+                            marker.setHideCollidedSymbols(true);
+                            marker.setCaptionTextSize(16);
+                            marker.setPosition(new LatLng(latitude, longitude));
+                            marker.setMap(mNaverMap);
+                        }
+                    }
+                    else {
+                        Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LocationResponse> call, Throwable t) {
+                    Log.e("POST", "통신 실패: " + t.getMessage());
+                }
+            });
+        }
+    }
+
     private void sectorInquire() {
         final Gson gson = new Gson();
 
@@ -382,5 +476,11 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             overlay.setMap(null);
         }
         polygonOverlays.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(updateMarkerRunnable); // 액티비티가 종료될 때 주기적인 업데이트를 중지
     }
 }

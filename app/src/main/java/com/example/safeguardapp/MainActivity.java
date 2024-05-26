@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.os.Handler;
@@ -26,13 +27,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.safeguardapp.Child.LocationService;
 import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GroupFragment;
 import com.example.safeguardapp.Group.Sector.SectorDetails;
 import com.example.safeguardapp.Group.Sector.SectorInquireRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
-import com.example.safeguardapp.Map.ChildLocationRequest;
-import com.example.safeguardapp.Map.ChildLocationResponse;
+import com.example.safeguardapp.Map.LocationRequest;
+import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.Notice.NoticeFragment;
 import com.example.safeguardapp.Setting.SettingFragment;
 import com.example.safeguardapp.data.repository.GroupRepository;
@@ -77,7 +79,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
+    public static double latitude, longitude;
     private Boolean doubleBackToExitPressedOnce = false;
+    private Intent serviceIntent;
 
     private ArrayList<String> childList = new ArrayList<>();
 
@@ -238,6 +242,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 주기적인 마커 업데이트 시작
         handler.post(updateMarkerRunnable);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationService();
+        } else
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -264,6 +274,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }, 2000); // 2초 안에 두 번 눌러야 종료
             }
         });
+    }
+
+    private void startLocationService() {
+        Log.e("POST", "Latitude: " + latitude + ", Longitude: " + longitude);
+
+        serviceIntent = new Intent(this, LocationService.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
     }
 
     @Override
@@ -307,6 +329,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // 권한 확인, 결과는 onRequestPermissionResult 콜백 메서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
+
+        mNaverMap.addOnLocationChangeListener(location -> {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            LocationService.transmitCoordinate(latitude,longitude);
+        });
         sectorInquire();
     }
 
@@ -328,19 +356,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             String getChildId = childList.get(i);
             String type = "Child";
 
-            ChildLocationRequest childLocationRequest = new ChildLocationRequest(type, getChildId);
+            LocationRequest locationRequest = new LocationRequest(type, getChildId);
             Gson gson = new Gson();
-            String childInfo = gson.toJson(childLocationRequest);
+            String childInfo = gson.toJson(locationRequest);
 
             Log.e("JSON", childInfo);
 
-            Call<ChildLocationResponse> call = userRetrofitInterface.getChildLocation(childLocationRequest);
+            Call<LocationResponse> call = userRetrofitInterface.getLocation(locationRequest);
             int finalI = i;
-            call.clone().enqueue(new Callback<ChildLocationResponse>() {
+            call.clone().enqueue(new Callback<LocationResponse>() {
                 @Override
-                public void onResponse(Call<ChildLocationResponse> call, Response<ChildLocationResponse> response) {
+                public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        ChildLocationResponse result = response.body();
+                        LocationResponse result = response.body();
 
                         double latitude = result.getLatitude();
                         double longitude = result.getLongitude();
@@ -384,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 @Override
-                public void onFailure(Call<ChildLocationResponse> call, Throwable t) {
+                public void onFailure(Call<LocationResponse> call, Throwable t) {
                     Log.e("POST", "통신 실패: " + t.getMessage());
                 }
             });
