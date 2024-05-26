@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void startLocationService() {
         Log.e("POST", "Latitude: " + latitude + ", Longitude: " + longitude);
 
-        serviceIntent = new Intent(this, LocationService.class);
+        serviceIntent = new Intent(this, LocationService2.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
