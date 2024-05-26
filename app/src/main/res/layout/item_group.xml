@@ -8,6 +8,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/signup_button_blue_version"/>
 
 </FrameLayout>

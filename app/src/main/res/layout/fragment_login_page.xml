@@ -133,7 +133,11 @@
             android:layout_weight="1"
             android:text="아이디 찾기"
             android:textSize="12dp"
+            android:background="@drawable/signup_button_blue_version"
             />
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"/>
         <android.widget.Button
             android:id="@+id/buttonFindPW"
             android:layout_width="match_parent"
@@ -141,7 +145,11 @@
             android:layout_weight="1"
             android:text="비밀번호 찾기"
             android:textSize="12dp"
+            android:background="@drawable/signup_button_blue_version"
             />
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"/>
         <android.widget.Button
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
@@ -149,12 +157,7 @@
             android:layout_weight="1"
             android:text="회원가입"
             android:textSize="12dp"
+            android:background="@drawable/signup_button_blue_version"
             />
-
-
-
-
-
-
     </LinearLayout>
 </LinearLayout>
