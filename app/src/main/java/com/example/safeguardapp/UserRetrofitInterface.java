@@ -11,6 +11,7 @@ import com.example.safeguardapp.Group.AddParentRequest;
 import com.example.safeguardapp.Group.CheckChildID;
 import com.example.safeguardapp.Group.ChildDTO;
 import com.example.safeguardapp.Group.GetChildIDRequest;
+import com.example.safeguardapp.Group.GetMemberIDRequest;
 import com.example.safeguardapp.Group.RemoveHelperRequest;
 import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
 import com.example.safeguardapp.Group.GroupRemoveRequest;
@@ -20,8 +21,8 @@ import com.example.safeguardapp.Group.Sector.DeleteSectorRequest;
 import com.example.safeguardapp.Group.Sector.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
-import com.example.safeguardapp.Map.ChildLocationRequest;
-import com.example.safeguardapp.Map.ChildLocationResponse;
+import com.example.safeguardapp.Map.LocationRequest;
+import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
@@ -78,13 +79,19 @@ public interface UserRetrofitInterface {
     Call<ResponseBody> sendLocation(@Body LocationSendRequest locationSendRequest);
 
     @POST("return-coordinate")
-    Call<ChildLocationResponse> getChildLocation(@Body ChildLocationRequest childLocationRequest);
+    Call<LocationResponse> getLocation(@Body LocationRequest locationRequest);
+
+//    @POST("return-coordinate")
+//    Call<MemberLocationResponse> getMemberLocation(@Body MemberLocationRequest memberLocationRequest);
 
     @POST("read-areas")
     Call<ResponseBody> getSectorLocation(@Body RequestBody body);
 
     @POST("find-child-list")
     Call<ResponseBody> getChildID(@Body GetChildIDRequest request);
+
+    @POST("find-member-by-child")
+    Call<ResponseBody> getMemberID(@Body GetMemberIDRequest request);
 
     @POST("delete-area")
     Call<ResponseBody> deleteSector(@Body DeleteSectorRequest jsonUser);
@@ -98,4 +105,3 @@ public interface UserRetrofitInterface {
     @POST("helperremove")
     Call<ResponseBody> removeHelper(@Body RemoveHelperRequest request);
 }
-
