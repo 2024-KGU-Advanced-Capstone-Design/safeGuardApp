@@ -1,5 +1,6 @@
 package com.example.safeguardapp.FindPW;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -79,10 +80,13 @@ public class FindPWCertificationFragment extends Fragment {
         findPWToID.addTextChangedListener(new SignUpFragment.SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editable.length() > 0)
+                if (editable.length() > 0) {
                     send_ANumber_btn.setEnabled(true);
-                else
+                    send_ANumber_btn.setTextColor(Color.parseColor("#5E53A6"));
+                } else {
                     send_ANumber_btn.setEnabled(false);
+                    send_ANumber_btn.setTextColor(Color.parseColor("#FFFFFF"));
+                }
             }
         });
 
@@ -100,10 +104,10 @@ public class FindPWCertificationFragment extends Fragment {
                 call.clone().enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        Log.e("POST","통신 성공");
+                        Log.e("POST", "통신 성공");
 
                         //통신 성공
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             Toast.makeText(view.getContext(), "회원님의 메일함을 확인해주세요!", Toast.LENGTH_LONG).show();
 
                             //인증번호 입력 칸 생성
@@ -114,10 +118,10 @@ public class FindPWCertificationFragment extends Fragment {
                             // LayoutParams 설정
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                                    dpToPx(48)
                             );
-                            LinearLayout.LayoutParams findPWToIDparams = (LinearLayout.LayoutParams) findPWToID.getLayoutParams();
-                            findPWToIDparams.setMargins(0, dpToPx(15), 0, 0);
+
+                            params.setMargins(0, dpToPx(27), 0, dpToPx(27));
 
                             // EditText에 LayoutParams 적용
                             newEditText.setLayoutParams(params);
@@ -125,28 +129,31 @@ public class FindPWCertificationFragment extends Fragment {
                             // 추가된 EditText의 속성 설정
                             newEditText.setHint("인증번호를 입력해주세요");
                             newEditText.setInputType(InputType.TYPE_CLASS_NUMBER); // 예시로 입력 타입 지정
+                            newEditText.setBackgroundResource(R.drawable.signup_edittext_design);
 
                             // 프래그먼트의 루트 레이아웃 가져오기
-                            ViewGroup rootView = (ViewGroup) getView();
+                            View rootView = getView();
+                            if (rootView != null) {
+                                LinearLayout linearLayout = rootView.findViewById(R.id.linearLayout);
 
-                            // 기존의 아이디 입력 EditText의 인덱스 확인하기
-                            int index = rootView.indexOfChild(findPWToID);
-
-                            // 새로운 EditText를 기존의 아이디 입력 EditText 위에 추가
-                            rootView.addView(newEditText, index);
-                            params.setMargins(0,dpToPx(15),0,0);
+                                // 새로운 EditText를 기존의 아이디 입력 EditText 아래에 추가
+                                int index = linearLayout.indexOfChild(findPWToID) + 1;
+                                linearLayout.addView(newEditText, index);
+                            }
+                            params.setMargins(0, dpToPx(15), 0, dpToPx(12));
                             send_ANumber_btn.setText("다음");
                             newEditText.addTextChangedListener(new SignUpFragment.SimpleTextWatcher() {
                                 @Override
                                 public void afterTextChanged(Editable editable) {
-                                    if(editable.length() > 0)
+                                    if (editable.length() > 0)
                                         send_ANumber_btn.setEnabled(true);
                                     else
                                         send_ANumber_btn.setEnabled(false);
-                                    }
+                                }
                             });
                             codeVerify = newEditText;
-                        }else Toast.makeText(view.getContext(), "인증번호를 다시 확인해주세요!", Toast.LENGTH_LONG).show();
+                        } else
+                            Toast.makeText(view.getContext(), "인증번호를 다시 확인해주세요!", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -165,11 +172,12 @@ public class FindPWCertificationFragment extends Fragment {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                                if(response.isSuccessful()) {
+                                if (response.isSuccessful()) {
                                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                                     transaction.replace(R.id.start_activity, new FindPWFragment());
                                     transaction.commit();
-                                }else Toast.makeText(view.getContext(), "인증번호를 다시 확인해주세요!", Toast.LENGTH_LONG).show();
+                                } else
+                                    Toast.makeText(view.getContext(), "인증번호를 다시 확인해주세요!", Toast.LENGTH_LONG).show();
                             }
 
                             @Override
@@ -196,21 +204,25 @@ public class FindPWCertificationFragment extends Fragment {
             }
         });
     }
+
     public int dpToPx(int sizeInDP) {
         int pxVal = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, sizeInDP, getResources().getDisplayMetrics()
-                );
+        );
         return pxVal;
     }
 
     private abstract class SimpleTextWatcher implements TextWatcher {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
     }
 
-    private void previous(){
+    private void previous() {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.start_activity, new LoginPageFragment());
         transaction.commit();

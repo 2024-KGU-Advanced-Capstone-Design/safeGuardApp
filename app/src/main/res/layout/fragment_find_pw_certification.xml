@@ -19,6 +19,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="70dp"
@@ -31,13 +32,14 @@
             android:layout_height="48dp"
             android:hint="아이디를 입력해주세요"
             android:inputType="textEmailAddress"
-            android:background="@drawable/signup_edittext_design"/>
+            android:background="@drawable/signup_edittext_design"
+            android:layout_marginBottom="12dp"/>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="15dp">
 
             <android.widget.Button
                 android:id="@+id/cancel_btn"
@@ -61,7 +63,8 @@
                 android:enabled="false"
                 android:background="@drawable/signup_button_blue_version"
                 android:text="인증번호 전송"
-                android:textSize="18dp"/>
+                android:textSize="18dp"
+                android:textColor="#FFFFFF"/>
 
         </LinearLayout>
     </LinearLayout>

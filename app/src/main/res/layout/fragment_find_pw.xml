@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
                 android:textColor="#ff0000"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:visibility="invisible" />
         </FrameLayout>
 
@@ -69,7 +69,7 @@
             android:id="@+id/resetPW_re"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="17dp"
             android:hint="비밀번호를 한번 더 입력해주세요"
             android:inputType="textPassword"
             android:background="@drawable/signup_edittext_design"/>
@@ -86,7 +86,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="15dp">
 
             <android.widget.Button
                 android:id="@+id/cancel_btn"
@@ -110,7 +110,8 @@
                 android:layout_weight="1"
                 android:enabled="false"
                 android:text="확인"
-                android:textSize="18dp"/>
+                android:textSize="18dp"
+                android:textColor="#FFFFFF"/>
 
         </LinearLayout>
     </LinearLayout>
