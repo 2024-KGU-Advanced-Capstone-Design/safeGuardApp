@@ -10,6 +10,8 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
+            app:title="비밀번호 재설정"
+            app:titleCentered="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:navigationIcon="?attr/homeAsUpIndicator" />
@@ -19,16 +21,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="70dp"
         android:orientation="vertical"
         android:padding="24dp">
 
         <EditText
             android:id="@+id/resetPW"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:hint="재설정할 비밀번호를 입력해주세요"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:background="@drawable/signup_edittext_design"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -58,17 +61,18 @@
                 android:layout_height="wrap_content"
                 android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
                 android:textColor="#ff0000"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:visibility="invisible" />
         </FrameLayout>
 
         <EditText
             android:id="@+id/resetPW_re"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="17dp"
             android:hint="비밀번호를 한번 더 입력해주세요"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:background="@drawable/signup_edittext_design"/>
 
         <TextView
             android:id="@+id/X_PW_re"
@@ -76,28 +80,38 @@
             android:layout_height="wrap_content"
             android:text="다시 입력해주세요"
             android:textColor="#ff0000"
-            android:textSize="12sp"
+            android:textSize="12dp"
             android:visibility="invisible" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="15dp">
 
             <android.widget.Button
                 android:id="@+id/cancel_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="취소" />
+                android:background="@drawable/signup_button_grey_version"
+                android:text="취소"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"/>
 
             <android.widget.Button
                 android:id="@+id/resettingPW_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/signup_button_blue_version"
                 android:layout_weight="1"
                 android:enabled="false"
-                android:text="확인" />
+                android:text="확인"
+                android:textSize="18dp"
+                android:textColor="#FFFFFF"/>
 
         </LinearLayout>
     </LinearLayout>

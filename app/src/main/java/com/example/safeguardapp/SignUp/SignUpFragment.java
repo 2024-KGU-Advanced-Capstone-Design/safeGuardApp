@@ -24,6 +24,7 @@ import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
@@ -34,7 +35,7 @@ import retrofit2.Response;
 
 public class SignUpFragment extends Fragment {
     private EditText inputName, inputId, inputEmail, inputPW, inputPW_re;
-    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2, spaceID, spacePW, X_CheckID, O_CheckID;
+    private TextView O_email, X_email, X_PW, X_PW_re, X_PW2, spaceID, spacePW, X_CheckID, O_CheckID, isIDnull;
     private Button signUp_btn, cancel_btn, checkID;
 
     // 회원 가입 버튼 활성화 조건들의 변수 선언
@@ -79,6 +80,10 @@ public class SignUpFragment extends Fragment {
         spaceID = view.findViewById(R.id.X_space_ID);
         spacePW = view.findViewById(R.id.X_space_PW);
         checkID = view.findViewById(R.id.checkID);
+        isIDnull = view.findViewById(R.id.isIDnull);
+
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> previous());
     }
 
     private void setupListeners() {
@@ -97,15 +102,28 @@ public class SignUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String inputID = editable.toString();
-                if (inputID.contains(" ")) {
-                    isSpaceIDValid = false;
-                    spaceID.setVisibility(View.VISIBLE);
-                } else {
-                    isSpaceIDValid = true;
+                O_CheckID.setVisibility(View.INVISIBLE);
+                X_CheckID.setVisibility(View.INVISIBLE);
+                isIDValid = false;
+                if(inputID.isEmpty()) {
+                    checkID.setEnabled(false);
+                    isIDValid = false;
                     spaceID.setVisibility(View.INVISIBLE);
+                    isIDnull.setVisibility(View.VISIBLE);
                 }
-                isIDValid = editable.length() > 0;
-                updateSignUpButtonState();
+                else {
+                    isIDnull.setVisibility(View.INVISIBLE);
+                    if (inputID.contains(" ")) {
+                        isSpaceIDValid = false;
+                        checkID.setEnabled(false);
+                        spaceID.setVisibility(View.VISIBLE);
+                    } else {
+                        isSpaceIDValid = true;
+                        checkID.setEnabled(true);
+                        spaceID.setVisibility(View.INVISIBLE);
+                    }
+                    updateSignUpButtonState();
+                }
             }
         });
 
@@ -227,9 +245,17 @@ public class SignUpFragment extends Fragment {
                 call.clone().enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        spaceID.setVisibility(View.INVISIBLE);
+                        isIDnull.setVisibility(View.INVISIBLE);
                         if (response.isSuccessful()) {
                             O_CheckID.setVisibility(View.VISIBLE);
-                        } else X_CheckID.setVisibility(View.VISIBLE);
+                            isIDValid = true;
+                            updateSignUpButtonState();
+                        } else {
+                            X_CheckID.setVisibility(View.VISIBLE);
+                            isIDValid = false;
+                            updateSignUpButtonState();
+                        }
                     }
 
                     @Override
@@ -244,7 +270,6 @@ public class SignUpFragment extends Fragment {
     // 회원 가입 버튼 활성화 및 비활성화 메서드
     private void updateSignUpButtonState() {
         signUp_btn.setEnabled(isEmailValid && isPasswordValid && isPasswordMatch && isNameValid && isIDValid && isSpaceIDValid && isSpacePWValid);
-        signUp_btn.setBackground(getResources().getDrawable(signUp_btn.isEnabled() ? R.drawable.signup_button_blue_version : R.drawable.signup_button_grey_version));
     }
 
     // 유효한 이메일 주소
@@ -278,11 +303,16 @@ public class SignUpFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // 뒤로 가기 시 실행되는 코드
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new LoginPageFragment());
-                transaction.commit();
+                // 뒤로 가기 시 실행되는
+                previous();
+
             }
         });
+    }
+
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.start_activity, new LoginPageFragment());
+        transaction.commit();
     }
 }

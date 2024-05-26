@@ -1,5 +1,6 @@
 package com.example.safeguardapp.FindPW;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -188,11 +189,12 @@ public class FindPWFragment extends Fragment {
 
     private void updateSignUpButtonState() {
         resettingPW_btn.setEnabled(isPasswordValid && isPasswordValid2 && isSpacePWValid);
+        resettingPW_btn.setTextColor(isPasswordValid && isPasswordValid2 && isSpacePWValid ? Color.parseColor("#5E53A6") : Color.parseColor("#FFFFFF"));
     }
 
     private void previous(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.containers, new LoginPageFragment());
+        transaction.replace(R.id.start_activity, new LoginPageFragment());
         transaction.commit();
     }
 }

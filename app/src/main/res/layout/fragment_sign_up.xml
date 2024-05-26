@@ -1,269 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/signUp_fragment">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/signUp_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
         android:padding="24dp">
-
-        <TextView
-            android:id="@+id/signup_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="회원 가입하기"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:id="@+id/name_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="이름"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/inputName"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:ems="10"
-            android:hint="이름을 입력해주세요"
-            android:inputType="text"
-            android:textSize="13sp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/signup_edittext_design" />
-
-        <TextView
-            android:id="@+id/id_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="아이디"
-            android:textSize="14sp"
-            android:layout_marginTop="13sp"/>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/inputId"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:ems="10"
-                android:hint="아이디를 입력해주세요"
-                android:inputType="text"
-                android:textSize="13sp"
-                android:layout_marginTop="3dp"
-                android:background="@drawable/signup_edittext_design" />
-            <Button
-                android:id="@+id/checkID"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:text="중복 확인"
-                android:textSize="13sp"
-                android:paddingHorizontal="0dp"
-                android:layout_marginVertical="0dp"
-                android:layout_gravity="end"/>
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp">
-
-            <TextView
-                android:id="@+id/X_space_ID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="아이디에 띄어쓰기는 사용이 불가능합니다"
-                android:textColor="#ff0000"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-            <TextView
-                android:id="@+id/X_CheckID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="중복되는 아이디 입니다."
-                android:textColor="#ff0000"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-            <TextView
-                android:id="@+id/O_CheckID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="사용 가능한 아이디 입니다."
-                android:textColor="#329632"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-        </FrameLayout>
-
-
-
-        <TextView
-            android:id="@+id/email_signup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="이메일"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/inputEmail"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:ems="10"
-            android:hint="이메일 입력을 입력해주세요"
-            android:inputType="textEmailAddress"
-            android:textSize="13sp"
-            android:background="@drawable/signup_edittext_design"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="0dp"/>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/O_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="사용 가능한 이메일입니다"
-                android:textColor="#329632"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/X_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="올바르지 않은 이메일 형식입니다"
-                android:textColor="#ff0000"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/password_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="비밀번호"
-            android:textSize="14sp"
-            android:layout_marginTop="15dp"/>
-
-        <EditText
-            android:id="@+id/inputPW"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:ems="10"
-            android:hint="비밀번호 설정(최소 8자리)"
-            android:inputType="textPassword"
-            android:textSize="13sp"
-            android:background="@drawable/signup_edittext_design"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="0dp"/>
-
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/X_PW"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="비밀번호는 8자리 이상으로 설정해주세요"
-                android:textColor="#ff0000"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/X_PW2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="특수문자, 알파벳, 숫자 중 2가지 이상 사용해야 합니다"
-                android:textColor="#ff0000"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/X_space_PW"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
-                android:textColor="#ff0000"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-        </FrameLayout>
-
-
-        <TextView
-            android:id="@+id/pwcheck_signup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="비밀번호 확인"
-            android:textSize="14sp"
-            android:layout_marginTop="15dp"
-            />
-
-        <EditText
-            android:id="@+id/inputPW_re"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:ems="10"
-            android:hint="비밀번호 재입력"
-            android:inputType="textPassword"
-            android:textSize="13sp"
-            android:background="@drawable/signup_edittext_design"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="0dp"/>
-
-        <TextView
-            android:id="@+id/X_PW_re"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="다시 입력해주세요"
-            android:textColor="#ff0000"
-            android:textSize="12sp"
-            android:visibility="invisible"
-            android:layout_marginBottom="24dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
 
-            <android.widget.Button
-                android:id="@+id/cancel_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="취소"
-                android:textSize="16sp"
-                android:background="@drawable/signup_button_grey_version"
-                android:layout_weight="1"
-                />
             <TextView
+                android:id="@+id/name_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:layout_weight="1"
+                android:text="이름"
+                android:textSize="14sp"
                 />
 
-            <android.widget.Button
-                android:id="@+id/signUp_btn"
-                android:layout_width="130dp"
+            <EditText
+                android:id="@+id/inputName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="18dp"
+                android:background="@drawable/signup_edittext_design"
+                android:ems="10"
+                android:hint="이름을 입력해주세요"
+                android:inputType="text"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/id_signup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="가입하기"
-                android:textSize="16sp"
-                android:background="@drawable/signup_button_grey_version"
-                android:enabled="false"
-                android:layout_weight="1"
-                />
+                android:layout_marginTop="13sp"
+                android:text="아이디"
+                android:textSize="14sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/inputId"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/signup_edittext_design"
+                    android:ems="10"
+                    android:hint="아이디를 입력해주세요"
+                    android:inputType="text"
+                    android:textSize="13sp" />
+
+                <android.widget.Button
+                    android:id="@+id/checkID"
+                    android:layout_width="80dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="end"
+                    android:layout_marginVertical="8.5dp"
+                    android:layout_marginRight="6dp"
+                    android:background="@drawable/signup_button_blue_version"
+                    android:enabled="false"
+                    android:text="중복 확인"
+                    android:textSize="12sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp">
+
+                <TextView
+                    android:id="@+id/X_space_ID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="아이디에 띄어쓰기는 사용이 불가능합니다"
+                    android:textColor="#ff0000"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/X_CheckID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="중복되는 아이디 입니다."
+                    android:textColor="#ff0000"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/O_CheckID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="사용 가능한 아이디 입니다."
+                    android:textColor="#329632"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/isIDnull"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="아이디를 입력해주세요."
+                    android:textColor="#ff0000"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/email_signup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="이메일"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/inputEmail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/signup_edittext_design"
+                android:ems="10"
+                android:hint="이메일 입력을 입력해주세요"
+                android:inputType="textEmailAddress"
+                android:textSize="13sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/O_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="사용 가능한 이메일입니다"
+                    android:textColor="#329632"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/X_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="올바르지 않은 이메일 형식입니다"
+                    android:textColor="#ff0000"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/password_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="비밀번호"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/inputPW"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/signup_edittext_design"
+                android:ems="10"
+                android:hint="비밀번호 설정(최소 8자리)"
+                android:inputType="textPassword"
+                android:textSize="13sp" />
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/X_PW"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="비밀번호는 8자리 이상으로 설정해주세요"
+                    android:textColor="#ff0000"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/X_PW2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="특수문자, 알파벳, 숫자 중 2가지 이상 사용해야 합니다"
+                    android:textColor="#ff0000"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/X_space_PW"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="비밀번호에 띄어쓰기는 사용이 불가능합니다"
+                    android:textColor="#ff0000"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/pwcheck_signup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="비밀번호 확인"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/inputPW_re"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/signup_edittext_design"
+                android:ems="10"
+                android:hint="비밀번호 재입력"
+                android:inputType="textPassword"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/X_PW_re"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="다시 입력해주세요"
+                android:textColor="#ff0000"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.widget.Button
+                    android:id="@+id/cancel_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/signup_button_grey_version"
+                    android:text="취소"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="invisible" />
+
+                <android.widget.Button
+                    android:id="@+id/signUp_btn"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/signup_button_blue_version"
+                    android:enabled="false"
+                    android:text="가입하기"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+
         </LinearLayout>
+    </ScrollView>
 
-
-
-    </LinearLayout>
-</ScrollView>
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="회원가입"
+        app:titleCentered="true" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

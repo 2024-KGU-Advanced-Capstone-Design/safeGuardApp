@@ -20,6 +20,7 @@ import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -49,6 +50,9 @@ public class FindIDFragment extends Fragment {
         findIDToName = view.findViewById(R.id.findIDToName);
         findIDToEmail = view.findViewById(R.id.findIDToEmail);
         checkInfo = view.findViewById(R.id.Check_Info);
+
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> previous());
     }
 
     private void setupListeners() {
@@ -117,12 +121,13 @@ public class FindIDFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // 뒤로 가기 시 실행되는 코드
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.start_activity, new LoginPageFragment());
-                transaction.commit();
+                previous();
             }
         });
     }
-
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.start_activity, new LoginPageFragment());
+        transaction.commit();
+    }
 }
