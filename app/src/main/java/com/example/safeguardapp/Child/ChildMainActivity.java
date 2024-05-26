@@ -171,22 +171,26 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
-                            JSONObject innerJson = json.getJSONObject(topKey);
+                            if (topKey.equals("Parenting")) {  // 최상위 키가 "Parenting"인 경우만 처리
+                                JSONObject innerJson = json.getJSONObject(topKey);
 
-                            // 내부 키 순회
-                            for (Iterator<String> innerIt = innerJson.keys(); innerIt.hasNext(); ) {
-                                String innerKey = innerIt.next();
-                                String value = innerJson.getString(innerKey);
+                                // 내부 키 순회
+                                for (Iterator<String> innerIt = innerJson.keys(); innerIt.hasNext(); ) {
+                                    String innerKey = innerIt.next();
+                                    String value = innerJson.getString(innerKey);
 
-                                // 여기서 키와 값을 사용할 수 있습니다.
-                                Log.e("Parsed Data", "TopKey: " + topKey + ", InnerKey: " + innerKey + ", Value: " + value);
+                                    // memberList에 값 추가
+                                    memberList.add(value);
+                                    // 여기서 키와 값을 사용할 수 있습니다.
+                                    Log.e("Parsed Data", "TopKey: " + topKey + ", InnerKey: " + innerKey + ", Value: " + value);
+                                }
                             }
                         }
-                    } catch (Exception e) {
+                    }catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    Log.e("getMemberID", "Response body is null or request failed");
+                    Log.e("getMemberID", "Response body is null or request failed" + response.code());
                 }
             }
 
@@ -196,11 +200,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                 Log.e("getMemberID", "Request failed", t);
             }
         });
-
-        for(int i = 0; i < memberList.size(); i++) {
-            dynamicVariables.put(i, memberList.get(i));
-            markerName = dynamicVariables.get(i);
-        }
 
         // 마커를 업데이트하는 Runnable 정의
         updateMarkerRunnable = new Runnable() {

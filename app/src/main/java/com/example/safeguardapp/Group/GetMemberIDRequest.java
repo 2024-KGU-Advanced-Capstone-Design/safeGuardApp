@@ -1,8 +1,10 @@
 package com.example.safeguardapp.Group;
 
+import com.google.gson.annotations.SerializedName;
+
 public class GetMemberIDRequest {
-    private String childId;
-    public GetMemberIDRequest(String childId){
-        this.childId = childId;
+    private String id;
+    public GetMemberIDRequest(String id){
+        this.id = id;
     }
 }
