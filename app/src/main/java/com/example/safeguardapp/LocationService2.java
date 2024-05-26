@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.example.safeguardapp.Child.LocationSendRequest;
+import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -87,9 +88,6 @@ public class LocationService2 extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        SharedPreferences sharedPreferences2 = getSharedPreferences("loginID", Context.MODE_PRIVATE);
-        id = sharedPreferences2.getString("saveID", null);
-
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Location Service")
                 .setContentText("Sending location data every 10 seconds")
@@ -114,6 +112,7 @@ public class LocationService2 extends Service {
 
     public static void transmitCoordinate(double latitude, double longitude) {
         String type = "Member";
+        String id = LoginPageFragment.saveID;
         LocationSendRequest locationDTO = new LocationSendRequest(type, id, latitude, longitude);
         RetrofitClient retrofitClient = RetrofitClient.getInstance();
         UserRetrofitInterface userRetrofitInterface = retrofitClient.getUserRetrofitInterface();

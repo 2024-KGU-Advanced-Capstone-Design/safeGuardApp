@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mNaverMap.addOnLocationChangeListener(location -> {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            LocationService.transmitCoordinate(latitude,longitude);
+            LocationService2.transmitCoordinate(latitude,longitude);
         });
         sectorInquire();
     }
