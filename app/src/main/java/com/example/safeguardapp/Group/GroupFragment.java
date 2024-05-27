@@ -8,6 +8,7 @@ import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
@@ -84,6 +87,9 @@ public class GroupFragment extends Fragment {
                 }
             }));
         });
+
+        LinearLayout linearLayout = view.findViewById(R.id.groupScreen);
+        YoYo.with(Techniques.FadeIn).duration(700).repeat(0).playOn(linearLayout);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override

@@ -19,9 +19,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
@@ -164,5 +167,8 @@ public class SettingFragment extends Fragment {
                 navigationView.setSelectedItemId(R.id.map);
             }
         });
+
+        LinearLayout linearLayout = view.findViewById(R.id.settingScreen);
+        YoYo.with(Techniques.FadeIn).duration(700).repeat(0).playOn(linearLayout);
     }
 }
