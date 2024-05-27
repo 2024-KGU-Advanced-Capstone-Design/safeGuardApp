@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.safeguardapp.Child.ChildMainActivity;
 import com.example.safeguardapp.Child.LocationService;
 import com.example.safeguardapp.FindID.FindIDFragment;
@@ -70,6 +73,12 @@ public class LoginPageFragment extends Fragment {
         isMember = view.findViewById(R.id.setMember);
         isChild =view.findViewById(R.id.setChild);
         checkBox = view.findViewById(R.id.autoLogin);
+
+        ImageView safeGuardLogoImageView = view.findViewById(R.id.SafeGuard_logo_image);
+        YoYo.with(Techniques.FadeIn).duration(1500).repeat(0).playOn(safeGuardLogoImageView);
+
+        TextView safeGuardLogoTextView = view.findViewById(R.id.SafeGuard_logo);
+        YoYo.with(Techniques.FadeIn).duration(1500).repeat(0).playOn(safeGuardLogoTextView);
 
         // 로그인 버튼에 대한 클릭 이벤트 처리
         view.findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {

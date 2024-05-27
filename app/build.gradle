@@ -64,9 +64,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
     // 원형 이미지 뷰
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    //firebase
+    // firebase
     implementation 'com.google.firebase:firebase-messaging:24.0.0'
     implementation 'com.google.firebase:firebase-analytics:22.0.0'
-    //알림
+    // 알림
     implementation 'com.android.support:support-compat:28.0.0'
+    // Android View Animation 라이브러리
+    implementation 'com.daimajia.androidanimations:library:2.4@aar'
 }
