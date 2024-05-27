@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.model.Notice;
 import com.google.android.material.button.MaterialButton;
 
+import org.checkerframework.checker.units.qual.A;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class NoticeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private NoticeAdapter noticeAdapter;
-    private ArrayList<Notice> noticeList;
+    private ArrayList<Notice> noticeList = new ArrayList<>();
 
     public NoticeFragment() {
         // Required empty public constructor
@@ -65,18 +67,29 @@ public class NoticeFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         getNoti();
-        recyclerView = recyclerView.findViewById(R.id.recyclerView);
-        noticeAdapter = new NoticeAdapter(getContext(),noticeList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(noticeAdapter);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // 프래그먼트 레이아웃을 인플레이트
         return inflater.inflate(R.layout.fragment_notice, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 여기서 RecyclerView 초기화
+        recyclerView = view.findViewById(R.id.recyclerView);
+
+        // Null check for recyclerView
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            noticeAdapter = new NoticeAdapter(getContext(), noticeList);
+            recyclerView.setAdapter(noticeAdapter);
+        } else {
+            Log.e("NoticeFragment", "RecyclerView is null");
+        }
     }
 
     private void getNoti() {
@@ -114,6 +127,8 @@ public class NoticeFragment extends Fragment {
                                 noticeList.add(newNotice);
                             }
                         }
+                        // 어댑터에 변경 사항 알림
+                        noticeAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
