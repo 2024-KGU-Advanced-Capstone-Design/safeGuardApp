@@ -22,9 +22,11 @@ import com.example.safeguardapp.data.model.Notice;
 import com.google.android.material.button.MaterialButton;
 
 import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,20 +68,20 @@ public class NoticeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        getNoti();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 프래그먼트 레이아웃을 인플레이트
         View view = inflater.inflate(R.layout.fragment_notice, container, false);
-
+        getNoti();
         // 여기서 RecyclerView 초기화
         recyclerView = view.findViewById(R.id.recyclerView);
 
         // Null check for recyclerView
         if (recyclerView != null) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
             noticeAdapter = new NoticeAdapter(getContext(), noticeList);
             recyclerView.setAdapter(noticeAdapter);
         } else {
@@ -101,20 +103,23 @@ public class NoticeFragment extends Fragment {
         if (recyclerView != null) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             noticeAdapter = new NoticeAdapter(getContext(), noticeList);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setAdapter(noticeAdapter);
+            recyclerView.setLayoutManager(linearLayoutManager);
         } else {
             Log.e("NoticeFragment", "RecyclerView is null");
         }
         */
     }
 
-    private void getNoti() {
+    public void getNoti() {
         GetNotificationRequest getNotificationRequest = new GetNotificationRequest(LoginPageFragment.saveID);
 
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
         Call<ResponseBody> call = userRetrofitInterface.getNotification(getNotificationRequest);
+        Log.e("STRING","hi");
         call.clone().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -125,7 +130,7 @@ public class NoticeFragment extends Fragment {
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
                         Log.e("Response JSON", json.toString());
-
+                        Log.e("POST","대체 뭐임");
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
@@ -141,6 +146,7 @@ public class NoticeFragment extends Fragment {
                                 Notice newNotice = new Notice(title, content, date, type, child);
 
                                 noticeList.add(newNotice);
+                                Log.e("POST","add 완료");
                             }
                         }
                         // 어댑터에 변경 사항 알림
@@ -152,12 +158,14 @@ public class NoticeFragment extends Fragment {
                 else{
                     Log.e("POST", String.valueOf(response.code()));
                 }
-            }
+                Log.e("POST","대체 뭐임");
 
+            }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                Log.e("POST","왜 실패함");
             }
         });
+
     }
 }

@@ -494,7 +494,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void fatal() {
-        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(context)
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(childMapFragment.getContext())
                 .setTitle("위험")
                 .setMessage("위험 알림을 보내시겠습니까?")
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -510,13 +510,13 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 if (response.isSuccessful()) {
-                                    Toast.makeText(context, "전송되었습니다.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(childMapFragment.getContext(), "전송되었습니다.", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Toast.makeText(context, "통신오류", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(childMapFragment.getContext(), "통신오류", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

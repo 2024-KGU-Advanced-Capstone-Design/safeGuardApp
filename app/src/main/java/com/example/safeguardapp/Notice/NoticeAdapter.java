@@ -41,6 +41,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         String child = notice.getChild();
 
         holder.textView.setText(title+content+date+type+child);
+
     }
 
     @Override
