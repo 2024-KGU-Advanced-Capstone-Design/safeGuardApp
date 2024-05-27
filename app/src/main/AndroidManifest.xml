@@ -50,6 +50,11 @@
             android:exported="false"
             android:foregroundServiceType="location" />
 
+        <service android:name=".LocationService2"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:exported="true"
