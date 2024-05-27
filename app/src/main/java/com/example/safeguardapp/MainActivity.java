@@ -23,11 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.safeguardapp.Child.LocationService;
+import com.example.safeguardapp.Emergency.EmergencyFragment;
 import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GroupFragment;
 import com.example.safeguardapp.Group.Sector.SectorDetails;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public GroupFragment groupFragment;
     public NoticeFragment noticeFragment;
     public SettingFragment settingFragment;
+    private ImageButton emergencyBtn;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
@@ -116,6 +119,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         noticeFragment = new NoticeFragment();
         settingFragment = new SettingFragment();
 
+        emergencyBtn = findViewById(R.id.add_emergency_btn);
+        emergencyBtn.setOnClickListener(v -> emergency());
+
         getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
 
         NavigationBarView navigationBarView = findViewById(R.id.bottom_navigationview);
@@ -131,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // mapFragment를 실행시 나침반 보이게 설정
                     CompassView compassView = findViewById(R.id.compass);
                     compassView.setVisibility(View.VISIBLE);
+
+                    emergencyBtn.setVisibility(View.VISIBLE);
                     return true;
                 } else if (item.getItemId() == R.id.setting) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
@@ -140,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // SettingFragment를 실행시 나침반 안 보이게 설정
                     CompassView compassView = findViewById(R.id.compass);
                     compassView.setVisibility(View.GONE);
+
+                    emergencyBtn.setVisibility(View.GONE);
                     return true;
                 } else if (item.getItemId() == R.id.notice) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, noticeFragment).commit();
@@ -149,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // NoticeFragment를 실행시 나침반 안 보이게 설정
                     CompassView compassView = findViewById(R.id.compass);
                     compassView.setVisibility(View.GONE);
+
+                    emergencyBtn.setVisibility(View.GONE);
                     return true;
                 } else if (item.getItemId() == R.id.group) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, groupFragment).commit();
@@ -158,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // GroupFragment를 실행시 나침반 안 보이게 설정
                     CompassView compassView = findViewById(R.id.compass);
                     compassView.setVisibility(View.GONE);
+
+                    emergencyBtn.setVisibility(View.GONE);
                     return true;
                 }
                 return false;
@@ -182,20 +196,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         GetChildIDRequest memberIDDTO = new GetChildIDRequest(memberID);
         Gson ggson = new Gson();
         String memberInfo = ggson.toJson(memberIDDTO);
-        Log.e("JSON", memberInfo);
 
         Call<ResponseBody> childCall = userRetrofitInterface.getChildID(memberIDDTO);
         childCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "응답성공");
+                    /*Log.e("POST", "응답성공");*/
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
-                        Log.e("POST", "응답성공");
+                        /*Log.e("Response JSON", json.toString());
+                        Log.e("POST", "응답성공");*/
 
                         // 각 키-값 쌍을 처리
                         for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
@@ -207,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 childList.add(value);
                             }
 
-                            Log.e("Child ID", "Key: " + key + ", Value: " + value);
+                            /*Log.e("Child ID", "Key: " + key + ", Value: " + value);*/
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -277,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void startLocationService() {
-        Log.e("POST", "Latitude: " + latitude + ", Longitude: " + longitude);
+        /*Log.e("POST", "Latitude: " + latitude + ", Longitude: " + longitude);*/
 
         serviceIntent = new Intent(this, LocationService2.class);
 
@@ -360,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Gson gson = new Gson();
             String childInfo = gson.toJson(locationRequest);
 
-            Log.e("JSON", childInfo);
+            /*Log.e("JSON", childInfo);*/
 
             Call<LocationResponse> call = userRetrofitInterface.getLocation(locationRequest);
             int finalI = i;
@@ -405,9 +418,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             marker.setPosition(new LatLng(latitude, longitude));
                             marker.setMap(mNaverMap);
                         }
-                    }
-                    else {
-                        Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
                     }
                 }
 
@@ -502,6 +512,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
         }
+    }
+
+    private void emergency(){
+        LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
+        mapModeNav.setVisibility(View.GONE);
+        // SettingFragment를 실행시 나침반 안 보이게 설정
+        CompassView compassView = findViewById(R.id.compass);
+        compassView.setVisibility(View.GONE);
+
+        emergencyBtn.setVisibility(View.GONE);
+        getSupportFragmentManager().beginTransaction().replace(R.id.containers, new EmergencyFragment()).commit();
     }
     private void removeAllPolygons() {
         for (PolygonOverlay overlay : polygonOverlays) {

@@ -1,6 +1,9 @@
 package com.example.safeguardapp;
 
 import com.example.safeguardapp.Child.LocationSendRequest;
+import com.example.safeguardapp.Emergency.EmergencyRequest;
+import com.example.safeguardapp.Emergency.ReceivedEmergencyRequset;
+import com.example.safeguardapp.Emergency.SentEmergencyRequest;
 import com.example.safeguardapp.FindID.FindIDRequest;
 import com.example.safeguardapp.FindID.FindIDResponse;
 import com.example.safeguardapp.FindPW.CodeRequest;
@@ -29,6 +32,7 @@ import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -105,8 +109,17 @@ public interface UserRetrofitInterface {
     Call<ResponseBody> addHelper(@Body AddHelperRequest request);
 
     @POST("helperremove")
-    Call<ResponseBody> removeHelper(@Body RemoveHelperRequest request);
+    Call<ResponseBody> removeHelper(@Body RemoveHelperRequest jsonUser);
+
+    @POST("emergency")
+    Call<ResponseBody> sendEmergency(@Body EmergencyRequest jsonUser);
+
+    @POST("sent-emergency")
+    Call<ResponseBody> sentEmergency(@Body SentEmergencyRequest request);
 
     @POST("sent-confirm")
     Call<ResponseBody> getNotification(@Body GetNotificationRequest request);
+
+    @POST("received-emergency")
+    Call<ResponseBody> getEmergency(@Body ReceivedEmergencyRequset request);
 }

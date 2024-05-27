@@ -28,7 +28,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
     @Override
     public NoticeAdapter.NoticeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.fragment_notice,parent,false);
-        return null;
+        return new NoticeViewHolder(view);
     }
 
     @Override

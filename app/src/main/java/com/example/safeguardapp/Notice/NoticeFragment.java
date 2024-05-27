@@ -72,12 +72,7 @@ public class NoticeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 프래그먼트 레이아웃을 인플레이트
-        return inflater.inflate(R.layout.fragment_notice, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_notice, container, false);
 
         // 여기서 RecyclerView 초기화
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -90,6 +85,27 @@ public class NoticeFragment extends Fragment {
         } else {
             Log.e("NoticeFragment", "RecyclerView is null");
         }
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 이 부분은 더 이상 필요 없음, onCreateView에서 이미 처리됨
+        /*
+        recyclerView = view.findViewById(R.id.recyclerView);
+
+        // Null check for recyclerView
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            noticeAdapter = new NoticeAdapter(getContext(), noticeList);
+            recyclerView.setAdapter(noticeAdapter);
+        } else {
+            Log.e("NoticeFragment", "RecyclerView is null");
+        }
+        */
     }
 
     private void getNoti() {
@@ -132,6 +148,9 @@ public class NoticeFragment extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+                else{
+                    Log.e("POST", String.valueOf(response.code()));
                 }
             }
 

@@ -24,6 +24,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="120dp">
             <ImageView
+                android:id="@+id/SafeGuard_logo_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@mipmap/safeguardicon"

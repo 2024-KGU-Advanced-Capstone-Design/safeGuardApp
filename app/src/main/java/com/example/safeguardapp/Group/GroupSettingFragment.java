@@ -36,7 +36,10 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +55,7 @@ public class GroupSettingFragment extends Fragment {
     private LiveData<Optional<Group>> groupStream;
     private ChipGroup aideGroup;
     private RetrofitClient retrofitClient;
+    private ArrayList<String> helperList = new ArrayList<>();
     private UserRetrofitInterface userRetrofitInterface;
 
     public static GroupSettingFragment newInstance(String uuid, String childID) {
@@ -86,8 +90,7 @@ public class GroupSettingFragment extends Fragment {
                 previous();
                 return;
             }
-
-            updateAideUi();
+            loadHelperList();
         });
     }
 
@@ -141,40 +144,43 @@ public class GroupSettingFragment extends Fragment {
     }
 
     private void updateAideUi() {
-        if (aideGroup != null) {
-            aideGroup.removeAllViews();
-        }
+        aideGroup.removeAllViews();
 
-        Group group = groupStream.getValue().get();
-        List<String> aideList = group.getAide();
+        if(helperList != null && !helperList.isEmpty()) {
+            for (String id : helperList) {
+                Chip chip = new Chip(getContext());
+                chip.setCloseIconVisible(true);
+                chip.setCheckable(false);
+                chip.setText(id);
+                chip.setOnCloseIconClickListener(v -> {
+                    RemoveHelperRequest removeHelperRequest = new RemoveHelperRequest(id, childID);
+                    Gson gson = new Gson();
+                    String removeInfo = gson.toJson(removeHelperRequest);
+                    Log.e("POST", removeInfo);
+                    Call<ResponseBody> call = userRetrofitInterface.removeHelper(removeHelperRequest);
 
-        for (String id : aideList) {
-            Chip chip = new Chip(getContext());
-            chip.setCloseIconVisible(true);
-            chip.setCheckable(false);
-            chip.setText(id);
-            chip.setOnCloseIconClickListener(v -> {
-                RemoveHelperRequest removeHelperRequest = new RemoveHelperRequest(id, childID);
-                Call<ResponseBody> call = userRetrofitInterface.removeHelper(removeHelperRequest);
-
-                call.clone().enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(response.isSuccessful()){
-                            aideList.remove(id);
-                            repository.editGroup(group);
+                    call.clone().enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()) {
+                                helperList.clear();
+                                aideGroup.removeAllViews();
+                                loadHelperList();
+                            }
+                            else{
+                                Log.e("POST", String.valueOf(response.code()));
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                    }
+                        }
+                    });
+
                 });
-
-            });
-
-            aideGroup.addView(chip);
+                aideGroup.addView(chip);
+            }
         }
     }
 
@@ -278,11 +284,7 @@ public class GroupSettingFragment extends Fragment {
                                     Group group = groupStream.getValue().get();
                                     if (group.getAide().contains(id)) return;
 
-                                    ArrayList<String> aideList = new ArrayList<>(group.getAide());
-                                    aideList.add(id);
-                                    group.setAide(aideList);
-
-                                    repository.editGroup(group);
+                                    helperList.add(id);
 
                                     Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
                                 }else Toast.makeText(getContext(), "이미 추가된 아이디입니다.", Toast.LENGTH_SHORT).show();
@@ -414,5 +416,65 @@ public class GroupSettingFragment extends Fragment {
                 Log.e("POST", "통신 실패", t);
             }
         });
+    }
+    private void loadHelperList(){
+        GetMemberIDRequest childIDDTO = new GetMemberIDRequest(childID);
+        Gson gson = new Gson();
+        String childInfo = gson.toJson(childIDDTO);
+        Log.e("JSON", childInfo + "Here");
+
+        Call<ResponseBody> memberCall = userRetrofitInterface.getMemberID(childIDDTO);
+        memberCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    Log.e("POST", "응답성공");
+                    try {
+                        // 응답 본문을 문자열로 변환
+                        String responseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(responseBodyString);
+                        Log.e("Response JSON", json.toString());
+
+                        // 최상위 키 순회
+                        for (Iterator<String> it = json.keys(); it.hasNext(); ) {
+                            String topKey = it.next();
+                            if (topKey.equals("Helping")) {  // 최상위 키가 "Parenting"인 경우만 처리
+                                JSONObject innerJson = json.getJSONObject(topKey);
+
+                                // 내부 키 순회
+                                for (Iterator<String> innerIt = innerJson.keys(); innerIt.hasNext(); ) {
+                                    String innerKey = innerIt.next();
+                                    String value = innerJson.getString(innerKey);
+
+                                    // memberList에 값 추가
+                                    helperList.add(value);
+
+                                    updateAideUi();
+                                    // 여기서 키와 값을 사용할 수 있습니다.
+                                    Log.e("Parsed Data", "TopKey: " + topKey + ", InnerKey: " + innerKey + ", Value: " + value);
+                                }
+                            }
+                        }
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Log.e("getMemberID", "Response body is null or request failed" + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                Log.e("getMemberID", "Request failed", t);
+            }
+        });
+    }
+
+    public void clearAideGroup() {
+        if (aideGroup != null) {
+            aideGroup.removeAllViews();
+        }
     }
 }

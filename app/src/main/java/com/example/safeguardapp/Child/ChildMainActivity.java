@@ -328,7 +328,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             Gson gson = new Gson();
             String memberInfo = gson.toJson(locationRequest);
 
-            Log.e("JSON", memberInfo);
+            /*Log.e("JSON", memberInfo);*/
 
             Call<LocationResponse> call = userRetrofitInterface.getLocation(locationRequest);
             int finalI = i;
@@ -398,7 +398,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         // 요청 JSON 로그 출력
         SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(LoginPageFragment.saveID);
         String requestJson = gson.toJson(sectorInquireDTO);
-        Log.e("Request JSON", requestJson);
+        /*Log.e("Request JSON", requestJson);*/
 
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
         Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);

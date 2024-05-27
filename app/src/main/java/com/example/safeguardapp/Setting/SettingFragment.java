@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
@@ -91,6 +92,10 @@ public class SettingFragment extends Fragment {
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        GroupSettingFragment fragmentB = (GroupSettingFragment) getFragmentManager().findFragmentById(R.id.group_activity);
+                        if (fragmentB != null) {
+                            fragmentB.clearAideGroup();
+                        }
                         PreferenceManager.clear(getContext());
                         GroupRepository groupRepository = GroupRepository.getInstance(requireContext());
                         groupRepository.removeAllGroups();
