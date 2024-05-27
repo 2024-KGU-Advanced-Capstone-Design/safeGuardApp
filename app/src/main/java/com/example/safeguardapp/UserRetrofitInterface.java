@@ -21,6 +21,8 @@ import com.example.safeguardapp.Group.Sector.DeleteSectorRequest;
 import com.example.safeguardapp.Group.Sector.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
+import com.example.safeguardapp.Notice.GetNotificationRequest;
+import com.example.safeguardapp.Notice.GetNotificationResponse;
 import com.example.safeguardapp.Map.LocationRequest;
 import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.SignUp.CheckMemberID;
@@ -104,4 +106,7 @@ public interface UserRetrofitInterface {
 
     @POST("helperremove")
     Call<ResponseBody> removeHelper(@Body RemoveHelperRequest request);
+
+    @POST("sent-confirm")
+    Call<ResponseBody> getNotification(@Body GetNotificationRequest request);
 }
