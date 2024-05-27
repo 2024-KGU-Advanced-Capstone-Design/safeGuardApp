@@ -2,6 +2,7 @@ package com.example.safeguardapp.Group;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,6 +37,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
 
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -51,11 +53,13 @@ import retrofit2.Response;
 public class GroupSettingFragment extends Fragment {
     private String uuid;
     private String childID;
+    private String selectedItem;
     private GroupRepository repository;
     private LiveData<Optional<Group>> groupStream;
     private ChipGroup aideGroup;
     private RetrofitClient retrofitClient;
     private ArrayList<String> helperList = new ArrayList<>();
+    private ArrayList<String> typeList =new ArrayList<>();
     private UserRetrofitInterface userRetrofitInterface;
 
     public static GroupSettingFragment newInstance(String uuid, String childID) {
@@ -70,6 +74,10 @@ public class GroupSettingFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        typeList.add("도착");
+        typeList.add("출발");
+        typeList.add("?");
 
         if (getArguments() != null) {
             uuid = getArguments().getString("uuid");
@@ -123,6 +131,7 @@ public class GroupSettingFragment extends Fragment {
         view.findViewById(R.id.child_id_find_button).setOnClickListener(v -> findChildID());
         view.findViewById(R.id.child_pw_find_button).setOnClickListener(v -> findChildPW());
         view.findViewById(R.id.del_group_btn).setOnClickListener(v -> remove());
+        view.findViewById(R.id.confirm_button).setOnClickListener(v->confirm());
 
         aideGroup = view.findViewById(R.id.chip_group);
 
@@ -349,6 +358,63 @@ public class GroupSettingFragment extends Fragment {
                 .setMessage("그룹을 삭제 하시겠습니까?")
                 .setPositiveButton("삭제", (dialogInterface, i) -> {
                     transmitRemove();
+                })
+                .setNegativeButton("취소", null);
+
+        AlertDialog msgDlg = msgBuilder.create();
+        msgDlg.show();
+    }
+
+    //확인 버튼
+    private void confirm(){
+        int checknum = 0;
+
+        final String[] items = new String[typeList.size()];
+        typeList.toArray(items);
+
+        final int[] selectedPosition = {checknum};
+
+        Log.e("STRING", typeList.get(0));
+        Log.e("STRING", typeList.get(1));
+        Log.e("STRING", typeList.get(2));
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
+                .setTitle("확인")
+                .setMessage("확인 알림을 보내시겠습니까?")
+                .setSingleChoiceItems(items, checknum, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 사용자가 항목을 선택할 때마다 호출됨
+                        // 선택된 항목의 인덱스는 which에 저장됨
+                        selectedPosition[0] = which;
+                    }
+                })
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 사용자가 OK 버튼을 클릭할 때 호출됨
+                        // 선택된 항목의 인덱스를 가져옴
+                        if (selectedPosition[0] != -1) {
+                            selectedItem = items[selectedPosition[0]];
+
+                            ConfirmRequest confirmRequest = new ConfirmRequest(LoginPageFragment.saveID, childID, selectedItem);
+                            Call<ResponseBody> call = userRetrofitInterface.sendConfirm(confirmRequest);
+
+                            call.clone().enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if(response.isSuccessful()){
+                                        Toast.makeText(getContext(), "전송되었습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Toast.makeText(getContext(), "통신오류", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+                    }
                 })
                 .setNegativeButton("취소", null);
 

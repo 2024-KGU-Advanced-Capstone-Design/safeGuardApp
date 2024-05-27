@@ -41,6 +41,18 @@
                     android:layout_marginStart="20dp"/>
             </LinearLayout>
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/add_fatal_btn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/fatal"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:translationZ="1dp"
+            android:scaleType="fitCenter" />
+
         <com.naver.maps.map.widget.CompassView
             android:id="@+id/compass"
             android:layout_width="wrap_content"

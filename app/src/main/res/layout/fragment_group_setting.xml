@@ -75,6 +75,12 @@
             android:layout_height="wrap_content"
             android:text="버튼 삭제" />
 
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="확인 버튼" />
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group"
             android:layout_width="match_parent"

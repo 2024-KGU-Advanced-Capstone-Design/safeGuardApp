@@ -3,8 +3,12 @@ package com.example.safeguardapp.Child;
 import static com.naver.maps.map.NaverMap.MapType.Basic;
 import static com.naver.maps.map.NaverMap.MapType.Hybrid;
 
+import static java.security.AccessController.getContext;
+
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
@@ -19,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -73,6 +78,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     UserRetrofitInterface userRetrofitInterface;
     public MapFragment childMapFragment;
     public ChildSettingFragment childSettingFragment;
+    private ImageButton fatalButton;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
@@ -94,6 +100,8 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private String markerName;
     private Handler handler;
     private Runnable updateMarkerRunnable;
+    private String childID;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +117,8 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         // -----v----- BottomNavigationView 구현 -----v-----
         childMapFragment = new MapFragment();
         childSettingFragment = new ChildSettingFragment();
+        fatalButton = findViewById(R.id.add_fatal_btn);
+        fatalButton.setOnClickListener(v -> fatal());
 
         getSupportFragmentManager().beginTransaction().replace(R.id.containers, childMapFragment).commit();
 
@@ -125,6 +135,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                     // mapFragment를 실행시 나침반 보이게 설정
                     CompassView compassView = findViewById(R.id.compass);
                     compassView.setVisibility(View.VISIBLE);
+
                     return true;
                 } else if (item.getItemId() == R.id.setting) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, childSettingFragment).commit();
@@ -150,7 +161,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
 
         handler = new Handler(Looper.getMainLooper());
 
-        String childID = LoginPageFragment.saveID;
+        childID = LoginPageFragment.saveID;
         GetMemberIDRequest childIDDTO = new GetMemberIDRequest(childID);
         Gson gson = new Gson();
         String childInfo = gson.toJson(childIDDTO);
@@ -160,7 +171,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         memberCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful() && response.body() != null){
+                if (response.isSuccessful() && response.body() != null) {
                     Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
@@ -186,7 +197,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                                 }
                             }
                         }
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -223,11 +234,10 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void handleOnBackPressed() {
                 if (doubleBackToExitPressedOnce) {
-                    if(isAutoLogin) {
+                    if (isAutoLogin) {
                         finishAffinity(); // 현재 액티비티와 관련된 모든 액티비티를 종료
                         return;
-                    }
-                    else{
+                    } else {
                         stopService(serviceIntent);
                         Intent intent = new Intent(ChildMainActivity.this, StartScreenActivity.class);
                         startActivity(intent);
@@ -271,9 +281,9 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 CharSequence mapType = adapter.getItem(position);
-                if(mapType.equals("일반지도")){
+                if (mapType.equals("일반지도")) {
                     naverMap.setMapType(Basic);
-                }else if(mapType.equals("위성지도")){
+                } else if (mapType.equals("위성지도")) {
                     naverMap.setMapType(Hybrid);
                 }
             }
@@ -303,7 +313,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         mNaverMap.addOnLocationChangeListener(location -> {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            LocationService.transmitCoordinate(latitude,longitude);
+            LocationService.transmitCoordinate(latitude, longitude);
         });
         sectorInquire();
     }
@@ -320,7 +330,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void getMemberLocation() {
-        for(int i = 0; i < memberList.size(); i++){
+        for (int i = 0; i < memberList.size(); i++) {
             String getMemberId = memberList.get(i);
             String type = "Member";
 
@@ -344,7 +354,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                         dynamicVariables.put(finalI, memberList.get(finalI));
                         markerName = dynamicVariables.get(finalI);
 
-                        if(memberMarkers.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
+                        if (memberMarkers.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
                             Marker marker = new Marker();
                             memberMarkers.put(markerName, marker);
 
@@ -373,8 +383,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             marker.setPosition(new LatLng(latitude, longitude));
                             marker.setMap(mNaverMap);
                         }
-                    }
-                    else {
+                    } else {
                         Log.e("POST", "응답 실패 또는 바디가 null: " + response.code() + " " + response.message());
                     }
                 }
@@ -470,6 +479,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
     }
+
     private void removeAllPolygons() {
         for (PolygonOverlay overlay : polygonOverlays) {
             overlay.setMap(null);
@@ -481,5 +491,39 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(updateMarkerRunnable); // 액티비티가 종료될 때 주기적인 업데이트를 중지
+    }
+
+    private void fatal() {
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(context)
+                .setTitle("위험")
+                .setMessage("위험 알림을 보내시겠습니까?")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 사용자가 OK 버튼을 클릭할 때 호출됨
+                        // 선택된 항목의 인덱스를 가져옴
+
+                        ChildFatalRequest childFatalRequest = new ChildFatalRequest(childID);
+                        Call<ResponseBody> call = userRetrofitInterface.sendFatal(childFatalRequest);
+
+                        call.clone().enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(context, "전송되었습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Toast.makeText(context, "통신오류", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("취소", null);
+
+        AlertDialog msgDlg = msgBuilder.create();
+        msgDlg.show();
     }
 }

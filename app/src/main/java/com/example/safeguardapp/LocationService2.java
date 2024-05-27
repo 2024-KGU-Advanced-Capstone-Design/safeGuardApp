@@ -126,10 +126,11 @@ public class LocationService2 extends Service {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Log.e("POST", "전달 성공");
+//                    Log.e("POST", "전달 성공");
                     try {
                         String responseBody = response.body().string();
                         /*Log.e("POST", "Response Body: " + responseBody);*/
+//                        Log.e("POST", "Response Body: " + responseBody);
                     } catch (IOException e) {
                         Log.e("POST", "응답 본문 처리 중 오류 발생: " + e.getMessage());
                     }

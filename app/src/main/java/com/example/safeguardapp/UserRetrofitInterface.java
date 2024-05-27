@@ -1,5 +1,6 @@
 package com.example.safeguardapp;
 
+import com.example.safeguardapp.Child.ChildFatalRequest;
 import com.example.safeguardapp.Child.LocationSendRequest;
 import com.example.safeguardapp.Emergency.EmergencyRequest;
 import com.example.safeguardapp.Emergency.ReceivedEmergencyRequset;
@@ -13,6 +14,7 @@ import com.example.safeguardapp.Group.AddHelperRequest;
 import com.example.safeguardapp.Group.AddParentRequest;
 import com.example.safeguardapp.Group.CheckChildID;
 import com.example.safeguardapp.Group.ChildDTO;
+import com.example.safeguardapp.Group.ConfirmRequest;
 import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GetMemberIDRequest;
 import com.example.safeguardapp.Group.RemoveHelperRequest;
@@ -122,4 +124,10 @@ public interface UserRetrofitInterface {
 
     @POST("received-emergency")
     Call<ResponseBody> getEmergency(@Body ReceivedEmergencyRequset request);
+
+    @POST("send-confirm")
+    Call<ResponseBody> sendConfirm(@Body ConfirmRequest request);
+
+    @POST("fatal")
+    Call<ResponseBody> sendFatal(@Body ChildFatalRequest request);
 }
