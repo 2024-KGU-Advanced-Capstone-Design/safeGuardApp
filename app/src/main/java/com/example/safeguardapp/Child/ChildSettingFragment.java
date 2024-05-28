@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -18,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.safeguardapp.FindPW.EmailRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
@@ -69,6 +72,9 @@ public class ChildSettingFragment extends Fragment {
                 previous();
             }
         });
+
+        LinearLayout linearLayout = view.findViewById(R.id.child_setting_screen);
+        YoYo.with(Techniques.FadeIn).duration(700).repeat(0).playOn(linearLayout);
     }
 
     private void changeNameMethod() {
