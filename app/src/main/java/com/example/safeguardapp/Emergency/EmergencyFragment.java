@@ -12,19 +12,28 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safeguardapp.Group.GetChildIDRequest;
+import com.example.safeguardapp.Group.GroupFragment;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
+import com.example.safeguardapp.data.model.EmergencyItem;
+import com.example.safeguardapp.data.model.Group;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -37,27 +46,42 @@ public class EmergencyFragment extends Fragment {
     private Button addEmergencyBtn;
     private String selectedItem;
     private ArrayList<String> childList = new ArrayList<>();
+    private Map<Integer, List<String>> emergencyDataMap = new HashMap<>();
+    private RecyclerView recyclerView;
+    private EmergencyAdapter emergencyAdapter;
+    private List<EmergencyItem> emergencyItemList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_emergency, container, false);
+
+        initializeView(view);
+        setupListeners();
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        initializeView(view);
-        setupListeners();
-
     }
 
     private void initializeView(View view) {
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
+
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        emergencyAdapter = new EmergencyAdapter(emergencyItemList, new EmergencyAdapter.OnItemClickListener(){
+            @Override
+            public void onItemClick(EmergencyItem item) {
+                // Handle item click
+            }
+        });
+        recyclerView.setAdapter(emergencyAdapter);
 
         addEmergencyBtn = view.findViewById(R.id.add_emergency_btn);
     }
@@ -77,7 +101,7 @@ public class EmergencyFragment extends Fragment {
         final int[] selectedPosition = {checknum};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Choose an option")
+        builder.setTitle("긴급 알림 전송")
                 .setSingleChoiceItems(items, checknum, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -107,20 +131,16 @@ public class EmergencyFragment extends Fragment {
         GetChildIDRequest memberIDDTO = new GetChildIDRequest(memberID);
         Gson gson = new Gson();
         String memberInfo = gson.toJson(memberIDDTO);
-        Log.e("JSON", memberInfo);
 
         Call<ResponseBody> call = userRetrofitInterface.getChildID(memberIDDTO);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
-                        Log.e("POST", "응답성공");
 
                         // 각 키-값 쌍을 처리
                         for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
@@ -130,8 +150,6 @@ public class EmergencyFragment extends Fragment {
                             } else {
                                 childList.add(value);
                             }
-
-                            Log.e("Child ID", "Key: " + key + ", Value: " + value);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -179,48 +197,59 @@ public class EmergencyFragment extends Fragment {
         String memberId = LoginPageFragment.saveID;
 
         SentEmergencyRequest sentEmergencyRequest = new SentEmergencyRequest(memberId);
+        Gson gson = new Gson();
+        String dto = gson.toJson(sentEmergencyRequest);
+
         Call<ResponseBody> call = userRetrofitInterface.sentEmergency(sentEmergencyRequest);
         call.clone().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
-
+                        int i = 0;
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
-
                             JSONObject innerJson = json.getJSONObject(topKey);
 
                             // 내부 키 순회
+                            List<String> list = emergencyDataMap.get(i);
+                            if (list == null) {
+                                list = new ArrayList<>();
+                                emergencyDataMap.put(i, list);
+                            }
+
                             for (Iterator<String> innerIt = innerJson.keys(); innerIt.hasNext(); ) {
                                 String innerKey = innerIt.next();
-                                /*if(innerKey.equals(""))
                                 String value = innerJson.getString(innerKey);
-
-                                // memberList에 값 추가
-                                helperList.add(value);
-
-                                updateAideUi();
-                                // 여기서 키와 값을 사용할 수 있습니다.
-                                Log.e("Parsed Data", "TopKey: " + topKey + ", InnerKey: " + innerKey + ", Value: " + value);*/
+                                list.add(value);
                             }
+                            emergencyItemList.add(new EmergencyItem(topKey));
+                            i += 1;
                         }
+
+                        // 어댑터에 데이터 변경 알림
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                emergencyAdapter.notifyDataSetChanged();
+                            }
+                        });
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Log.e("POST", String.valueOf(response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
@@ -234,7 +263,7 @@ public class EmergencyFragment extends Fragment {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                 }
             }
@@ -245,5 +274,66 @@ public class EmergencyFragment extends Fragment {
             }
         });
     }
+
+    //알림 버튼 동적 생성
+    private void createMyEmergencyBtn(){
+
+    }
+
+    //recyclerView adapter 설정
+    private static class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.EmergencyViewHolder> {
+        private final List<EmergencyItem> emergencyItemList;
+        private final OnItemClickListener listener;
+
+        public interface OnItemClickListener {
+            void onItemClick(EmergencyItem item);
+        }
+
+        public EmergencyAdapter(List<EmergencyItem> emergencyItemList, OnItemClickListener listener) {
+            this.emergencyItemList = emergencyItemList;
+            this.listener = listener;
+        }
+
+        @NonNull
+        @Override
+        public EmergencyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = inflater.inflate(R.layout.item_group, parent, false);
+            return new EmergencyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull EmergencyViewHolder holder, int position) {
+            EmergencyItem item = emergencyItemList.get(position);
+            holder.bind(item, listener);
+        }
+
+        @Override
+        public int getItemCount() {
+            return emergencyItemList.size();
+        }
+
+        static class EmergencyViewHolder extends RecyclerView.ViewHolder {
+            public MaterialButton button;
+
+            public EmergencyViewHolder(@NonNull View itemView) {
+                super(itemView);
+                button = itemView.findViewById(R.id.button);
+            }
+
+            public void bind(final EmergencyItem item, final OnItemClickListener listener) {
+                button.setText(item.getKey());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onItemClick(item);
+                    }
+                });
+            }
+        }
+    }
+
 }
+
+
 
