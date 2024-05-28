@@ -28,8 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.safeguardapp.Child.LocationService;
-import com.example.safeguardapp.Emergency.EmergencyFragment;
+import com.example.safeguardapp.Emergency.MyEmergencyFragment;
 import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GroupFragment;
 import com.example.safeguardapp.Group.Sector.SectorDetails;
@@ -522,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         compassView.setVisibility(View.GONE);
 
         emergencyBtn.setVisibility(View.GONE);
-        getSupportFragmentManager().beginTransaction().replace(R.id.containers, new EmergencyFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.containers, new MyEmergencyFragment()).commit();
     }
     private void removeAllPolygons() {
         for (PolygonOverlay overlay : polygonOverlays) {

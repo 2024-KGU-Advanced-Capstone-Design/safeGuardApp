@@ -13,8 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            app:title="긴급 알림"
+            app:title="childName 긴급 알림 게시판"
             app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -30,7 +29,28 @@
         android:padding="24dp"
         tools:context=".Group.GroupFragment">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="date"
+            android:textSize="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="childName의 아이의 위치가 확인되지 않고 있습니다. 근처에 계신 분들의 힘이 필요합니다"
+            android:textSize="19dp"/>
+
+        <android.widget.Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="end"
+            android:text="글쓰기"
+            android:background="@drawable/basic_button_design"/>
+
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="15dp"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -38,13 +58,7 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <android.widget.Button
-            android:id="@+id/add_emergency_btn"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:background="@drawable/basic_button_design"
-            android:text="알림 보내기"
-            android:textSize="30dp" />
+
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

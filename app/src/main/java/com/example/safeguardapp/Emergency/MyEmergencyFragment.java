@@ -8,22 +8,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safeguardapp.Group.GetChildIDRequest;
-import com.example.safeguardapp.Group.GroupFragment;
+import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
-import com.example.safeguardapp.data.model.EmergencyItem;
-import com.example.safeguardapp.data.model.Group;
+import com.example.safeguardapp.data.model.ReceivedEmergencyItem;
+import com.example.safeguardapp.data.model.SentEmergencyItem;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 
@@ -40,22 +46,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EmergencyFragment extends Fragment {
+public class MyEmergencyFragment extends Fragment {
     RetrofitClient retrofitClient;
     UserRetrofitInterface userRetrofitInterface;
     private Button addEmergencyBtn;
-    private String selectedItem;
+    private ImageButton transformBtn;
+    private String selectedItem, currentEmergencyUuid;
     private ArrayList<String> childList = new ArrayList<>();
     private Map<Integer, List<String>> emergencyDataMap = new HashMap<>();
     private RecyclerView recyclerView;
-    private EmergencyAdapter emergencyAdapter;
-    private List<EmergencyItem> emergencyItemList = new ArrayList<>();
+    private MyEmergencyAdapter  myEmergencyAdapter;
+
+    private List<SentEmergencyItem> emergencyItemList = new ArrayList<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_emergency, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_emergency, container, false);
 
         initializeView(view);
         setupListeners();
@@ -66,6 +75,13 @@ public class EmergencyFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                previous();
+            }
+        });
     }
 
     private void initializeView(View view) {
@@ -75,21 +91,25 @@ public class EmergencyFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        emergencyAdapter = new EmergencyAdapter(emergencyItemList, new EmergencyAdapter.OnItemClickListener(){
+        myEmergencyAdapter = new MyEmergencyAdapter(emergencyItemList, new MyEmergencyAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(EmergencyItem item) {
-                // Handle item click
+            public void onItemClick(SentEmergencyItem item) {
+                currentEmergencyUuid = item.getMyEmergencyUuid();
             }
         });
-        recyclerView.setAdapter(emergencyAdapter);
+        recyclerView.setAdapter(myEmergencyAdapter);
 
         addEmergencyBtn = view.findViewById(R.id.add_emergency_btn);
+        transformBtn = view.findViewById(R.id.toolbar_image_button);
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> previous());
     }
 
     private void setupListeners() {
         loadChildList();
         sentEmergency();
         addEmergencyBtn.setOnClickListener(v -> addEmergency());
+        transformBtn.setOnClickListener(v -> transScreenToOther());
     }
 
     private void addEmergency() {
@@ -210,6 +230,7 @@ public class EmergencyFragment extends Fragment {
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
                         int i = 0;
+                        String alertText = "긴급 알림";
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
@@ -227,7 +248,8 @@ public class EmergencyFragment extends Fragment {
                                 String value = innerJson.getString(innerKey);
                                 list.add(value);
                             }
-                            emergencyItemList.add(new EmergencyItem(topKey));
+
+                            emergencyItemList.add(new SentEmergencyItem(topKey, list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), alertText));
                             i += 1;
                         }
 
@@ -235,7 +257,7 @@ public class EmergencyFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                emergencyAdapter.notifyDataSetChanged();
+                                myEmergencyAdapter.notifyDataSetChanged();
                             }
                         });
 
@@ -254,42 +276,32 @@ public class EmergencyFragment extends Fragment {
         });
     }
 
-    //받은 emergency 조회(다른 사람이 보낸 emergency)
-    private void receivedEmergency() {
-        String memberId = LoginPageFragment.saveID;
-
-        ReceivedEmergencyRequset receivedEmergencyRequset = new ReceivedEmergencyRequset(memberId);
-        Call<ResponseBody> call = userRetrofitInterface.getEmergency(receivedEmergencyRequset);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+    private void transScreenToOther(){
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.containers, new OtherEmergencyFragment());
+        transaction.commit();
     }
 
-    //알림 버튼 동적 생성
-    private void createMyEmergencyBtn(){
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        // 이동 시에는 이미 생성된 mapFragment를 사용하여 교체
+        transaction.replace(R.id.containers, ((MainActivity) requireActivity()).mapFragment);
+        transaction.commit();
 
+        BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
+        navigationView.setSelectedItemId(R.id.map);
     }
 
     //recyclerView adapter 설정
-    private static class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.EmergencyViewHolder> {
-        private final List<EmergencyItem> emergencyItemList;
+    private static class MyEmergencyAdapter extends RecyclerView.Adapter<MyEmergencyAdapter.EmergencyViewHolder> {
+        private final List<SentEmergencyItem> emergencyItemList;
         private final OnItemClickListener listener;
 
         public interface OnItemClickListener {
-            void onItemClick(EmergencyItem item);
+            void onItemClick(SentEmergencyItem item);
         }
 
-        public EmergencyAdapter(List<EmergencyItem> emergencyItemList, OnItemClickListener listener) {
+        public MyEmergencyAdapter(List<SentEmergencyItem> emergencyItemList, OnItemClickListener listener) {
             this.emergencyItemList = emergencyItemList;
             this.listener = listener;
         }
@@ -304,7 +316,7 @@ public class EmergencyFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull EmergencyViewHolder holder, int position) {
-            EmergencyItem item = emergencyItemList.get(position);
+            SentEmergencyItem item = emergencyItemList.get(position);
             holder.bind(item, listener);
         }
 
@@ -321,8 +333,8 @@ public class EmergencyFragment extends Fragment {
                 button = itemView.findViewById(R.id.button);
             }
 
-            public void bind(final EmergencyItem item, final OnItemClickListener listener) {
-                button.setText(item.getKey());
+            public void bind(final SentEmergencyItem item, final OnItemClickListener listener) {
+                button.setText(item.getTopkey() + " " + item.getChildName() + " " + item.getAlertText());
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -332,7 +344,6 @@ public class EmergencyFragment extends Fragment {
             }
         }
     }
-
 }
 
 
