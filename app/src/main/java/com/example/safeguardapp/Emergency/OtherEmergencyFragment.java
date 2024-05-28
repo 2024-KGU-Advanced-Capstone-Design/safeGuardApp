@@ -89,7 +89,10 @@ public class OtherEmergencyFragment extends Fragment {
         otherEmergencyAdapter = new OtherEmergencyAdapter(otherEmergencyItemList, new OtherEmergencyAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ReceivedEmergencyItem item) {
-                // Handle item click
+                currentEmergencyUuid = item.getOtherEmergencyUuid();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.containers, OtherNoticeBoardFragment.newInstance(currentEmergencyUuid, item.getChildName(), item.getDate(), item.getTopkey(), item.getMemberId()));
+                transaction.commit();
             }
         });
         recyclerView.setAdapter(otherEmergencyAdapter);
@@ -144,8 +147,6 @@ public class OtherEmergencyFragment extends Fragment {
     private void loadChildList() {
         String memberID = LoginPageFragment.saveID;
         GetChildIDRequest memberIDDTO = new GetChildIDRequest(memberID);
-        Gson gson = new Gson();
-        String memberInfo = gson.toJson(memberIDDTO);
 
         Call<ResponseBody> call = userRetrofitInterface.getChildID(memberIDDTO);
         call.enqueue(new Callback<ResponseBody>() {
@@ -250,7 +251,7 @@ public class OtherEmergencyFragment extends Fragment {
                                 otherEmergencyAdapter.notifyDataSetChanged();
                             }
                         });
-                        Log.e("EmergencyFragment", "otherEmergencyDataMap: " + otherEmergencyDataMap.toString());
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

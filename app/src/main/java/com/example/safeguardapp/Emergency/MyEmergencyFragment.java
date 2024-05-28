@@ -95,6 +95,9 @@ public class MyEmergencyFragment extends Fragment {
             @Override
             public void onItemClick(SentEmergencyItem item) {
                 currentEmergencyUuid = item.getMyEmergencyUuid();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.containers, MyNoticeBoardFragment.newInstance(currentEmergencyUuid, item.getChildName(), item.getDate(), item.getTopkey(), item.getMemberId()));
+                transaction.commit();
             }
         });
         recyclerView.setAdapter(myEmergencyAdapter);
@@ -248,7 +251,6 @@ public class MyEmergencyFragment extends Fragment {
                                 String value = innerJson.getString(innerKey);
                                 list.add(value);
                             }
-
                             emergencyItemList.add(new SentEmergencyItem(topKey, list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), alertText));
                             i += 1;
                         }
@@ -345,6 +347,3 @@ public class MyEmergencyFragment extends Fragment {
         }
     }
 }
-
-
-

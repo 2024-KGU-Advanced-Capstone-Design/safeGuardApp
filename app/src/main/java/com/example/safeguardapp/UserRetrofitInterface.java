@@ -2,6 +2,9 @@ package com.example.safeguardapp;
 
 import com.example.safeguardapp.Child.ChildFatalRequest;
 import com.example.safeguardapp.Child.LocationSendRequest;
+import com.example.safeguardapp.Emergency.CommentLoadRequest;
+import com.example.safeguardapp.Emergency.CommentSendRequest;
+import com.example.safeguardapp.Emergency.DeleteEmergencyRequest;
 import com.example.safeguardapp.Emergency.EmergencyRequest;
 import com.example.safeguardapp.Emergency.ReceivedEmergencyRequset;
 import com.example.safeguardapp.Emergency.SentEmergencyRequest;
@@ -130,4 +133,13 @@ public interface UserRetrofitInterface {
 
     @POST("fatal")
     Call<ResponseBody> sendFatal(@Body ChildFatalRequest request);
+
+    @POST("write-comment")
+    Call<ResponseBody> sendComment(@Body CommentSendRequest jsonUser);
+
+    @POST("emergency-detail")
+    Call<ResponseBody> loadComment(@Body CommentLoadRequest request);
+
+    @POST("delete-comment")
+    Call<ResponseBody> deleteEmergency(@Body DeleteEmergencyRequest jsonUser);
 }
