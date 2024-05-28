@@ -27,20 +27,30 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
     @NonNull
     @Override
     public NoticeAdapter.NoticeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_notice,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.notice_textview,parent,false);
         return new NoticeViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NoticeAdapter.NoticeViewHolder holder, int position) {
         Notice notice = noticeList.get(position);
+
         String title = notice.getTitle();
         String content = notice.getContent();
         String date = notice.getDate();
         String type = notice.getType();
         String child = notice.getChild();
 
-        holder.textView.setText(title+content+date+type+child);
+//        content = content.split(": ")[1];
+//        String[] newDate = date.split("T");
+//        String[] time = newDate[1].split(".");
+//        date = newDate[0]+time[1];
+
+        holder.textTitle.setText(title);
+        holder.textContent.setText(content);
+        holder.textDate.setText(date);
+        holder.textType.setText(type);
+        holder.textChild.setText(child);
 
     }
 
@@ -50,11 +60,20 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
     }
 
     public static class NoticeViewHolder extends RecyclerView.ViewHolder{
-        TextView textView;
+        TextView textTitle;
+        TextView textContent;
+        TextView textDate;
+        TextView textType;
+        TextView textChild;
 
         public NoticeViewHolder(@NonNull View itemView){
             super(itemView);
-            textView = itemView.findViewById(R.id.text_view);
+            textTitle = itemView.findViewById(R.id.text_title);
+            textContent = itemView.findViewById(R.id.text_content);
+            textDate = itemView.findViewById(R.id.text_date);
+            textType = itemView.findViewById(R.id.text_type);
+            textChild = itemView.findViewById(R.id.text_child);
+
         }
     }
 }

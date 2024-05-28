@@ -130,7 +130,6 @@ public class NoticeFragment extends Fragment {
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
                         Log.e("Response JSON", json.toString());
-                        Log.e("POST","대체 뭐임");
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
@@ -158,8 +157,6 @@ public class NoticeFragment extends Fragment {
                 else{
                     Log.e("POST", String.valueOf(response.code()));
                 }
-                Log.e("POST","대체 뭐임");
-
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
