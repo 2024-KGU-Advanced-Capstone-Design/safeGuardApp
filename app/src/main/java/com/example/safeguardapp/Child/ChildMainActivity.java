@@ -3,8 +3,6 @@ package com.example.safeguardapp.Child;
 import static com.naver.maps.map.NaverMap.MapType.Basic;
 import static com.naver.maps.map.NaverMap.MapType.Hybrid;
 
-import static java.security.AccessController.getContext;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -101,7 +99,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private Handler handler;
     private Runnable updateMarkerRunnable;
     private String childID;
-    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +132,9 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                     // mapFragment를 실행시 나침반 보이게 설정
                     CompassView compassView = findViewById(R.id.compass);
                     compassView.setVisibility(View.VISIBLE);
-
+                    // mapFragment를 실행시 fatal 버튼 보이게 설정
+                    ImageButton fatalButton = findViewById(R.id.add_fatal_btn);
+                    fatalButton.setVisibility(View.VISIBLE);
                     return true;
                 } else if (item.getItemId() == R.id.setting) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.containers, childSettingFragment).commit();
@@ -145,6 +144,9 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                     // SettingFragment를 실행시 나침반 안 보이게 설정
                     CompassView compassView = findViewById(R.id.compass);
                     compassView.setVisibility(View.GONE);
+                    // SettingFragment를 실행시 fatal 버튼 안 보이게 설정
+                    ImageButton fatalButton = findViewById(R.id.add_fatal_btn);
+                    fatalButton.setVisibility(View.GONE);
                     return true;
                 }
                 return false;
