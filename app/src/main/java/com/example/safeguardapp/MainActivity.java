@@ -133,10 +133,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         emergencyBtn.setOnClickListener(v -> emergency());
 
         NavigationBarView navigationBarView = findViewById(R.id.bottom_navigationview);
+        getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
                 Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.containers);
 
                 if (item.getItemId() == R.id.map) {
