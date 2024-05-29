@@ -86,6 +86,7 @@ public class FindChildPWCertFragment extends Fragment {
                     FindChildPWFragment.setArguments(args);
                     FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
                     fragmentTransaction.replace(R.id.containers, FindChildPWFragment);
                     fragmentTransaction.commit();
                     Log.e("POST", "인증 성공");
@@ -115,6 +116,7 @@ public class FindChildPWCertFragment extends Fragment {
 
     private void previous(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
         transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
         transaction.commit();
     }

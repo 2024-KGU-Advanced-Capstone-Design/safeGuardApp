@@ -144,6 +144,7 @@ public class GroupSettingFragment extends Fragment {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 // 이동 시에는 이미 생성된 mapFragment를 사용하여 교체
+                transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
                 transaction.replace(R.id.containers, ((MainActivity) requireActivity()).groupFragment);
                 transaction.commit();
 
@@ -203,6 +204,7 @@ public class GroupSettingFragment extends Fragment {
     private void previous(){
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
         fragmentTransaction.replace(R.id.containers, new GroupFragment());
         fragmentTransaction.commit();
     }
@@ -448,6 +450,7 @@ public class GroupSettingFragment extends Fragment {
                     FindChildPWCertFragment.setArguments(args);
                     FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
                     fragmentTransaction.replace(R.id.containers, FindChildPWCertFragment);
                     fragmentTransaction.commit();
                 } else {

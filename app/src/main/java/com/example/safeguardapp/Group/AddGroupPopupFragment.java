@@ -246,6 +246,7 @@ public class AddGroupPopupFragment extends Fragment {
 
     private void previous(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
         transaction.replace(R.id.containers, new GroupFragment());
         transaction.commit();
     }

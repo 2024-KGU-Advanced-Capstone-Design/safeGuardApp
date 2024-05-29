@@ -82,6 +82,7 @@ public class GroupFragment extends Fragment {
                     currentGroupUuid = group.getUuid(); // 클릭한 그룹의 UUID를 저장
                     childID = group.getId();
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                     transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childID));
                     transaction.commit();
                 }
@@ -96,7 +97,7 @@ public class GroupFragment extends Fragment {
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                // 이동 시에는 이미 생성된 mapFragment를 사용하여 교체
+                transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
                 transaction.replace(R.id.containers, ((MainActivity) requireActivity()).mapFragment);
                 transaction.commit();
 
@@ -120,6 +121,7 @@ public class GroupFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
                 fragmentTransaction.replace(R.id.containers, new AddGroupPopupFragment());
                 fragmentTransaction.commit();
             }

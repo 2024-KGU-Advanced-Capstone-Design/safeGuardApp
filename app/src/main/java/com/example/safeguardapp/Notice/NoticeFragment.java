@@ -7,19 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
+import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Notice;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
 
@@ -109,6 +113,12 @@ public class NoticeFragment extends Fragment {
             Log.e("NoticeFragment", "RecyclerView is null");
         }
         */
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                previous();
+            }
+        });
     }
 
     public void getNoti() {
@@ -163,5 +173,14 @@ public class NoticeFragment extends Fragment {
             }
         });
 
+    }
+    private void previous(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+        transaction.replace(R.id.containers, ((MainActivity) requireActivity()).mapFragment);
+        transaction.commit();
+
+        BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
+        navigationView.setSelectedItemId(R.id.map);
     }
 }

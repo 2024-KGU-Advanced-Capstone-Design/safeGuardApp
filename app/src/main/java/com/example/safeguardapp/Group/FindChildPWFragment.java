@@ -194,6 +194,7 @@ public class FindChildPWFragment extends Fragment {
     private void previous() {
         if (currentGroupUuid != null) {
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
             transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childName));
             transaction.commit();
         }
