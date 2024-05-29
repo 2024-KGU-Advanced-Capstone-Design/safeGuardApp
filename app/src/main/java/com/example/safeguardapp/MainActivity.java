@@ -5,8 +5,11 @@ import static com.naver.maps.map.NaverMap.MapType.Hybrid;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.TransitionRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Context;
@@ -20,6 +23,7 @@ import android.util.Log;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.MenuItem;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -128,14 +132,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         emergencyBtn = findViewById(R.id.add_emergency_btn);
         emergencyBtn.setOnClickListener(v -> emergency());
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
-
         NavigationBarView navigationBarView = findViewById(R.id.bottom_navigationview);
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.containers);
+
                 if (item.getItemId() == R.id.map) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.containers, mapFragment).commit();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+                    transaction.replace(R.id.containers, mapFragment).commit();
                     mapFragment.getMapAsync(MainActivity.this);
                     // mapFragment를 실행시 mapModeNav 보이게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
@@ -147,7 +154,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     emergencyBtn.setVisibility(View.VISIBLE);
                     return true;
                 } else if (item.getItemId() == R.id.setting) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.containers, settingFragment).commit();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+                    transaction.replace(R.id.containers, settingFragment).commit();
                     // SettingFragment를 실행시 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.GONE);
@@ -158,7 +167,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     emergencyBtn.setVisibility(View.GONE);
                     return true;
                 } else if (item.getItemId() == R.id.notice) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.containers, noticeFragment).commit();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    if (currentFragment instanceof SettingFragment) {
+                        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else {
+                        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+                    }
+                    transaction.replace(R.id.containers, noticeFragment).commit();
                     // NoticeFragment를 실행시 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.GONE);
@@ -169,7 +184,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     emergencyBtn.setVisibility(View.GONE);
                     return true;
                 } else if (item.getItemId() == R.id.group) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.containers, groupFragment).commit();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    if (currentFragment instanceof NoticeFragment || currentFragment instanceof SettingFragment) {
+                        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else {
+                        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+                    }
+                    transaction.replace(R.id.containers, groupFragment).commit();
                     // GroupFragment를 실행시 mapModeNav를 사라지게 설정
                     LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
                     mapModeNav.setVisibility(View.GONE);
@@ -218,9 +239,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
                             String key = keys.next();
                             String value = json.getString(key);
-                            if(key.equals("status")){
-                            }
-                            else{
+                            if (key.equals("status")) {
+                            } else {
                                 childList.add(value);
                             }
 
@@ -242,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-        for(int i = 0; i < childList.size(); i++) {
+        for (int i = 0; i < childList.size(); i++) {
             dynamicVariables.put(i, childList.get(i));
             markerName = dynamicVariables.get(i);
         }
@@ -291,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-        for(int i = 0; i < childList2.size(); i++) {
+        for (int i = 0; i < childList2.size(); i++) {
             dynamicVariables2.put(i, childList2.get(i));
             markerName = dynamicVariables2.get(i);
         }
@@ -401,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mNaverMap.addOnLocationChangeListener(location -> {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            LocationService2.transmitCoordinate(latitude,longitude);
+            LocationService2.transmitCoordinate(latitude, longitude);
         });
         sectorInquire();
     }
@@ -410,15 +430,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // request code와 권한 획득 여부 확인
-        if(requestCode == PERMISSION_REQUEST_CODE){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
             }
         }
     }
 
-    private void getChildLocation(ArrayList<String> childArrayList, HashMap<Integer, String> dynamicVariablesMap, HashMap<String, Marker> childMarkersMap){
-        for(int i = 0; i < childArrayList.size(); i++) {
+    private void getChildLocation(ArrayList<String> childArrayList, HashMap<Integer, String> dynamicVariablesMap, HashMap<String, Marker> childMarkersMap) {
+        for (int i = 0; i < childArrayList.size(); i++) {
             String getChildId = childArrayList.get(i);
             String type = "Child";
 
@@ -438,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         dynamicVariablesMap.put(finalI, childArrayList.get(finalI));
                         markerName = dynamicVariablesMap.get(finalI);
 
-                        if(childMarkersMap.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
+                        if (childMarkersMap.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
                             Marker marker = new Marker();
                             childMarkersMap.put(markerName, marker);
 
@@ -485,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
-        for(String childId : childList) {
+        for (String childId : childList) {
             // 요청 JSON 로그 출력
             SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childId);
             String requestJson = gson.toJson(sectorInquireDTO);
@@ -563,7 +583,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void emergency(){
+    private void emergency() {
         LinearLayout mapModeNav = findViewById(R.id.mapModeNav);
         mapModeNav.setVisibility(View.GONE);
         // SettingFragment를 실행시 나침반 안 보이게 설정
@@ -573,6 +593,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         emergencyBtn.setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction().replace(R.id.containers, new MyEmergencyFragment()).commit();
     }
+
     private void removeAllPolygons() {
         for (PolygonOverlay overlay : polygonOverlays) {
             overlay.setMap(null);
