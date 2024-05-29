@@ -85,10 +85,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Boolean doubleBackToExitPressedOnce = false;
     private Intent serviceIntent;
 
+    // member와 연결되어 있는 chlid 위치 관리하는 자료구조
     private ArrayList<String> childList = new ArrayList<>();
+    private HashMap<Integer, String> dynamicVariables = new HashMap<>();
+    private HashMap<String, Marker> childMarkers = new HashMap<>();
 
-    private Map<Integer, String> dynamicVariables = new HashMap<>();
-    private Map<String, Marker> childMarkers = new HashMap<>();
+    // helper와 연결되어 있는 child 위치 관리하는 자료구조
+    private ArrayList<String> childList2 = new ArrayList<>();
+    private HashMap<Integer, String> dynamicVariables2 = new HashMap<>();
+    private HashMap<String, Marker> childMarkers2 = new HashMap<>();
+
+    private String markerName;
+
     private List<PolygonOverlay> polygonOverlays = new ArrayList<>();
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String[] PERMISSIONS = {
@@ -97,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.ACCESS_NOTIFICATION_POLICY
     };
-    private String markerName;
 
     private Handler handler;
     private Runnable updateMarkerRunnable;
@@ -190,11 +197,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         handler = new Handler(Looper.getMainLooper());
 
-        //childList Create
+        //childList Create(member의 child 리스트 생성)
         String memberID = LoginPageFragment.saveID;
         GetChildIDRequest memberIDDTO = new GetChildIDRequest(memberID);
-        Gson ggson = new Gson();
-        String memberInfo = ggson.toJson(memberIDDTO);
 
         Call<ResponseBody> childCall = userRetrofitInterface.getChildID(memberIDDTO);
         childCall.enqueue(new Callback<ResponseBody>() {
@@ -242,11 +247,62 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             markerName = dynamicVariables.get(i);
         }
 
+        //childList2 Create(helper의 child 리스트 생성)
+        String helperID = LoginPageFragment.saveID;
+        GetChildIDRequest helperIDDTO = new GetChildIDRequest(helperID);
+
+        Call<ResponseBody> childCall2 = userRetrofitInterface.getHelperID(helperIDDTO);
+        childCall2.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e("POST", "응답성공");
+                    try {
+                        // 응답 본문을 문자열로 변환
+                        String responseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(responseBodyString);
+                        Log.e("Response JSON", json.toString());
+                        Log.e("POST", "응답성공");
+
+                        // "Helping" 키를 가져와서 그 안의 키-값 쌍을 처리
+                        if (json.has("Helping")) {
+                            JSONObject helpingJson = json.getJSONObject("Helping");
+                            for (Iterator<String> keys = helpingJson.keys(); keys.hasNext(); ) {
+                                String key = keys.next();
+                                String value = helpingJson.getString(key);
+                                childList2.add(value);
+                                Log.e("Child ID", "Key: " + key + ", Value: " + value);
+                            }
+                        } else {
+                            Log.e("getChildID", "'Helping' key is missing in the response");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("getChildID", "Response body is null or request failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("getChildID", "Request failed", t);
+            }
+        });
+
+
+        for(int i = 0; i < childList2.size(); i++) {
+            dynamicVariables2.put(i, childList2.get(i));
+            markerName = dynamicVariables2.get(i);
+        }
+
+
         // 마커를 업데이트하는 Runnable 정의
         updateMarkerRunnable = new Runnable() {
             @Override
             public void run() {
-                getChildLocation();
+                getChildLocation(childList, dynamicVariables, childMarkers); // member의 child 위치 가져오기
+                getChildLocation(childList2, dynamicVariables2, childMarkers2); // helper의 child 위치 가져오기
                 handler.postDelayed(this, 2000); // 2초마다 실행
             }
         };
@@ -350,8 +406,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         sectorInquire();
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -363,16 +417,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void getChildLocation(){
-        for(int i = 0; i < childList.size(); i++) {
-            String getChildId = childList.get(i);
+    private void getChildLocation(ArrayList<String> childArrayList, HashMap<Integer, String> dynamicVariablesMap, HashMap<String, Marker> childMarkersMap){
+        for(int i = 0; i < childArrayList.size(); i++) {
+            String getChildId = childArrayList.get(i);
             String type = "Child";
 
             LocationRequest locationRequest = new LocationRequest(type, getChildId);
-            Gson gson = new Gson();
-            String childInfo = gson.toJson(locationRequest);
-
-            /*Log.e("JSON", childInfo);*/
 
             Call<LocationResponse> call = userRetrofitInterface.getLocation(locationRequest);
             int finalI = i;
@@ -385,12 +435,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         double latitude = result.getLatitude();
                         double longitude = result.getLongitude();
 
-                        dynamicVariables.put(finalI, childList.get(finalI));
-                        markerName = dynamicVariables.get(finalI);
+                        dynamicVariablesMap.put(finalI, childArrayList.get(finalI));
+                        markerName = dynamicVariablesMap.get(finalI);
 
-                        if(childMarkers.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
+                        if(childMarkersMap.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
                             Marker marker = new Marker();
-                            childMarkers.put(markerName, marker);
+                            childMarkersMap.put(markerName, marker);
 
                             marker.setCaptionText(getChildId);
                             marker.setCaptionAligns(Align.Top);
@@ -402,10 +452,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             marker.setPosition(new LatLng(latitude, longitude));
                             marker.setMap(mNaverMap);
                         } else { // 해당 childMarker가 이미 생성되어 있는 경우
-                            childMarkers.get(markerName).setMap(null);
+                            childMarkersMap.get(markerName).setMap(null);
 
                             Marker marker = new Marker();
-                            childMarkers.replace(markerName, marker);
+                            childMarkersMap.replace(markerName, marker);
 
                             marker.setCaptionText(getChildId);
                             marker.setCaptionAligns(Align.Top);
