@@ -92,9 +92,6 @@ public interface UserRetrofitInterface {
     @POST("return-coordinate")
     Call<LocationResponse> getLocation(@Body LocationRequest locationRequest);
 
-//    @POST("return-coordinate")
-//    Call<MemberLocationResponse> getMemberLocation(@Body MemberLocationRequest memberLocationRequest);
-
     @POST("read-areas")
     Call<ResponseBody> getSectorLocation(@Body RequestBody body);
 
@@ -103,6 +100,9 @@ public interface UserRetrofitInterface {
 
     @POST("find-member-by-child")
     Call<ResponseBody> getMemberID(@Body GetMemberIDRequest request);
+
+    @POST("find-helping-list")
+    Call<ResponseBody> getHelperID(@Body GetChildIDRequest request);
 
     @POST("delete-area")
     Call<ResponseBody> deleteSector(@Body DeleteSectorRequest jsonUser);
