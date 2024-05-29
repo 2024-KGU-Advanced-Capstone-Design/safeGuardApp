@@ -47,8 +47,8 @@ import retrofit2.Response;
 public class MyNoticeBoardFragment extends Fragment {
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
-    private String uuid, childName, date, inputText, emergencyId, senderId;
-    private Button emergModify, delEmerg;
+    private String uuid, childName, date, inputText, emergencyId, senderId, currentCommentId;
+    private Button emergModify;
     private MaterialToolbar title;
     private TextView dateSet, textSet;
     private RecyclerView recyclerView;
@@ -114,7 +114,6 @@ public class MyNoticeBoardFragment extends Fragment {
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
         emergModify = view.findViewById(R.id.comment_write);
-        delEmerg = view.findViewById(R.id.delete_emergency);
         title = view.findViewById(R.id.toolbar);
         dateSet = view.findViewById(R.id.emergency_date);
         textSet = view.findViewById(R.id.emergency_text);
@@ -124,7 +123,8 @@ public class MyNoticeBoardFragment extends Fragment {
         myCommentAdapter = new MyCommentAdapter(commentItemList, senderId, new MyCommentAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(EmergencyCommentItem item) {
-
+                currentCommentId = item.getTopkey();
+                delCommentMethod();
             }
         });
         recyclerView.setAdapter(myCommentAdapter);
@@ -132,7 +132,6 @@ public class MyNoticeBoardFragment extends Fragment {
 
     private void setupListeners(){
         emergModify.setOnClickListener(v -> emergModifyMethod());
-        delEmerg.setOnClickListener(v -> delEmergMethod());
         title.setTitle(childName + " 긴급 알림 게시판");
 
         dateSet.setText(date);
@@ -201,7 +200,9 @@ public class MyNoticeBoardFragment extends Fragment {
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
                         int i = 0;
-                        String alertText = "긴급 알림";
+
+                        commentItemList.clear();
+                        commentDataMap.clear();
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
@@ -250,11 +251,42 @@ public class MyNoticeBoardFragment extends Fragment {
         });
     }
 
-    private void delEmergMethod() {
+    private void delCommentMethod() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("댓글 삭제")
+                .setMessage("정말로 댓글을 삭제하시겠습니까?\n삭제하시려면 '확인'버튼을 눌러주세요") // 커스텀 레이아웃 설정
+                .setPositiveButton("확인", (dialog, which) -> {
+                    DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(currentCommentId);
+                    Call<ResponseBody> call = userRetrofitInterface.deleteComment(deleteCommentRequest);
+                    call.clone().enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()){
+                                loadComment();
+                            }
+                            else
+                                Log.e("POST", String.valueOf(response.code()));
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                        }
+                    });
+                })
+                .setNegativeButton("취소", (dialog, which) -> {
+                    // Cancel 버튼 클릭 시 처리할 코드
+                    dialog.dismiss();
+                });
+
+        // 다이얼로그 표시
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void previous(){
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
         transaction.replace(R.id.containers, new MyEmergencyFragment());
         transaction.commit();
     }
@@ -295,12 +327,14 @@ public class MyNoticeBoardFragment extends Fragment {
 
         static class EmergencyViewHolder extends RecyclerView.ViewHolder {
             public TextView commentId, commentDate, commentText;
+            public Button commentDelete;
 
             public EmergencyViewHolder(@NonNull View itemView) {
                 super(itemView);
                 commentId = itemView.findViewById(R.id.comment_id);
                 commentDate = itemView.findViewById(R.id.comment_date);
                 commentText = itemView.findViewById(R.id.comment_text);
+                commentDelete = itemView.findViewById(R.id.comment_delete);
             }
 
             public void bind(final EmergencyCommentItem item, final MyCommentAdapter.OnItemClickListener listener, final String senderId) {
@@ -308,9 +342,16 @@ public class MyNoticeBoardFragment extends Fragment {
                     commentId.setText("글쓴이");
                 } else {
                     commentId.setText(item.getCommentator());
+                    commentDelete.setVisibility(View.GONE);
                 }
                 commentDate.setText(item.getCommentdate());
                 commentText.setText(item.getContent());
+                commentDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onItemClick(item);
+                    }
+                });
             }
         }
     }

@@ -63,15 +63,6 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <android.widget.Button
-            android:id="@+id/delete_emergency"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="end"
-            android:text="긴급 알림 삭제(해결)"
-            android:background="@drawable/basic_button_design"/>
-
 
 
     </LinearLayout>

@@ -51,7 +51,7 @@ import retrofit2.Response;
 public class OtherNoticeBoardFragment extends Fragment {
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
-    private String uuid, childName, date, inputText, emergencyId, senderId;
+    private String uuid, childName, date, inputText, emergencyId, senderId, currentCommentId;
     private Button emergModify;
     private MaterialToolbar title;
     private TextView dateSet, textSet;
@@ -129,7 +129,8 @@ public class OtherNoticeBoardFragment extends Fragment {
         otherCommentAdapter = new OtherCommentAdapter(commentItemList, senderId, new OtherCommentAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(EmergencyCommentItem item) {
-
+                currentCommentId = item.getTopkey();
+                delCommentMethod();
             }
         });
         recyclerView.setAdapter(otherCommentAdapter);
@@ -213,6 +214,7 @@ public class OtherNoticeBoardFragment extends Fragment {
                         JSONObject json = new JSONObject(responseBodyString);
                         int i = 0;
                         commentItemList.clear();
+                        commentDataMap.clear();
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
@@ -257,8 +259,42 @@ public class OtherNoticeBoardFragment extends Fragment {
         });
     }
 
+    private void delCommentMethod() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("댓글 삭제")
+                .setMessage("정말로 댓글을 삭제하시겠습니까?\n삭제하시려면 '확인'버튼을 눌러주세요") // 커스텀 레이아웃 설정
+                .setPositiveButton("확인", (dialog, which) -> {
+                    DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest(currentCommentId);
+                    Call<ResponseBody> call = userRetrofitInterface.deleteComment(deleteCommentRequest);
+                    call.clone().enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()){
+                                loadComment();
+                            }
+                            else
+                                Log.e("POST", String.valueOf(response.code()));
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                        }
+                    });
+                })
+                .setNegativeButton("취소", (dialog, which) -> {
+                    // Cancel 버튼 클릭 시 처리할 코드
+                    dialog.dismiss();
+                });
+
+        // 다이얼로그 표시
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void previous(){
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
         transaction.replace(R.id.containers, new OtherEmergencyFragment());
         transaction.commit();
     }
@@ -299,12 +335,14 @@ public class OtherNoticeBoardFragment extends Fragment {
 
         static class EmergencyViewHolder extends RecyclerView.ViewHolder {
             public TextView commentId, commentDate, commentText;
+            public Button commentDelete;
 
             public EmergencyViewHolder(@NonNull View itemView) {
                 super(itemView);
                 commentId = itemView.findViewById(R.id.comment_id);
                 commentDate = itemView.findViewById(R.id.comment_date);
                 commentText = itemView.findViewById(R.id.comment_text);
+                commentDelete = itemView.findViewById(R.id.comment_delete);
             }
 
             public void bind(final EmergencyCommentItem item, final OtherCommentAdapter.OnItemClickListener listener, final String senderId) {
@@ -312,6 +350,7 @@ public class OtherNoticeBoardFragment extends Fragment {
                     commentId.setText("글쓴이");
                 }
                 else{
+                    commentDelete.setVisibility(View.GONE);
                     commentId.setText(item.getCommentator());
                 }
                 commentDate.setText(item.getCommentdate());

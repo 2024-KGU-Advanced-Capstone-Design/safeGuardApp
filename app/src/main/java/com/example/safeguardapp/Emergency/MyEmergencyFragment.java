@@ -96,6 +96,7 @@ public class MyEmergencyFragment extends Fragment {
             public void onItemClick(SentEmergencyItem item) {
                 currentEmergencyUuid = item.getMyEmergencyUuid();
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
                 transaction.replace(R.id.containers, MyNoticeBoardFragment.newInstance(currentEmergencyUuid, item.getChildName(), item.getDate(), item.getTopkey(), item.getMemberId()));
                 transaction.commit();
             }
@@ -133,7 +134,7 @@ public class MyEmergencyFragment extends Fragment {
                         selectedPosition[0] = which;
                     }
                 })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // 사용자가 OK 버튼을 클릭할 때 호출됨
@@ -144,7 +145,7 @@ public class MyEmergencyFragment extends Fragment {
                         }
                     }
                 })
-                .setNegativeButton("Cancel", null);
+                .setNegativeButton("취소", null);
         AlertDialog msgDlg = builder.create();
         msgDlg.show();
     }
@@ -280,6 +281,7 @@ public class MyEmergencyFragment extends Fragment {
 
     private void transScreenToOther(){
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
         transaction.replace(R.id.containers, new OtherEmergencyFragment());
         transaction.commit();
     }

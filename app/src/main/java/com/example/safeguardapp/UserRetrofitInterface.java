@@ -4,7 +4,7 @@ import com.example.safeguardapp.Child.ChildFatalRequest;
 import com.example.safeguardapp.Child.LocationSendRequest;
 import com.example.safeguardapp.Emergency.CommentLoadRequest;
 import com.example.safeguardapp.Emergency.CommentSendRequest;
-import com.example.safeguardapp.Emergency.DeleteEmergencyRequest;
+import com.example.safeguardapp.Emergency.DeleteCommentRequest;
 import com.example.safeguardapp.Emergency.EmergencyRequest;
 import com.example.safeguardapp.Emergency.ReceivedEmergencyRequset;
 import com.example.safeguardapp.Emergency.SentEmergencyRequest;
@@ -30,14 +30,12 @@ import com.example.safeguardapp.Group.Sector.SafeSectorRequest;
 import com.example.safeguardapp.LogIn.LoginRequest;
 import com.example.safeguardapp.LogIn.LoginResponse;
 import com.example.safeguardapp.Notice.GetNotificationRequest;
-import com.example.safeguardapp.Notice.GetNotificationResponse;
 import com.example.safeguardapp.Map.LocationRequest;
 import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
 import okhttp3.RequestBody;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -141,5 +139,5 @@ public interface UserRetrofitInterface {
     Call<ResponseBody> loadComment(@Body CommentLoadRequest request);
 
     @POST("delete-comment")
-    Call<ResponseBody> deleteEmergency(@Body DeleteEmergencyRequest jsonUser);
+    Call<ResponseBody> deleteComment(@Body DeleteCommentRequest jsonUser);
 }

@@ -91,6 +91,7 @@ public class OtherEmergencyFragment extends Fragment {
             public void onItemClick(ReceivedEmergencyItem item) {
                 currentEmergencyUuid = item.getOtherEmergencyUuid();
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
                 transaction.replace(R.id.containers, OtherNoticeBoardFragment.newInstance(currentEmergencyUuid, item.getChildName(), item.getDate(), item.getTopkey(), item.getMemberId()));
                 transaction.commit();
             }
@@ -268,6 +269,7 @@ public class OtherEmergencyFragment extends Fragment {
 
     private void transScreenToMy(){
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
         transaction.replace(R.id.containers, new MyEmergencyFragment());
         transaction.commit();
     }

@@ -1,8 +1,8 @@
 package com.example.safeguardapp.Emergency;
 
-public class DeleteEmergencyRequest {
+public class DeleteCommentRequest {
     private String commentId;
-    public DeleteEmergencyRequest(String commentId){
+    public DeleteCommentRequest(String commentId){
         this.commentId = commentId;
     }
 }
