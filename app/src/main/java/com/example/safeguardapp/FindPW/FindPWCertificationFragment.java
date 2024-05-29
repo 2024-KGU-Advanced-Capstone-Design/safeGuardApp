@@ -72,6 +72,7 @@ public class FindPWCertificationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                 transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
@@ -174,6 +175,7 @@ public class FindPWCertificationFragment extends Fragment {
 
                                 if (response.isSuccessful()) {
                                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                                    transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
                                     transaction.replace(R.id.start_activity, new FindPWFragment());
                                     transaction.commit();
                                 } else
@@ -224,6 +226,7 @@ public class FindPWCertificationFragment extends Fragment {
 
     private void previous() {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
         transaction.replace(R.id.start_activity, new LoginPageFragment());
         transaction.commit();
     }

@@ -61,6 +61,7 @@ public class FindIDFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                 transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
@@ -100,6 +101,7 @@ public class FindIDFragment extends Fragment {
                             Log.e("JSON", state);
                             Log.e("JSON", memberId);
 
+                            previous();
                             Toast.makeText(v.getContext(), "회원님의 ID는 " + memberId + " 입니다.", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -127,6 +129,7 @@ public class FindIDFragment extends Fragment {
     }
     private void previous(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
         transaction.replace(R.id.start_activity, new LoginPageFragment());
         transaction.commit();
     }

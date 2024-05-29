@@ -86,6 +86,7 @@ public class FindPWFragment extends Fragment {
                             Toast.makeText(v.getContext(), "비밀번호가 변경되었습니다. 다시 로그인 해주세요", Toast.LENGTH_LONG).show();
 
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                             transaction.replace(R.id.start_activity, new LoginPageFragment());
                             transaction.commit();
                         }
@@ -175,6 +176,7 @@ public class FindPWFragment extends Fragment {
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                 transaction.replace(R.id.start_activity, new FindPWCertificationFragment());
                 transaction.commit();
             }
@@ -194,6 +196,7 @@ public class FindPWFragment extends Fragment {
 
     private void previous(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
         transaction.replace(R.id.start_activity, new LoginPageFragment());
         transaction.commit();
     }

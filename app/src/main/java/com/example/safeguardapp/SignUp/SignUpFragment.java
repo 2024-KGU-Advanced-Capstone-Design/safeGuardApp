@@ -197,6 +197,7 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                 transaction.replace(R.id.start_activity, new LoginPageFragment());
                 transaction.commit();
             }
@@ -220,6 +221,7 @@ public class SignUpFragment extends Fragment {
                         if (response.isSuccessful()) {
                             Log.e("POST", "성공");
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                             transaction.replace(R.id.start_activity, new LoginPageFragment());
                             transaction.commit();
                         }
@@ -312,6 +314,7 @@ public class SignUpFragment extends Fragment {
 
     private void previous(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
         transaction.replace(R.id.start_activity, new LoginPageFragment());
         transaction.commit();
     }

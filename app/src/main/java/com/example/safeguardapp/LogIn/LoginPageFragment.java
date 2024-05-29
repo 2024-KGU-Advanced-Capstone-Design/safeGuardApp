@@ -101,6 +101,7 @@ public class LoginPageFragment extends Fragment {
             public void onClick(View v) {
                 // 회원가입 버튼을 클릭했을 때 fragmentSignUp로 화면 전환
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
                 transaction.replace(R.id.start_activity, new SignUpFragment());
                 transaction.commit();
             }
@@ -111,6 +112,7 @@ public class LoginPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
                 transaction.replace(R.id.start_activity, new FindIDFragment());
                 transaction.commit();
             }
@@ -120,6 +122,7 @@ public class LoginPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
                 transaction.replace(R.id.start_activity, new FindPWCertificationFragment());
                 transaction.commit();
             }
