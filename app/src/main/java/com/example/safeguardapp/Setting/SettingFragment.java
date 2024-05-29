@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
+import org.checkerframework.checker.units.qual.C;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +49,7 @@ import retrofit2.Response;
 public class SettingFragment extends Fragment {
 
     private Button changeName, changePW, logout, withdraw;
+    private String newNickname;
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
 
@@ -72,9 +76,53 @@ public class SettingFragment extends Fragment {
     }
 
     private void setupListeners(){
+        changeName.setOnClickListener(v -> changeNameMethod());
         changePW.setOnClickListener(v -> changePWMethod());
         logout.setOnClickListener(v -> logoutMethod());
         withdraw.setOnClickListener(v -> withdrawMethod());
+    }
+
+    private void changeNameMethod(){
+        LayoutInflater inflater2 = getLayoutInflater();
+        View dialogView2 = inflater2.inflate(R.layout.edit_update_nickname, null);
+
+        EditText boxInDialog2 = dialogView2.findViewById(R.id.nickname_editText);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("작성할 내용을 입력해주세요.")
+                .setView(dialogView2) // 커스텀 레이아웃 설정
+                .setPositiveButton("확인", (dialog, which) -> {
+
+                    // OK 버튼 클릭 시 처리할 코드
+                    newNickname = boxInDialog2.getText().toString();
+                    nicknameChange();
+                })
+                .setNegativeButton("취소", (dialog, which) -> {
+                    // Cancel 버튼 클릭 시 처리할 코드
+                    dialog.dismiss();
+                });
+
+        // 다이얼로그 표시
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void nicknameChange(){
+        ChangeNicknameRequest changeNicknameRequest = new ChangeNicknameRequest(LoginPageFragment.saveID, newNickname);
+        Call<ResponseBody> call = userRetrofitInterface.changeNickname(changeNicknameRequest);
+
+        call.clone().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(getContext(), "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getContext(), "통신 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void changePWMethod(){
@@ -156,7 +204,25 @@ public class SettingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         TextView textView = view.findViewById(R.id.memberId);
-        textView.setText(LoginPageFragment.saveID);
+
+        ReturnNicknameRequest returnNicknameRequest = new ReturnNicknameRequest(LoginPageFragment.saveID);
+        Call<ResponseBody> call = userRetrofitInterface.getNickname(returnNicknameRequest);
+
+        call.clone().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                    String nickname = response.body().toString();
+                    textView.setText(nickname);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                textView.setText("닉네임을 불러오지 못했습니다.");
+            }
+        });
+
 
         // SettingFragment에서 뒤로 갔을 때 MapFragment로 이동
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {

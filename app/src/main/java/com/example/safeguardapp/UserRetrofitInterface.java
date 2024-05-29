@@ -32,6 +32,8 @@ import com.example.safeguardapp.LogIn.LoginResponse;
 import com.example.safeguardapp.Notice.GetNotificationRequest;
 import com.example.safeguardapp.Map.LocationRequest;
 import com.example.safeguardapp.Map.LocationResponse;
+import com.example.safeguardapp.Setting.ChangeNicknameRequest;
+import com.example.safeguardapp.Setting.ReturnNicknameRequest;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
@@ -140,4 +142,10 @@ public interface UserRetrofitInterface {
 
     @POST("delete-comment")
     Call<ResponseBody> deleteComment(@Body DeleteCommentRequest jsonUser);
+
+    @POST("update-nickname")
+    Call<ResponseBody> changeNickname(@Body ChangeNicknameRequest request);
+
+    @POST("return-nickname")
+    Call<ResponseBody> getNickname(@Body ReturnNicknameRequest request);
 }
