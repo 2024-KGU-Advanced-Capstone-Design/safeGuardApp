@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class LoginPageFragment extends Fragment {
     private EditText editTextID, editTextPW;
     private RadioButton isMember, isChild;
     private CheckBox checkBox;
+    private ScrollView scrollView;
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
 
@@ -73,12 +76,42 @@ public class LoginPageFragment extends Fragment {
         isMember = view.findViewById(R.id.setMember);
         isChild =view.findViewById(R.id.setChild);
         checkBox = view.findViewById(R.id.autoLogin);
+        scrollView = view.findViewById(R.id.login_scrollview);
 
         ImageView safeGuardLogoImageView = view.findViewById(R.id.SafeGuard_logo_image);
         YoYo.with(Techniques.FadeIn).duration(1500).repeat(0).playOn(safeGuardLogoImageView);
 
         TextView safeGuardLogoTextView = view.findViewById(R.id.SafeGuard_logo);
         YoYo.with(Techniques.FadeIn).duration(1500).repeat(0).playOn(safeGuardLogoTextView);
+
+        editTextID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    scrollView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollView.smoothScrollTo(0, editTextID.getBottom());
+                        }
+                    }, 200);
+                }
+            }
+        });
+
+        editTextPW.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    scrollView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollView.smoothScrollTo(0, editTextPW.getBottom());
+                        }
+                    }, 200);
+                }
+            }
+        });
+
 
         // 로그인 버튼에 대한 클릭 이벤트 처리
         view.findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
