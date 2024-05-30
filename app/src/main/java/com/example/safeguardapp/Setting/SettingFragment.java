@@ -38,8 +38,14 @@ import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.checkerframework.checker.units.qual.C;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -203,7 +209,9 @@ public class SettingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView textView = view.findViewById(R.id.memberId);
+        TextView IDtextView = view.findViewById(R.id.memberId);
+        IDtextView.setText("아이디 : " + LoginPageFragment.saveID);
+        TextView NicknameTextView = view.findViewById(R.id.memberNickname);
 
         ReturnNicknameRequest returnNicknameRequest = new ReturnNicknameRequest(LoginPageFragment.saveID);
         Call<ResponseBody> call = userRetrofitInterface.getNickname(returnNicknameRequest);
@@ -211,15 +219,19 @@ public class SettingFragment extends Fragment {
         call.clone().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()) {
-                    String nickname = response.body().toString();
-                    textView.setText(nickname);
+                if(response.isSuccessful() && response.body() != null){
+                    ResponseBody body = response.body();
+                    try {
+                        String nickname = body.string();
+                        NicknameTextView.setText("닉네임 : " + nickname);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                textView.setText("닉네임을 불러오지 못했습니다.");
+                NicknameTextView.setText("닉네임을 불러오지 못했습니다.");
             }
         });
 
