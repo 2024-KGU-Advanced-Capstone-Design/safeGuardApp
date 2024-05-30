@@ -48,7 +48,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="#2196F3"
+               android:background="@drawable/basic_button_design"
                 android:text="닉네임 변경" />
 
             <android.widget.Button
@@ -59,7 +59,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="#2196F3"
+                android:background="@drawable/basic_button_design"
                 android:text="비밀번호 변경" />
 
             <android.widget.Button
@@ -70,7 +70,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/material_dynamic_neutral70"
+                android:background="@drawable/signup_button_grey_version"
                 android:text="로그아웃"
                 android:textColor="@color/black" />
 
@@ -82,7 +82,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/red"
+                android:background="@drawable/basic_red_button_version"
                 android:text="회원탈퇴"
                 android:textColor="@color/black" />
         </LinearLayout>

@@ -33,10 +33,15 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.safeguardapp.Emergency.MyEmergencyFragment;
+import com.example.safeguardapp.Group.AddGroupPopupFragment;
+import com.example.safeguardapp.Group.FindChildPWCertFragment;
+import com.example.safeguardapp.Group.FindChildPWFragment;
 import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GroupFragment;
+import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.Group.Sector.SectorDetails;
 import com.example.safeguardapp.Group.Sector.SectorInquireRequest;
+import com.example.safeguardapp.Group.Sector.SectorMapFragment;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.Map.LocationRequest;
 import com.example.safeguardapp.Map.LocationResponse;
@@ -187,6 +192,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     if (currentFragment instanceof NoticeFragment || currentFragment instanceof SettingFragment) {
                         transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else if (currentFragment instanceof GroupSettingFragment || currentFragment instanceof SectorMapFragment || currentFragment instanceof FindChildPWFragment || currentFragment instanceof FindChildPWCertFragment) {
+                        transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
+                    } else if (currentFragment instanceof AddGroupPopupFragment) {
+                        transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
                     } else {
                         transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
                     }

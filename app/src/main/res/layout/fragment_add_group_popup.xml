@@ -26,36 +26,40 @@
         <EditText
             android:id="@+id/name_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="그룹 명 입력" />
+            android:layout_height="48dp"
+            android:hint="그룹 명 입력"
+            android:background="@drawable/signup_edittext_design"
+            />
 
         <FrameLayout
+            android:layout_marginTop="28dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/id_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="48dp"
                 android:hint="아이디 입력 (필수)"
                 android:inputType="text"
-
+                android:background="@drawable/signup_edittext_design"
                 android:layout_marginTop="3dp"
                  />
-            <Button
+            <android.widget.Button
                 android:id="@+id/checkID"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
                 android:text="중복 확인"
                 android:textSize="13sp"
-                android:paddingHorizontal="0dp"
-                android:layout_marginVertical="0dp"
-                android:layout_gravity="end"/>
+                android:layout_width="80dp"
+                android:layout_height="36dp"
+                android:layout_gravity="end"
+                android:layout_marginVertical="8.5dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/signup_button_blue_version"
+                />
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/X_space_ID"
@@ -86,10 +90,11 @@
         <EditText
             android:id="@+id/password_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:hint="비밀번호 입력 (필수)"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:background="@drawable/signup_edittext_design"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -126,10 +131,11 @@
         <EditText
             android:id="@+id/re_password_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:hint="비밀번호 재입력 (필수)"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:background="@drawable/signup_edittext_design"/>
 
         <TextView
             android:id="@+id/X_PW_re"
@@ -165,7 +171,7 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/signup_button_grey_version"
+                android:background="@drawable/signup_button_blue_version"
                 android:enabled="false"
                 android:text="그룹 생성"
                 android:textSize="16sp" />
