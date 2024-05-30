@@ -4,7 +4,7 @@ public class LocationResponse {
 
     private double latitude;
     private double longitude;
-
+    private double battery;
 
     public double getLatitude() {
         return latitude;
@@ -21,4 +21,8 @@ public class LocationResponse {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    public double getBattery() { return battery; }
+
+    public void setBattery(double battery) { this.battery = battery; }
 }

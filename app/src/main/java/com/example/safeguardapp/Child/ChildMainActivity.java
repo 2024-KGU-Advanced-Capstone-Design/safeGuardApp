@@ -8,10 +8,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -81,7 +83,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
-    public static double latitude, longitude;
+    public static double latitude, longitude, battery;
     private boolean doubleBackToExitPressedOnce = false;
     private Intent serviceIntent;
     private ArrayList<String> memberList = new ArrayList<>();
@@ -99,7 +101,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     private Handler handler;
     private Runnable updateMarkerRunnable;
     private String childID;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -257,6 +258,45 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                 }, 2000); // 2초 안에 두 번 눌러야 종료
             }
         });
+
+        // BatteryManager 객체를 통해 배터리 잔량 가져오기
+        BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+        if (batteryManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                battery = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            } else {
+                IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+                Intent batteryStatus = registerReceiver(null, ifilter);
+                if (batteryStatus != null) {
+                    int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                    int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+                    battery = level / (double) scale * 100.0;
+                }
+            }
+        }
+
+        // 주기적인 배터리 업데이트
+        Runnable updateBatteryRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (batteryManager != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        battery = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+                    } else {
+                        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+                        Intent batteryStatus = registerReceiver(null, ifilter);
+                        if (batteryStatus != null) {
+                            int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                            int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+                            battery = level / (double) scale * 100.0;
+                        }
+                    }
+                }
+                handler.postDelayed(this, 2000); // 2초마다 실행
+            }
+        };
+        handler.post(updateBatteryRunnable);
+
     }
 
 
@@ -315,7 +355,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         mNaverMap.addOnLocationChangeListener(location -> {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            LocationService.transmitCoordinate(latitude, longitude);
+            LocationService.transmitCoordinate(latitude, longitude, battery);
         });
         sectorInquire();
     }
@@ -336,7 +376,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             String getMemberId = memberList.get(i);
             String type = "Member";
 
-            LocationRequest locationRequest = new LocationRequest(type, getMemberId);
+            LocationRequest locationRequest = new LocationRequest(type, getMemberId, battery);
             Gson gson = new Gson();
             String memberInfo = gson.toJson(locationRequest);
 
@@ -352,6 +392,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
 
                         double latitude = result.getLatitude();
                         double longitude = result.getLongitude();
+                        double battery = result.getBattery();
 
                         dynamicVariables.put(finalI, memberList.get(finalI));
                         markerName = dynamicVariables.get(finalI);
@@ -367,6 +408,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             marker.setIconTintColor(Color.argb(0, 234, 234, 0));
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
+                            marker.setSubCaptionText(Integer.toString((int)battery));
                             marker.setPosition(new LatLng(latitude, longitude));
                             marker.setMap(mNaverMap);
                         } else { // 해당 childMarker가 이미 생성되어 있는 경우
@@ -382,6 +424,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             marker.setIconTintColor(Color.argb(0, 234, 234, 0));
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
+                            marker.setSubCaptionText(Integer.toString((int)battery));
                             marker.setPosition(new LatLng(latitude, longitude));
                             marker.setMap(mNaverMap);
                         }
