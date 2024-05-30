@@ -1,16 +1,13 @@
 package com.example.safeguardapp;
 
-import static com.example.safeguardapp.Child.ChildMainActivity.latitude;
-import static com.example.safeguardapp.Child.ChildMainActivity.longitude;
+import static com.example.safeguardapp.Child.ChildMainActivity.battery;
 
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
@@ -30,8 +27,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-import com.example.safeguardapp.RetrofitClient;
-import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -68,7 +63,7 @@ public class LocationService2 extends Service {
                 if (locationResult != null) {
                     double latitude = locationResult.getLastLocation().getLatitude();
                     double longitude = locationResult.getLastLocation().getLongitude();
-                    transmitCoordinate(latitude, longitude);
+                    transmitCoordinate(latitude, longitude, battery);
                 }
             }
         };
@@ -110,10 +105,10 @@ public class LocationService2 extends Service {
         return null;
     }
 
-    public static void transmitCoordinate(double latitude, double longitude) {
+    public static void transmitCoordinate(double latitude, double longitude, double battery) {
         String type = "Member";
         String id = LoginPageFragment.saveID;
-        LocationSendRequest locationDTO = new LocationSendRequest(type, id, latitude, longitude);
+        LocationSendRequest locationDTO = new LocationSendRequest(type, id, latitude, longitude, battery);
         RetrofitClient retrofitClient = RetrofitClient.getInstance();
         UserRetrofitInterface userRetrofitInterface = retrofitClient.getUserRetrofitInterface();
 

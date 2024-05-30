@@ -1,7 +1,6 @@
 package com.example.safeguardapp.Child;
 
-import static com.example.safeguardapp.Child.ChildMainActivity.latitude;
-import static com.example.safeguardapp.Child.ChildMainActivity.longitude;
+import static com.example.safeguardapp.Child.ChildMainActivity.battery;
 
 import android.Manifest;
 import android.app.Notification;
@@ -66,7 +65,7 @@ public class LocationService extends Service {
                 if (locationResult != null) {
                     double latitude = locationResult.getLastLocation().getLatitude();
                     double longitude = locationResult.getLastLocation().getLongitude();
-                    transmitCoordinate(latitude, longitude);
+                    transmitCoordinate(latitude, longitude, battery);
                 }
             }
         };
@@ -111,9 +110,9 @@ public class LocationService extends Service {
         return null;
     }
 
-    public static void transmitCoordinate(double latitude, double longitude) {
+    public static void transmitCoordinate(double latitude, double longitude, double battery) {
         String type = "Child";
-        LocationSendRequest locationDTO = new LocationSendRequest(type, id, latitude, longitude);
+        LocationSendRequest locationDTO = new LocationSendRequest(type, id, latitude, longitude, battery);
         RetrofitClient retrofitClient = RetrofitClient.getInstance();
         UserRetrofitInterface userRetrofitInterface = retrofitClient.getUserRetrofitInterface();
 
