@@ -38,8 +38,8 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         String title = notice.getTitle();
         String content = notice.getContent();
         String date = notice.getDate();
-        String type = notice.getType();
         String child = notice.getChild();
+        String senderId = notice.getSenderId();
 
 //        content = content.split(": ")[1];
 //        String[] newDate = date.split("T");
@@ -49,7 +49,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         holder.textTitle.setText(title);
         holder.textContent.setText(content);
         holder.textDate.setText(date);
-        holder.textType.setText(type);
+        holder.textSenderId.setText(senderId);
         holder.textChild.setText(child);
 
     }
@@ -63,7 +63,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         TextView textTitle;
         TextView textContent;
         TextView textDate;
-        TextView textType;
+        TextView textSenderId;
         TextView textChild;
 
         public NoticeViewHolder(@NonNull View itemView){
@@ -71,7 +71,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
             textTitle = itemView.findViewById(R.id.text_title);
             textContent = itemView.findViewById(R.id.text_content);
             textDate = itemView.findViewById(R.id.text_date);
-            textType = itemView.findViewById(R.id.text_type);
+            textSenderId = itemView.findViewById(R.id.text_SenderId);
             textChild = itemView.findViewById(R.id.text_child);
 
         }

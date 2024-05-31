@@ -18,10 +18,10 @@
         android:id="@+id/text_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_below="@+id/text_SenderId"
         android:textSize="16sp" />
     <TextView
-        android:id="@+id/text_type"
+        android:id="@+id/text_SenderId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_content"

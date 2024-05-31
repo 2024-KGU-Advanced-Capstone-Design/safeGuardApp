@@ -4,15 +4,15 @@ public class Notice {
     private String title;
     private String content;
     private String date;
-    private String type;
+    private String senderId;
     private String child;
 
-    public Notice(String title, String content, String date, String type, String child){
+    public Notice(String title, String content, String date, String child, String senderId){
         this.title = title;
         this.content = content;
         this.date = date;
-        this.type = type;
         this.child = child;
+        this.senderId = senderId;
     }
 
     public String getTitle() {
@@ -39,12 +39,12 @@ public class Notice {
         this.date = date;
     }
 
-    public String getType() {
-        return type;
+    public String getSenderId() {
+        return senderId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 
     public String getChild() {

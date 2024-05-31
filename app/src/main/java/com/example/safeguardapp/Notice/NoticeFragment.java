@@ -131,10 +131,11 @@ public class NoticeFragment extends Fragment {
                                 String title = innerJson.getString("title");
                                 String content = innerJson.getString("content");
                                 String date = innerJson.getString("date");
-                                String type = innerJson.getString("type");
                                 String child = innerJson.getString("child");
+                                String senderId = innerJson.getString("senderId");
 
-                                Notice newNotice = new Notice(title, content, date, type, child);
+
+                                Notice newNotice = new Notice(title, content, date, child, senderId);
 
                                 noticeList.add(newNotice);
                             }
