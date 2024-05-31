@@ -383,7 +383,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
 
                         double latitude = result.getLatitude();
                         double longitude = result.getLongitude();
-                        double battery = result.getBattery();
+                        int battery = (int)(result.getBattery());
 
                         dynamicVariables.put(finalI, memberList.get(finalI));
                         markerName = dynamicVariables.get(finalI);
@@ -396,10 +396,10 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             marker.setCaptionAligns(Align.Top);
                             marker.setCaptionOffset(10);
                             marker.setIcon(MarkerIcons.BLACK);
-                            marker.setIconTintColor(Color.argb(0, 234, 234, 0));
+                            marker.setIconTintColor(Color.argb(0, 180, 85, 162));
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
-                            marker.setSubCaptionText(Integer.toString((int)battery));
+                            marker.setSubCaptionText(battery + "%");
                             marker.setPosition(new LatLng(latitude, longitude));
                             marker.setMap(mNaverMap);
                         } else { // 해당 childMarker가 이미 생성되어 있는 경우
@@ -412,10 +412,10 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             marker.setCaptionAligns(Align.Top);
                             marker.setCaptionOffset(10);
                             marker.setIcon(MarkerIcons.BLACK);
-                            marker.setIconTintColor(Color.argb(0, 234, 234, 0));
+                            marker.setIconTintColor(Color.argb(0, 180, 85, 162));
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
-                            marker.setSubCaptionText(Integer.toString((int)battery));
+                            marker.setSubCaptionText(battery + "%");
                             marker.setPosition(new LatLng(latitude, longitude));
                             marker.setMap(mNaverMap);
                         }
