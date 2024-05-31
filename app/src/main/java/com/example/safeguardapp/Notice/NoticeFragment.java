@@ -98,21 +98,6 @@ public class NoticeFragment extends Fragment {
         LinearLayout linearLayout = view.findViewById(R.id.noticeScreen);
         YoYo.with(Techniques.FadeIn).duration(700).repeat(0).playOn(linearLayout);
 
-        // 이 부분은 더 이상 필요 없음, onCreateView에서 이미 처리됨
-        /*
-        recyclerView = view.findViewById(R.id.recyclerView);
-
-        // Null check for recyclerView
-        if (recyclerView != null) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            noticeAdapter = new NoticeAdapter(getContext(), noticeList);
-            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            recyclerView.setAdapter(noticeAdapter);
-            recyclerView.setLayoutManager(linearLayoutManager);
-        } else {
-            Log.e("NoticeFragment", "RecyclerView is null");
-        }
-        */
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -128,17 +113,15 @@ public class NoticeFragment extends Fragment {
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
         Call<ResponseBody> call = userRetrofitInterface.getNotification(getNotificationRequest);
-        Log.e("STRING","hi");
         call.clone().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
+
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
@@ -154,7 +137,6 @@ public class NoticeFragment extends Fragment {
                                 Notice newNotice = new Notice(title, content, date, type, child);
 
                                 noticeList.add(newNotice);
-                                Log.e("POST","add 완료");
                             }
                         }
                         // 어댑터에 변경 사항 알림
@@ -169,7 +151,7 @@ public class NoticeFragment extends Fragment {
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("POST","왜 실패함");
+                Log.e("POST","실패");
             }
         });
 

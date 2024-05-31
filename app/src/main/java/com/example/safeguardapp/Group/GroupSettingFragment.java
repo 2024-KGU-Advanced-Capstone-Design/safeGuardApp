@@ -288,7 +288,6 @@ public class GroupSettingFragment extends Fragment {
                     if(id.equals(LoginPageFragment.saveID))
                         Toast.makeText(getContext(), "본인은 추가할 수 없습니다.", Toast.LENGTH_SHORT).show();
                     else {
-
                         AddHelperRequest addHelperRequest = new AddHelperRequest(id, childID);
                         Call<ResponseBody> call = userRetrofitInterface.addHelper(addHelperRequest);
 
@@ -381,10 +380,6 @@ public class GroupSettingFragment extends Fragment {
         typeList.toArray(items);
 
         final int[] selectedPosition = {checknum};
-
-        Log.e("STRING", typeList.get(0));
-        Log.e("STRING", typeList.get(1));
-        Log.e("STRING", typeList.get(2));
         AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
                 .setTitle("확인")
                 .setMessage("확인 알림을 보내시겠습니까?")
@@ -496,19 +491,16 @@ public class GroupSettingFragment extends Fragment {
         GetMemberIDRequest childIDDTO = new GetMemberIDRequest(childID);
         Gson gson = new Gson();
         String childInfo = gson.toJson(childIDDTO);
-        Log.e("JSON", childInfo + "Here");
 
         Call<ResponseBody> memberCall = userRetrofitInterface.getMemberID(childIDDTO);
         memberCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful() && response.body() != null){
-                    Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
 
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
@@ -525,8 +517,6 @@ public class GroupSettingFragment extends Fragment {
                                     helperList.add(value);
 
                                     updateAideUi();
-                                    // 여기서 키와 값을 사용할 수 있습니다.
-                                    Log.e("Parsed Data", "TopKey: " + topKey + ", InnerKey: " + innerKey + ", Value: " + value);
                                 }
                             }
                         }

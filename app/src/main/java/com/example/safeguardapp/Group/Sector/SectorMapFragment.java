@@ -250,11 +250,9 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     if (response.isSuccessful()) {
-                                        Log.e("POST", "전달 성공");
                                         sectorInquire();
                                         try {
                                             String responseBody = response.body().string();
-                                            Log.e("POST", "Response Body: " + responseBody);
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -345,12 +343,10 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     if (response.isSuccessful()) {
-                                        Log.e("POST", "전달 성공");
                                         // 응답 본문 로그 추가
                                         sectorInquire();
                                         try {
                                             String responseBody = response.body().string();
-                                            Log.e("POST", "Response Body: " + responseBody);
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -426,8 +422,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                             greenInfoWindowList.get(selectedKey).close();
                                             greenInfoWindowList.remove(selectedKey);
                                         }
-
-                                        Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
                                     } else {
                                         Log.e("POST", "Failed to delete sector on server." + response.code());
                                     }
@@ -498,8 +492,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                                             redInfoWindowList.get(selectedKey).close();
                                             redInfoWindowList.remove(selectedKey);
                                         }
-
-                                        Log.e("POST", "Removed key: " + selectedKey); // 삭제된 키를 로그에 출력
                                     } else {
                                         Log.e("POST", "Failed to delete sector on server." + response.code());
                                     }
@@ -540,7 +532,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
         // 요청 JSON 로그 출력
         SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childName);
         String requestJson = gson.toJson(sectorInquireDTO);
-        Log.e("Request JSON", requestJson);
 
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
         Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
@@ -571,8 +562,6 @@ public class SectorMapFragment extends Fragment implements OnMapReadyCallback {
                             String coordinateId = entry.getKey();
                             SectorDetails details = entry.getValue();
                             boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
-
-                            Log.e("Coordinate ID", coordinateId);
 
                             List<LatLng> polygonCoords = new ArrayList<>();
                             polygonCoords.add(new LatLng(details.getYofPointA(), details.getXofPointA()));

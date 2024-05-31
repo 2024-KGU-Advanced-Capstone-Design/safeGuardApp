@@ -170,12 +170,7 @@ public class LoginPageFragment extends Fragment {
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
-        Log.e("POST","client 생성");
-
         Gson gson = new Gson();
-        String userInfo = gson.toJson(loginRequest);
-
-        Log.e("JSON",userInfo);
 
         Call<LoginResponse> call = userRetrofitInterface.login(loginRequest);
         call.clone().enqueue(new Callback<LoginResponse>() {
@@ -183,17 +178,12 @@ public class LoginPageFragment extends Fragment {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 //통신 성공
                 if(response.isSuccessful()){
-                    Log.e("POST","통신 성공");
                     LoginResponse result = response.body();
                     String resultCode = result.getResultCode();
-
-                    Log.e("POST",resultCode);
 
                     if(response.body()!=null) {
                         String success = "200"; //성공
                         if (resultCode.equals(success)) {
-                            Log.e("POST", "로그인 성공");
-
                             Context context = getActivity();
                             if (context != null) {
                                 SharedPreferences sharedPreferences = context.getSharedPreferences("loginID", Context.MODE_PRIVATE);
@@ -215,7 +205,6 @@ public class LoginPageFragment extends Fragment {
                                 Intent intent = new Intent(getActivity(), ChildMainActivity.class);
                                 startActivity(intent);
                             }
-
                         }
                     }
                 }
