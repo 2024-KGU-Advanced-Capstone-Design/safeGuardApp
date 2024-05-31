@@ -237,13 +237,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    /*Log.e("POST", "응답성공");*/
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        /*Log.e("Response JSON", json.toString());
-                        Log.e("POST", "응답성공");*/
 
                         // 각 키-값 쌍을 처리
                         for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
@@ -253,8 +250,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             } else {
                                 childList.add(value);
                             }
-
-                            /*Log.e("Child ID", "Key: " + key + ", Value: " + value);*/
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -286,13 +281,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
-                        Log.e("POST", "응답성공");
 
                         // "Helping" 키를 가져와서 그 안의 키-값 쌍을 처리
                         if (json.has("Helping")) {
@@ -301,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 String key = keys.next();
                                 String value = helpingJson.getString(key);
                                 childList2.add(value);
-                                Log.e("Child ID", "Key: " + key + ", Value: " + value);
                             }
                         } else {
                             Log.e("getChildID", "'Helping' key is missing in the response");
@@ -561,7 +552,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // 요청 JSON 로그 출력
             SectorInquireRequest sectorInquireDTO = new SectorInquireRequest(childId);
             String requestJson = gson.toJson(sectorInquireDTO);
-            Log.e("Request JSON", requestJson);
 
             RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), requestJson);
             Call<ResponseBody> call = userRetrofitInterface.getSectorLocation(body);
@@ -594,9 +584,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             String coordinateId = entry.getKey(); // 키 값 저장
                             SectorDetails details = entry.getValue();
                             boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
-
-                            // 로그 출력
-                            Log.e("Coordinate ID", coordinateId);
 
                             // 좌표를 가져와서 LatLng 리스트를 생성합니다.
                             List<LatLng> polygonCoords = new ArrayList<>();

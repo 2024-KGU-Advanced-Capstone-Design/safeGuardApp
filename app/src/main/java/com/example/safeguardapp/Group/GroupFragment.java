@@ -110,9 +110,6 @@ public class GroupFragment extends Fragment {
     private void initializeView(View view) {
         addGroupBtn = view.findViewById(R.id.add_group_btn);
         groupListView = view.findViewById(R.id.recycler_view);
-        for (String child : childList) {
-            Log.e("Child List Item", child);
-        }
     }
 
     private void setupListeners() {
@@ -195,13 +192,10 @@ public class GroupFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
-                        Log.e("POST", "응답성공");
 
                         // 각 키-값 쌍을 처리
                         for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
@@ -212,8 +206,6 @@ public class GroupFragment extends Fragment {
                             else{
                                 childList.add(value);
                             }
-
-                            Log.e("Child ID", "Key: " + key + ", Value: " + value);
                         }
                         addGroupFromServer();
                     } catch (Exception e) {

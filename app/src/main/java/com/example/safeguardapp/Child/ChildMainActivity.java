@@ -168,19 +168,16 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
         GetMemberIDRequest childIDDTO = new GetMemberIDRequest(childID);
         Gson gson = new Gson();
         String childInfo = gson.toJson(childIDDTO);
-        Log.e("JSON", childInfo + "Here");
 
         Call<ResponseBody> memberCall = userRetrofitInterface.getMemberID(childIDDTO);
         memberCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("POST", "응답성공");
                     try {
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
-                        Log.e("Response JSON", json.toString());
 
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
@@ -195,8 +192,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
 
                                     // memberList에 값 추가
                                     memberList.add(value);
-                                    // 여기서 키와 값을 사용할 수 있습니다.
-                                    Log.e("Parsed Data", "TopKey: " + topKey + ", InnerKey: " + innerKey + ", Value: " + value);
                                 }
                             }
                         }
@@ -301,8 +296,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     private void startLocationService() {
-        Log.e("POST", "Latitude: " + latitude + ", Longitude: " + longitude);
-
         serviceIntent = new Intent(this, LocationService.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -379,8 +372,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             LocationRequest locationRequest = new LocationRequest(type, getMemberId, battery);
             Gson gson = new Gson();
             String memberInfo = gson.toJson(locationRequest);
-
-            /*Log.e("JSON", memberInfo);*/
 
             Call<LocationResponse> call = userRetrofitInterface.getLocation(locationRequest);
             int finalI = i;
@@ -485,9 +476,6 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                         String coordinateId = entry.getKey(); // 키 값 저장
                         SectorDetails details = entry.getValue();
                         boolean isLiving = Boolean.parseBoolean(details.getIsLiving());
-
-                        // 로그 출력
-                        Log.e("Coordinate ID", coordinateId);
 
                         // 좌표를 가져와서 LatLng 리스트를 생성합니다.
                         List<LatLng> polygonCoords = new ArrayList<>();

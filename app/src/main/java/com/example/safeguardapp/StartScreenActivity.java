@@ -39,7 +39,6 @@ public class StartScreenActivity extends AppCompatActivity {
     public static String token = null;
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
-    private PermissionUtils permission;
 
 
     @Override
@@ -57,7 +56,6 @@ public class StartScreenActivity extends AppCompatActivity {
                     return;
                 }
                 token = task.getResult().toString();
-                Log.e("String", token);
             }
         });
 
@@ -91,17 +89,12 @@ public class StartScreenActivity extends AppCompatActivity {
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     //통신 성공
                     if (response.isSuccessful()) {
-                        Log.e("POST", "통신 성공");
                         LoginResponse result = response.body();
                         String resultCode = result.getResultCode();
-
-                        Log.e("POST", resultCode);
 
                         if (response.body() != null) {
                             String success = "200"; //성공
                             if (resultCode.equals(success)) {
-                                Log.e("POST", "로그인 성공");
-
                                 LoginPageFragment.saveID = loginID;
 
                                 if (loginType.equals("Member")) {
@@ -135,23 +128,4 @@ public class StartScreenActivity extends AppCompatActivity {
             }
         });
     }
-
-//    //권한 체크
-//    private void permissionCheck(){
-//        if(Build.VERSION.SDK_INT>=23){
-//            permission = new PermissionUtils(this,this);
-//
-//            if(!permission.checkPermission())
-//                permission.requestPermission();
-//        }
-//    }
-//
-//    //Request Permission 결과 값
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults){
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        if(!permission.permissionResult(requestCode, permissions, grantResults))
-//            permission.requestPermission();
-//    }
 }

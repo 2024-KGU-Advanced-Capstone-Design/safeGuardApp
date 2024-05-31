@@ -23,7 +23,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getNotification() != null) {
-            Log.e("FCM Log", "알림 메시지: " + remoteMessage.getNotification().getBody());
 
             //Log.e("FCM Log data", "알림 메시지: " + remoteMessage.getData().get("data1"));
             //Log.e("FCM Log data", "알림 메시지: " + remoteMessage.getData().get("data2"));
