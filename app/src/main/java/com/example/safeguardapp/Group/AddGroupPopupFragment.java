@@ -1,5 +1,8 @@
 package com.example.safeguardapp.Group;
 
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.os.Bundle;
@@ -12,14 +15,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.safeguardapp.Child.ChildMainActivity;
 import com.example.safeguardapp.LogIn.LoginInfo;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.StartScreenActivity;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
@@ -39,6 +45,7 @@ public class AddGroupPopupFragment extends Fragment {
     private EditText IDinput;
     private boolean isSpaceIDValid, isIDValid, isPWValid, isPWMatch, isSpacePWValid = false;
     private Button signUp_btn, cancel_btn, checkID;
+    private boolean doubleBackToExitPressedOnce = false;
 
 
     @Nullable
@@ -100,6 +107,14 @@ public class AddGroupPopupFragment extends Fragment {
                         Toast.makeText(view.getContext(), "통신오류", Toast.LENGTH_LONG).show();
                     }
                 });
+            }
+        });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로 가기 시 실행되는 코드
+                previous();
             }
         });
 
