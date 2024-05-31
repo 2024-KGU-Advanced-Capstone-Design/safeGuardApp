@@ -74,19 +74,23 @@ public class NoticeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 프래그먼트 레이아웃을 인플레이트
         View view = inflater.inflate(R.layout.fragment_notice, container, false);
-        getNoti();
+
         // 여기서 RecyclerView 초기화
         recyclerView = view.findViewById(R.id.recyclerView);
 
         // Null check for recyclerView
         if (recyclerView != null) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(linearLayoutManager);
 
+            // 어댑터 초기화
             noticeAdapter = new NoticeAdapter(getContext(), noticeList);
             recyclerView.setAdapter(noticeAdapter);
         } else {
             Log.e("NoticeFragment", "RecyclerView is null");
         }
+
+        getNoti();
 
         return view;
     }
@@ -118,6 +122,9 @@ public class NoticeFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
+                        // 중복 추가를 방지하기 위해 리스트를 초기화
+                        noticeList.clear();
+
                         // 응답 본문을 문자열로 변환
                         String responseBodyString = response.body().string();
                         JSONObject json = new JSONObject(responseBodyString);
