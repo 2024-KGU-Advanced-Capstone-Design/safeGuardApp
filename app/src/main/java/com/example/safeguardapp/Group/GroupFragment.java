@@ -178,6 +178,9 @@ public class GroupFragment extends Fragment {
     }
 
     private void getChildID() {
+        // childList 초기화
+        childList.clear();
+
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
 
