@@ -346,7 +346,6 @@ public class GroupSettingFragment extends Fragment {
 
     //아이 비밀번호 찾기
     private void findChildPW() {
-
         AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
                 .setTitle("인증번호 요청")
                 .setMessage("가입하신 이메일로 인증번호를 보내시겠습니까?")
@@ -374,6 +373,8 @@ public class GroupSettingFragment extends Fragment {
 
     //확인 버튼
     private void confirm(){
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_confirm, null);
+
         int checknum = 0;
 
         final String[] items = new String[typeList.size()];
@@ -382,7 +383,6 @@ public class GroupSettingFragment extends Fragment {
         final int[] selectedPosition = {checknum};
         AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
                 .setTitle("확인")
-                .setMessage("확인 알림을 보내시겠습니까?")
                 .setSingleChoiceItems(items, checknum, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -419,8 +419,8 @@ public class GroupSettingFragment extends Fragment {
                         }
                     }
                 })
-                .setNegativeButton("취소", null);
-
+                .setNegativeButton("취소", null)
+                .setView(dialogView);
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
     }
