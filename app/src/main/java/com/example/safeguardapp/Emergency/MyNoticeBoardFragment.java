@@ -201,6 +201,13 @@ public class MyNoticeBoardFragment extends Fragment {
                         JSONObject json = new JSONObject(responseBodyString);
                         int i = 0;
 
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                myCommentAdapter.clearAllItems();
+                            }
+                        });
+
                         commentItemList.clear();
                         commentDataMap.clear();
                         // 최상위 키 순회
@@ -323,6 +330,11 @@ public class MyNoticeBoardFragment extends Fragment {
         @Override
         public int getItemCount() {
             return emergencyCommentList.size();
+        }
+
+        public void clearAllItems() {
+            emergencyCommentList.clear();
+            notifyDataSetChanged();
         }
 
         static class EmergencyViewHolder extends RecyclerView.ViewHolder {

@@ -194,18 +194,17 @@ public class MyEmergencyFragment extends Fragment {
     //emergency 보내기
     private void sendEmergency() {
         String parentId = LoginPageFragment.saveID;
-        double latitude = MainActivity.latitude;
-        double logitude = MainActivity.longitude;
 
-        EmergencyRequest emergencyRequest = new EmergencyRequest(parentId, selectedItem, latitude, logitude);
+        EmergencyRequest emergencyRequest = new EmergencyRequest(parentId, selectedItem);
         Call<ResponseBody> call = userRetrofitInterface.sendEmergency(emergencyRequest);
         call.clone().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    sentEmergency();
+                    refreshFragment();
                 } else {
-                    Log.e("POST", String.valueOf(response.code()));
+                    refreshFragment();
+                    Log.e("POST", "응답 코드: " + response.code() + ", 오류 메시지 없음");
                 }
             }
 
@@ -235,6 +234,14 @@ public class MyEmergencyFragment extends Fragment {
                         JSONObject json = new JSONObject(responseBodyString);
                         int i = 0;
                         String alertText = "긴급 알림";
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                myEmergencyAdapter.clearAllItems();
+                            }
+                        });
+
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
@@ -296,6 +303,13 @@ public class MyEmergencyFragment extends Fragment {
         navigationView.setSelectedItemId(R.id.map);
     }
 
+    private void refreshFragment() {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.containers, new MyEmergencyFragment()); // 여기서 R.id.containers는 프래그먼트가 들어있는 컨테이너의 ID입니다.
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
     //recyclerView adapter 설정
     private static class MyEmergencyAdapter extends RecyclerView.Adapter<MyEmergencyAdapter.EmergencyViewHolder> {
         private final List<SentEmergencyItem> emergencyItemList;
@@ -327,6 +341,10 @@ public class MyEmergencyFragment extends Fragment {
         @Override
         public int getItemCount() {
             return emergencyItemList.size();
+        }
+        public void clearAllItems() {
+            emergencyItemList.clear();
+            notifyDataSetChanged();
         }
 
         static class EmergencyViewHolder extends RecyclerView.ViewHolder {
