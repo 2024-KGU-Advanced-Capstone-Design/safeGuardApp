@@ -74,4 +74,5 @@ dependencies {
     implementation 'com.daimajia.androidanimations:library:2.4@aar'
     // cardView 라이브러리(그림자 효과)
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 }

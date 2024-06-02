@@ -44,6 +44,10 @@
             android:name=".Child.ChildMainActivity"
             android:exported="true" />
 
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"></activity>
+
+
         <service
             android:name=".Child.LocationService"
             android:enabled="true"

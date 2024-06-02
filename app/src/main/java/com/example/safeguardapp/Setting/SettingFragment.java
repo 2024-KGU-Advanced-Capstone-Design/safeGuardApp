@@ -1,10 +1,13 @@
 package com.example.safeguardapp.Setting;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -14,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +43,8 @@ import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.checkerframework.checker.units.qual.C;
 import org.json.JSONException;
@@ -47,6 +53,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Iterator;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,9 +62,11 @@ import retrofit2.Response;
 public class SettingFragment extends Fragment {
 
     private Button changeName, changePW, logout, withdraw;
+    private CircleImageView choiceImage;
     private String newNickname;
     private RetrofitClient retrofitClient;
     private UserRetrofitInterface userRetrofitInterface;
+    private static final int REQUEST_IMAGE_SELECT = 1;
 
 
     @Override
@@ -76,6 +85,7 @@ public class SettingFragment extends Fragment {
         changePW = view.findViewById(R.id.changePW_btn);
         logout = view.findViewById(R.id.logout_btn);
         withdraw = view.findViewById(R.id.withdraw_btn);
+        choiceImage = view.findViewById(R.id.imageView);
 
         retrofitClient = RetrofitClient.getInstance();
         userRetrofitInterface = RetrofitClient.getInstance().getUserRetrofitInterface();
@@ -86,6 +96,7 @@ public class SettingFragment extends Fragment {
         changePW.setOnClickListener(v -> changePWMethod());
         logout.setOnClickListener(v -> logoutMethod());
         withdraw.setOnClickListener(v -> withdrawMethod());
+        choiceImage.setOnClickListener(v -> choiceImageMethod());
     }
 
     private void changeNameMethod(){
@@ -151,8 +162,6 @@ public class SettingFragment extends Fragment {
                             fragmentB.clearAideGroup();
                         }
                         PreferenceManager.clear(getContext());
-                        GroupRepository groupRepository = GroupRepository.getInstance(requireContext());
-                        groupRepository.removeAllGroups();
                         transScreen();
                     }
                 })
@@ -198,6 +207,38 @@ public class SettingFragment extends Fragment {
                 .setNegativeButton("취소", null)
                 .show();
     }
+
+    private void choiceImageMethod(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_IMAGE_SELECT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_SELECT && resultCode == RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            if (selectedImageUri != null) {
+                CropImage.activity(selectedImageUri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setAspectRatio(1, 1)
+                        .start(getContext(), this);
+            }
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                // 자른 이미지 결과를 사용하여 추가 작업 수행
+                choiceImage.setImageURI(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                // 오류 처리
+                Toast.makeText(getContext(), "이미지 자르기 실패: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     private void transScreen(){
         Intent intent = new Intent(getActivity(), StartScreenActivity.class);
