@@ -11,15 +11,6 @@
         <item>위성지도</item>
     </string-array>
 
-    <string name="layer_groups">레이어 그룹…</string>
-    <string name="building">건물</string>
-    <string name="traffic">실시간 교통정보</string>
-    <string name="transit">대중교통</string>
-    <string name="bicycle">자전거</string>
-    <string name="cadastral">지적도</string>
-    <string name="mountain">등산로</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>

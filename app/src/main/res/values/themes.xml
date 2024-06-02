@@ -1,8 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
+    <!-- 이 테마는 사용 안함 -->
     <style name="Base.Theme.SafeGuardApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/navy1</item>
+        <item name="colorPrimaryDark">@color/grey</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/white</item>
+    </style>
+
+    <!-- 새로 만든 style -->
+    <style name="Theme.customize" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/navy1</item> // 주 색상
+        <item name="colorSurface">@color/navy1</item> // AppBarLayout 색상
+        <item name="colorSecondaryContainer">@color/navy2</item> // 네비게이션 선택 요소 효과
+        <item name="android:windowLightStatusBar">true</item> // 상태표시줄 밝게
+        <item name="android:statusBarColor">@color/white</item> // 상태표시줄 색상
     </style>
 
     <style name="Theme.SafeGuardApp" parent="Base.Theme.SafeGuardApp" />
