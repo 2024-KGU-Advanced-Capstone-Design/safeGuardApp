@@ -38,7 +38,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         String title = notice.getTitle();
         String content = notice.getContent();
         String date = notice.getDate();
-        String child = notice.getChild();
+//        String child = notice.getChild(); -> notice_textview 에서 사용 안함.
         String senderId = notice.getSenderId();
 
 //        content = content.split(": ")[1];
@@ -49,8 +49,8 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         holder.textTitle.setText(title);
         holder.textContent.setText(content);
         holder.textDate.setText(date);
-        holder.textSenderId.setText(senderId);
-        holder.textChild.setText(child);
+        holder.textSenderId.setText("발신자: " + senderId);
+//        holder.textChild.setText(child);
 
     }
 
@@ -64,7 +64,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         TextView textContent;
         TextView textDate;
         TextView textSenderId;
-        TextView textChild;
+//        TextView textChild;
 
         public NoticeViewHolder(@NonNull View itemView){
             super(itemView);
@@ -72,7 +72,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
             textContent = itemView.findViewById(R.id.text_content);
             textDate = itemView.findViewById(R.id.text_date);
             textSenderId = itemView.findViewById(R.id.text_SenderId);
-            textChild = itemView.findViewById(R.id.text_child);
+//            textChild = itemView.findViewById(R.id.text_child);
 
         }
     }
