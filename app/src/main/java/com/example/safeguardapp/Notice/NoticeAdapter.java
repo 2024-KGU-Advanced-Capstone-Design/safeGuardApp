@@ -49,7 +49,7 @@ public class NoticeAdapter extends RecyclerView.Adapter <NoticeAdapter.NoticeVie
         holder.textTitle.setText(title);
         holder.textContent.setText(content);
         holder.textDate.setText(date);
-        holder.textSenderId.setText("발신자: " + senderId);
+        holder.textSenderId.setText("발신자 : " + senderId);
 //        holder.textChild.setText(child);
 
     }
