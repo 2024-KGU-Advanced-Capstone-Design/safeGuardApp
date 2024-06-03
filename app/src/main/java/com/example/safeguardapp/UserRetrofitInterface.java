@@ -20,6 +20,7 @@ import com.example.safeguardapp.Group.ChildDTO;
 import com.example.safeguardapp.Group.ConfirmRequest;
 import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GetMemberIDRequest;
+import com.example.safeguardapp.Group.GetOtherChildIDRequest;
 import com.example.safeguardapp.Group.RemoveHelperRequest;
 import com.example.safeguardapp.Group.Sector.ChildListAllRequest;
 import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
@@ -151,5 +152,5 @@ public interface UserRetrofitInterface {
     Call<ResponseBody> getNickname(@Body ReturnNicknameRequest request);
 
     @POST("find-parenting-helping-list")
-    Call<ResponseBody> getChildAllList(@Body ChildListAllRequest request);
+    Call<ResponseBody> getChildAllList(@Body GetOtherChildIDRequest request);
 }

@@ -13,9 +13,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="내 아이 목록"
+            app:title="조력하는 아이 목록"
             app:titleCentered="true"
-            app:titleTextColor="@color/white" >
+            app:titleTextColor="@color/white">
+
             <ImageButton
                 android:id="@+id/toolbar_image_button"
                 android:layout_width="50dp"
@@ -36,8 +37,8 @@
         android:id="@+id/groupScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_marginTop="70dp"
+        android:orientation="vertical"
         android:padding="24dp"
         tools:context=".Group.GroupFragment">
 
@@ -48,14 +49,6 @@
             android:layout_weight="1"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-        <android.widget.Button
-            android:id="@+id/add_group_btn"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:background="@drawable/basic_button_design"
-            android:text="그룹 추가"
-            android:textSize="30dp" />
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -50,6 +50,7 @@ import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.Notice.NoticeFragment;
 import com.example.safeguardapp.Setting.SettingFragment;
 import com.example.safeguardapp.data.repository.GroupRepository;
+import com.example.safeguardapp.data.repository.OtherGroupRepository;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
@@ -349,6 +350,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } else {
                         GroupRepository groupRepository = GroupRepository.getInstance(MainActivity.this);
                         groupRepository.removeAllGroups();
+                        OtherGroupRepository otherGroupRepository = OtherGroupRepository.getInstance(MainActivity.this);
+                        otherGroupRepository.removeAllOtherGroups();
                         Intent intent = new Intent(MainActivity.this, StartScreenActivity.class);
                         startActivity(intent);
                     }

@@ -303,6 +303,7 @@ public class GroupSettingFragment extends Fragment {
                                     helperList.add(id);
 
                                     Toast.makeText(getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
+                                    updateAideUi();
                                 }else Toast.makeText(getContext(), "이미 추가된 아이디입니다.", Toast.LENGTH_SHORT).show();
                             }
 

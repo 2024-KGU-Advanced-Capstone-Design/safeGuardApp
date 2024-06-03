@@ -1,13 +1,12 @@
 package com.example.safeguardapp.Group;
 
 import android.os.Bundle;
-import android.text.GetChars;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.activity.OnBackPressedCallback;
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.example.safeguardapp.Emergency.OtherEmergencyFragment;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
@@ -30,19 +30,12 @@ import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,6 +47,8 @@ public class GroupFragment extends Fragment {
     private RecyclerView groupListView;
     private Button addGroupBtn;
     private String currentGroupUuid;
+    private ImageButton transformBtn;
+
     private String childID;
     private ArrayList<String> childList = new ArrayList<>();
 
@@ -105,6 +100,7 @@ public class GroupFragment extends Fragment {
     private void initializeView(View view) {
         addGroupBtn = view.findViewById(R.id.add_group_btn);
         groupListView = view.findViewById(R.id.recycler_view);
+        transformBtn = view.findViewById(R.id.toolbar_image_button);
     }
 
     private void setupListeners() {
@@ -118,6 +114,7 @@ public class GroupFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+        transformBtn.setOnClickListener(v -> transScreenToOther());
     }
 
     private static class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupItemViewHolder> {
@@ -205,6 +202,7 @@ public class GroupFragment extends Fragment {
                                 childList.add(value);
                             }
                         }
+                        Log.e("POST", String.valueOf(childList));
                         addGroupFromServer();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -237,6 +235,13 @@ public class GroupFragment extends Fragment {
                 Log.e("addGroupFromServer", "Group for child " + child + " already exists.");
             }
         }
+    }
+
+    private void transScreenToOther(){
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+        transaction.replace(R.id.containers, new HelpChildGroupFragment());
+        transaction.commit();
     }
 }
 
