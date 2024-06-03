@@ -75,7 +75,7 @@ public class HelpChildGroupFragment extends Fragment{
                     childID = otherGroup.getId();
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_out_bottom, R.anim.slide_in_bottom, R.anim.slide_out_top);
-                    transaction.replace(R.id.containers, GroupSettingFragment.newInstance(currentGroupUuid, childID));
+                    transaction.replace(R.id.containers, GroupHelperSettingFragment.newInstance(currentGroupUuid, childID));
                     transaction.commit();
                 }
             }));
@@ -152,7 +152,6 @@ public class HelpChildGroupFragment extends Fragment{
         });
     }
 
-    //헬퍼 그룹 추가
     private void addGroupFromServer() {
         OtherGroupRepository groupRepository = OtherGroupRepository.getInstance(requireContext());
         String name = "1";
@@ -171,7 +170,6 @@ public class HelpChildGroupFragment extends Fragment{
         }
     }
 
-    //이전 화면으로 이동
     private void previous(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
@@ -182,7 +180,6 @@ public class HelpChildGroupFragment extends Fragment{
         navigationView.setSelectedItemId(R.id.map);
     }
 
-    //GroupFragment로 이동
     private void transScreenToMy(){
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
@@ -190,7 +187,7 @@ public class HelpChildGroupFragment extends Fragment{
         transaction.commit();
     }
 
-    private static class OtherGroupAdapter extends RecyclerView.Adapter<OtherGroupAdapter.OtherGroupItemViewHolder> {
+    private static class OtherGroupAdapter extends RecyclerView.Adapter<OtherGroupAdapter.OtherGroupItemViewHolder>{
         private final List<OtherGroup> otherGroupList;
         private final OnItemClickListener listener;
 
