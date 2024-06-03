@@ -35,15 +35,23 @@ import com.example.safeguardapp.Notice.GetNotificationRequest;
 import com.example.safeguardapp.Map.LocationRequest;
 import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.Setting.ChangeNicknameRequest;
+import com.example.safeguardapp.Setting.LoadImageRequest;
 import com.example.safeguardapp.Setting.ReturnNicknameRequest;
+import com.example.safeguardapp.Setting.SendImageRequest;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 
 public interface UserRetrofitInterface {
     @POST("login")
@@ -153,4 +161,16 @@ public interface UserRetrofitInterface {
 
     @POST("find-parenting-helping-list")
     Call<ResponseBody> getChildAllList(@Body GetOtherChildIDRequest request);
+
+    @Multipart
+    @POST("upload-file")
+    Call<ResponseBody> uploadFile(
+            @Part("dto") RequestBody dto,
+            @Part MultipartBody.Part file);
+
+    @POST("get-file")
+    Call<ResponseBody> getloadFile(@Body LoadImageRequest request);
+
+    @GET
+    Call<ResponseBody> downloadFile(@Url String fileUrl);
 }
