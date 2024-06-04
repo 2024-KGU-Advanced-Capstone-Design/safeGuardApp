@@ -13,16 +13,19 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/navy1"
             app:navigationIcon="?attr/homeAsUpIndicator"
+            app:navigationIconTint="@color/white"
             app:title="반경 1Km 내 긴급 알림"
-            app:titleCentered="true">
+            app:titleCentered="true"
+            app:titleTextColor="@color/white">
 
             <ImageButton
                 android:id="@+id/toolbar_image_button"
-                android:layout_marginRight="10dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="end"
+                android:layout_marginRight="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Custom button"
                 android:scaleType="fitCenter"
