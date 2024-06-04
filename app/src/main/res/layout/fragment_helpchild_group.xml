@@ -13,7 +13,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="조력하는 아이 목록"
+            android:background="@color/navy1"
+            app:title="조력하는 피보호자 목록"
             app:titleCentered="true"
             app:titleTextColor="@color/white">
 

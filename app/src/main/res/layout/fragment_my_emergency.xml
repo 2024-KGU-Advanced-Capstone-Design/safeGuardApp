@@ -13,9 +13,12 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/navy1"
             app:navigationIcon="?attr/homeAsUpIndicator"
+            app:navigationIconTint="@color/white"
             app:title="내가 보낸 긴급 알림"
-            app:titleCentered="true">
+            app:titleCentered="true"
+            app:titleTextColor="@color/white">
 
             <ImageButton
                 android:id="@+id/toolbar_image_button"
