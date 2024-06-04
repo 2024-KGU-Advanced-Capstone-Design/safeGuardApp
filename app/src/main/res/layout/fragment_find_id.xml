@@ -83,9 +83,12 @@
         android:layout_height="wrap_content"
         app:layout_anchor="@+id/appBarLayout"
         app:layout_anchorGravity="center"
+        android:background="@color/navy1"
         app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white"
         app:title="아이디 찾기"
-        app:titleCentered="true" />
+        app:titleCentered="true"
+        app:titleTextColor="@color/white"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

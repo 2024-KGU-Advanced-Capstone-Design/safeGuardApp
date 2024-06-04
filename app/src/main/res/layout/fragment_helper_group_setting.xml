@@ -13,7 +13,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:navigationIcon="?attr/homeAsUpIndicator" />
+            app:title="그룹 상세"
+            app:titleTextColor="@color/white"
+            app:titleCentered="true"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:navigationIconTint="@color/white"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

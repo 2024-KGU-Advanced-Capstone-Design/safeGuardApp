@@ -14,7 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:navigationIcon="?attr/homeAsUpIndicator"
+            app:navigationIconTint="@color/white"
             app:title="childName 긴급 알림 게시판"
+            app:titleTextColor="@color/white"
             app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>

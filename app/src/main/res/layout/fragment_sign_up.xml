@@ -289,7 +289,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/navy1"
         app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white"
         app:title="회원가입"
+        app:titleTextColor="@color/white"
         app:titleCentered="true" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

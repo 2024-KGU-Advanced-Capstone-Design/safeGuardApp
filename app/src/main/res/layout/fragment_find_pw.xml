@@ -11,10 +11,12 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             app:title="비밀번호 재설정"
+            app:titleTextColor="@color/white"
             app:titleCentered="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:navigationIcon="?attr/homeAsUpIndicator" />
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:navigationIconTint="@color/white"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
