@@ -5,6 +5,7 @@ import static com.naver.maps.map.NaverMap.MapType.Hybrid;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.TransitionRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -17,23 +18,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.safeguardapp.Emergency.MyEmergencyFragment;
 import com.example.safeguardapp.Group.AddGroupPopupFragment;
 import com.example.safeguardapp.Group.FindChildPWCertFragment;
@@ -48,6 +57,7 @@ import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.Map.LocationRequest;
 import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.Notice.NoticeFragment;
+import com.example.safeguardapp.Setting.LoadImageRequest;
 import com.example.safeguardapp.Setting.SettingFragment;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.example.safeguardapp.data.repository.OtherGroupRepository;
@@ -107,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> childList2 = new ArrayList<>();
     private HashMap<Integer, String> dynamicVariables2 = new HashMap<>();
     private HashMap<String, Marker> childMarkers2 = new HashMap<>();
+    private HashMap<String, Bitmap> childImages = new HashMap<>();
 
     private String markerName;
 
@@ -252,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             if (key.equals("status")) {
                             } else {
                                 childList.add(value);
+                                loadImageToServer(value);
                             }
                         }
                     } catch (Exception e) {
@@ -296,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 String key = keys.next();
                                 String value = helpingJson.getString(key);
                                 childList2.add(value);
+                                loadImageToServer(value);
                             }
                         } else {
                             Log.e("getChildID", "'Helping' key is missing in the response");
@@ -326,8 +339,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 getChildLocation(childList, dynamicVariables, childMarkers); // member의 child 위치 가져오기
-                getChildLocation(childList2, dynamicVariables2, childMarkers2); // helper의 child 위치 가져오기
-                handler.postDelayed(this, 2000); // 2초마다 실행
+                handler.postDelayed(this, 10000); // 10초마다 실행
             }
         };
 
@@ -499,10 +511,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         double latitude = result.getLatitude();
                         double longitude = result.getLongitude();
-                        int battery = (int)(result.getBattery());
+                        int battery = (int) (result.getBattery());
 
                         dynamicVariablesMap.put(finalI, childArrayList.get(finalI));
                         markerName = dynamicVariablesMap.get(finalI);
+
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View markerView = inflater.inflate(R.layout.custom_marker, null);
+                        ImageView imageView = markerView.findViewById(R.id.marker_image);
+
+                        if (childImages.containsKey(getChildId)) {
+                            Bitmap childImage = childImages.get(getChildId);
+                            imageView.setImageBitmap(childImage);
+                        }
+
+                        markerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                        markerView.layout(0, 0, markerView.getMeasuredWidth(), markerView.getMeasuredHeight());
+                        markerView.buildDrawingCache();
+                        Bitmap bitmap = Bitmap.createBitmap(markerView.getMeasuredWidth(), markerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        markerView.draw(canvas);
+
+                        // Bitmap을 마커 이미지로 설정
+                        OverlayImage markerIcon = OverlayImage.fromBitmap(bitmap);
 
                         if (childMarkersMap.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
                             Marker marker = new Marker();
@@ -511,8 +542,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             marker.setCaptionText(getChildId);
                             marker.setCaptionAligns(Align.Top);
                             marker.setCaptionOffset(10);
-                            marker.setIcon(MarkerIcons.BLACK);
-                            marker.setIconTintColor(Color.argb(0, 180, 85, 162));
+                            marker.setWidth(120);
+                            marker.setHeight(120);
+                            marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
                             marker.setSubCaptionText(battery + "%");
@@ -527,8 +559,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             marker.setCaptionText(getChildId);
                             marker.setCaptionAligns(Align.Bottom);
                             marker.setCaptionOffset(10);
-                            marker.setIcon(MarkerIcons.BLACK);
-                            marker.setIconTintColor(Color.argb(0, 180, 85, 162));
+                            marker.setWidth(120);
+                            marker.setHeight(120);
+                            marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
                             marker.setSubCaptionText(battery + "%");
@@ -636,6 +669,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         emergencyBtn.setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction().replace(R.id.containers, new MyEmergencyFragment()).commit();
+    }
+
+    private void loadImageToServer(String childID) {
+        LoadImageRequest loadImageRequest = new LoadImageRequest("Child", childID);
+        Call<ResponseBody> call = userRetrofitInterface.getloadFile(loadImageRequest);
+        String fileUrl = "http://223.130.152.254:8080/imagePath/";
+        call.clone().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        String reponseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(reponseBodyString);
+                        for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                            String key = keys.next();
+                            String value = json.getString(key);
+                            if (key.equals("filePath")) {
+                                String loadfilepath = value;
+                                Log.e("POST", loadfilepath);
+                                Glide.with(MainActivity.this)
+                                        .asBitmap()
+                                        .load(fileUrl + loadfilepath)
+                                        .into(new SimpleTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                childImages.put(childID, resource);
+                                            }
+                                        });
+                            } else {
+                                continue;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     private void removeAllPolygons() {
