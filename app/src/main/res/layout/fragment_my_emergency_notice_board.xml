@@ -17,7 +17,8 @@
             app:navigationIconTint="@color/white"
             app:title="childName 긴급 알림 게시판"
             app:titleTextColor="@color/white"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            android:background="@color/navy1"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

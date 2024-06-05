@@ -12,7 +12,7 @@
         android:id="@+id/notice_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FF3F3F3F"
+        android:background="@color/navy1"
         android:gravity="center"
         android:padding="8dp"
         android:text="알림 기록"
