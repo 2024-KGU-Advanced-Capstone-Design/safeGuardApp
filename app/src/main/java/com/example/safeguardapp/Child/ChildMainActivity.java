@@ -12,6 +12,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -19,28 +21,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.safeguardapp.Group.GetMemberIDRequest;
 import com.example.safeguardapp.Group.Sector.SectorDetails;
 import com.example.safeguardapp.Group.Sector.SectorInquireRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
+import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.Map.LocationRequest;
 import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.Setting.LoadImageRequest;
 import com.example.safeguardapp.StartScreenActivity;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.google.android.material.navigation.NavigationBarView;
@@ -53,6 +63,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Align;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
@@ -79,7 +90,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
     public MapFragment childMapFragment;
     public ChildSettingFragment childSettingFragment;
     private ImageButton fatalButton;
-
+    private HashMap<String, Bitmap> memberImages = new HashMap<>();
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private NaverMap mNaverMap;
@@ -192,6 +203,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
 
                                     // memberList에 값 추가
                                     memberList.add(value);
+                                    loadImageToServer(value);
                                 }
                             }
                         }
@@ -388,6 +400,24 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                         dynamicVariables.put(finalI, memberList.get(finalI));
                         markerName = dynamicVariables.get(finalI);
 
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View markerView = inflater.inflate(R.layout.custom_marker, null);
+                        ImageView imageView = markerView.findViewById(R.id.marker_image);
+
+                        if (memberImages.containsKey(getMemberId)) {
+                            Bitmap memberImage = memberImages.get(getMemberId);
+                            imageView.setImageBitmap(memberImage);
+                        }
+
+                        markerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                        markerView.layout(0, 0, markerView.getMeasuredWidth(), markerView.getMeasuredHeight());
+                        markerView.buildDrawingCache();
+                        Bitmap bitmap = Bitmap.createBitmap(markerView.getMeasuredWidth(), markerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        markerView.draw(canvas);
+
+                        OverlayImage markerIcon = OverlayImage.fromBitmap(bitmap);
+
                         if (memberMarkers.get(markerName) == null) { // 해당 childMarker가 한번도 생성되지 않은 경우
                             Marker marker = new Marker();
                             memberMarkers.put(markerName, marker);
@@ -395,8 +425,9 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             marker.setCaptionText(getMemberId);
                             marker.setCaptionAligns(Align.Top);
                             marker.setCaptionOffset(10);
-                            marker.setIcon(MarkerIcons.BLACK);
-                            marker.setIconTintColor(Color.argb(0, 180, 85, 162));
+                            marker.setWidth(120);
+                            marker.setHeight(120);
+                            marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
                             marker.setSubCaptionText(battery + "%");
@@ -411,8 +442,9 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             marker.setCaptionText(getMemberId);
                             marker.setCaptionAligns(Align.Top);
                             marker.setCaptionOffset(10);
-                            marker.setIcon(MarkerIcons.BLACK);
-                            marker.setIconTintColor(Color.argb(0, 180, 85, 162));
+                            marker.setWidth(120);
+                            marker.setHeight(120);
+                            marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
                             marker.setSubCaptionText(battery + "%");
@@ -509,6 +541,50 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 // 요청 실패 처리
                 Log.e("SectorInquire", "Request failed", t);
+            }
+        });
+    }
+
+    private void loadImageToServer(String memberID) {
+        LoadImageRequest loadImageRequest = new LoadImageRequest("Member", memberID);
+        Call<ResponseBody> call = userRetrofitInterface.getloadFile(loadImageRequest);
+        String fileUrl = "http://223.130.152.254:8080/imagePath/";
+        call.clone().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        String reponseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(reponseBodyString);
+                        for (Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                            String key = keys.next();
+                            String value = json.getString(key);
+                            if (key.equals("filePath")) {
+                                String loadfilepath = value;
+                                Log.e("POST", loadfilepath);
+                                Glide.with(ChildMainActivity.this)
+                                        .asBitmap()
+                                        .load(fileUrl + loadfilepath)
+                                        .into(new SimpleTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                memberImages.put(memberID, resource);
+                                            }
+                                        });
+                            } else {
+                                continue;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
             }
         });
     }
