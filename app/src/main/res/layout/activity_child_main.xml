@@ -68,8 +68,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/white"
-        app:itemBackground="@color/white"
+        android:background="@color/navy1"
+        app:itemBackground="@color/navy1"
+        app:itemIconTint="@drawable/bottom_navigation_color"
+        app:itemTextColor="@drawable/bottom_navigation_color"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/child_button_menu" />
 
