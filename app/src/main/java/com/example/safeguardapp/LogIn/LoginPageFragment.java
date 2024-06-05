@@ -81,8 +81,8 @@ public class LoginPageFragment extends Fragment {
         ImageView safeGuardLogoImageView = view.findViewById(R.id.SafeGuard_logo_image);
         YoYo.with(Techniques.FadeIn).duration(1500).repeat(0).playOn(safeGuardLogoImageView);
 
-        TextView safeGuardLogoTextView = view.findViewById(R.id.SafeGuard_logo);
-        YoYo.with(Techniques.FadeIn).duration(1500).repeat(0).playOn(safeGuardLogoTextView);
+        ImageView safeGuardWordLogoImageView = view.findViewById(R.id.SafeGuard_word_logo_image);
+        YoYo.with(Techniques.FadeIn).duration(1500).repeat(0).playOn(safeGuardWordLogoImageView);
 
         editTextID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
