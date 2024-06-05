@@ -48,13 +48,21 @@
             android:id="@+id/group_button_screen"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:gravity="center"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <android.widget.Button
+                android:id="@+id/change_name_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:background="@drawable/basic_button_design"
+                android:text="그룹 명 변경" />
             <android.widget.Button
                 android:id="@+id/confirm_button"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginHorizontal="15dp"
                 android:background="@drawable/signup_button_blue_version"
@@ -62,8 +70,8 @@
 
             <android.widget.Button
                 android:id="@+id/del_group_btn"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginHorizontal="15dp"
                 android:background="@drawable/basic_red_button_version"

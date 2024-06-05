@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,9 @@ import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
+import com.example.safeguardapp.data.model.OtherGroup;
 import com.example.safeguardapp.data.repository.GroupRepository;
+import com.example.safeguardapp.data.repository.OtherGroupRepository;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.ChipGroup;
@@ -50,8 +53,8 @@ public class GroupHelperSettingFragment extends Fragment {
     private String uuid;
     private String childID;
     private String selectedItem;
-    private GroupRepository repository;
-    private LiveData<Optional<Group>> groupStream;
+    private OtherGroupRepository repository;
+    private LiveData<Optional<OtherGroup>> groupStream;
     private ChipGroup aideGroup;
     private RetrofitClient retrofitClient;
     private ArrayList<String> typeList =new ArrayList<>();
@@ -79,8 +82,8 @@ public class GroupHelperSettingFragment extends Fragment {
             childID = getArguments().getString("childID");
         }
 
-        repository = GroupRepository.getInstance(requireContext());
-        groupStream = Transformations.map(repository.getGroupListStream(), groups ->
+        repository = OtherGroupRepository.getInstance(requireContext());
+        groupStream = Transformations.map(repository.getOtherGroupListStream(), groups ->
                 groups.stream().filter(e -> TextUtils.equals(e.getUuid(), uuid)).findFirst());
 
         if (TextUtils.isEmpty(uuid)) {
@@ -100,7 +103,7 @@ public class GroupHelperSettingFragment extends Fragment {
         TextView groupNameTextView = view.findViewById(R.id.groupName);
         groupStream.observe(getViewLifecycleOwner(), groupOptional -> {
             if (groupOptional.isPresent()) {
-                Group group = groupOptional.get();
+                OtherGroup group = groupOptional.get();
                 groupNameTextView.setText(group.getName());
             }
         });
@@ -113,19 +116,13 @@ public class GroupHelperSettingFragment extends Fragment {
 
         view.findViewById(R.id.del_group_btn).setOnClickListener(v -> remove());
         view.findViewById(R.id.confirm_button).setOnClickListener(v->confirm());
+        view.findViewById(R.id.change_name_button).setOnClickListener(v -> changeName());
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 // 뒤로 가기 시 실행되는 코드
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                // 이동 시에는 이미 생성된 mapFragment를 사용하여 교체
-                transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
-                transaction.replace(R.id.containers, ((MainActivity) requireActivity()).groupFragment);
-                transaction.commit();
-
-                BottomNavigationView navigationView = requireActivity().findViewById(R.id.bottom_navigationview);
-                navigationView.setSelectedItemId(R.id.group);
+                previous();
             }
         });
 
@@ -140,8 +137,33 @@ public class GroupHelperSettingFragment extends Fragment {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom);
-        fragmentTransaction.replace(R.id.containers, new GroupFragment());
+        fragmentTransaction.replace(R.id.containers, new HelpChildGroupFragment());
         fragmentTransaction.commit();
+    }
+
+    // 그룹명 변경
+    private void changeName(){
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_change_group_name, null);
+        EditText editText = dialogView.findViewById(R.id.name_edit_text);
+        editText.setHint(groupStream.getValue().get().getName());
+
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
+                .setTitle("그룹명 변경")
+                .setView(dialogView)
+                .setPositiveButton("수정", (dialogInterface, i) -> {
+                    String name = editText.getText().toString().trim();
+                    if (TextUtils.isEmpty(name)) return;
+
+                    OtherGroup group = groupStream.getValue().get();
+                    group.setName(name);
+                    repository.editOtherGroup(group);
+
+                    Toast.makeText(getContext(), "수정되었습니다.", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("취소", null);
+
+        AlertDialog msgDlg = msgBuilder.create();
+        msgDlg.show();
     }
 
     //그룹 삭제
@@ -213,13 +235,13 @@ public class GroupHelperSettingFragment extends Fragment {
     }
 
     private void transmitRemove(){
-        GroupRemoveRequest RemoveDTO = new GroupRemoveRequest(childID);
+        RemoveHelperRequest RemoveDTO = new RemoveHelperRequest(LoginPageFragment.saveID, childID);
         Gson gson = new Gson();
         String removeInfo = gson.toJson(RemoveDTO);
 
         Log.e("JSON", removeInfo);
 
-        Call<ResponseBody> call = userRetrofitInterface.removeGroup(RemoveDTO);
+        Call<ResponseBody> call = userRetrofitInterface.removeHelper(RemoveDTO);
         call.clone().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

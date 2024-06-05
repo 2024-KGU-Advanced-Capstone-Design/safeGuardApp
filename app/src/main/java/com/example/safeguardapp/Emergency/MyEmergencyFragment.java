@@ -306,7 +306,6 @@ public class MyEmergencyFragment extends Fragment {
     private void refreshFragment() {
         FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.containers, new MyEmergencyFragment()); // 여기서 R.id.containers는 프래그먼트가 들어있는 컨테이너의 ID입니다.
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 

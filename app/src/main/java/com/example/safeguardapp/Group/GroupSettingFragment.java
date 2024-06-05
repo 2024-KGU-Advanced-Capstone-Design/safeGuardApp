@@ -1,9 +1,18 @@
 package com.example.safeguardapp.Group;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +32,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.safeguardapp.FindPW.EmailRequest;
@@ -31,6 +41,9 @@ import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
+import com.example.safeguardapp.Setting.LoadImageRequest;
+import com.example.safeguardapp.Setting.SendImageRequest;
+import com.example.safeguardapp.Setting.SettingFragment;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
@@ -39,15 +52,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,7 +78,8 @@ import retrofit2.Response;
 public class GroupSettingFragment extends Fragment {
     private String uuid;
     private String childID;
-    private String selectedItem;
+    private String selectedItem, loadfilepath;
+    private CircleImageView choiceImage;
     private GroupRepository repository;
     private LiveData<Optional<Group>> groupStream;
     private ChipGroup aideGroup;
@@ -64,6 +87,7 @@ public class GroupSettingFragment extends Fragment {
     private ArrayList<String> helperList = new ArrayList<>();
     private ArrayList<String> typeList =new ArrayList<>();
     private UserRetrofitInterface userRetrofitInterface;
+    private static final int REQUEST_IMAGE_SELECT = 1;
 
     public static GroupSettingFragment newInstance(String uuid, String childID) {
         GroupSettingFragment fragment = new GroupSettingFragment();
@@ -135,8 +159,11 @@ public class GroupSettingFragment extends Fragment {
         view.findViewById(R.id.child_pw_find_button).setOnClickListener(v -> findChildPW());
         view.findViewById(R.id.del_group_btn).setOnClickListener(v -> remove());
         view.findViewById(R.id.confirm_button).setOnClickListener(v->confirm());
+        choiceImage = view.findViewById(R.id.imageView);
+        choiceImage.setOnClickListener(v -> choiceImageMethod());
 
         aideGroup = view.findViewById(R.id.chip_group);
+        loadImageToServer();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -159,6 +186,7 @@ public class GroupSettingFragment extends Fragment {
         return view;
     }
 
+    // 조력자 목록 업데이트
     private void updateAideUi() {
         aideGroup.removeAllViews();
 
@@ -542,5 +570,161 @@ public class GroupSettingFragment extends Fragment {
         if (aideGroup != null) {
             aideGroup.removeAllViews();
         }
+    }
+
+    // 이미지 선택 메서드
+    private void choiceImageMethod() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_IMAGE_SELECT);
+    }
+    // crop 시작 메서드
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_SELECT && resultCode == RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            if (selectedImageUri != null) {
+                CropImage.activity(selectedImageUri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setAspectRatio(1, 1)
+                        .start(getContext(), this);
+            }
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                try {
+                    Log.e("POST", "try 실행중");
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), resultUri);
+                    Bitmap circularBitmap = getCircularBitmap(bitmap);
+                    saveImage(circularBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "이미지를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                // 오류 처리
+                Toast.makeText(getContext(), "이미지 자르기 실패: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // 이미지 원형으로 바꿈
+    private Bitmap getCircularBitmap(Bitmap bitmap) {
+        Log.e("POST", "getCircular 실행중");
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int minEdge = Math.min(width, height);
+
+        Bitmap output = Bitmap.createBitmap(minEdge, minEdge, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, minEdge, minEdge);
+
+        float r = minEdge / 2f;
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        canvas.drawCircle(r, r, r, paint);
+        paint.setXfermode(new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
+
+    //이미지 저장 및 서버에 이미지 데이터 전달
+    private void saveImage(Bitmap bitmap) {
+        // 파일을 저장할 경로 설정
+        File file = new File(getActivity().getFilesDir(), "circular_image.png");
+
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            Toast.makeText(getActivity(), "이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+
+            SendImageRequest sendImageRequest = new SendImageRequest("Child", childID);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(sendImageRequest);
+            RequestBody dto = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+
+            // 이미지 파일 준비
+            RequestBody reqFile = RequestBody.create(MediaType.parse("image/png"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), reqFile);
+
+
+            Call<ResponseBody> call = userRetrofitInterface.uploadFile(dto, body);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        refreshFragment();
+                    } else {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getActivity(), "업로드 실패: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("POST", "이미지 전송 오류");
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(), "이미지를 저장할 수 없습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //이미지 경로 불러오기 및 이미지 설정
+    private void loadImageToServer() {
+        LoadImageRequest loadImageRequest = new LoadImageRequest("Child", childID);
+        Call<ResponseBody> call = userRetrofitInterface.getloadFile(loadImageRequest);
+        String fileUrl = "http://223.130.152.254:8080/imagePath/";
+        call.clone().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        String reponseBodyString = response.body().string();
+                        JSONObject json = new JSONObject(reponseBodyString);
+                        for(Iterator<String> keys = json.keys(); keys.hasNext(); ) {
+                            String key = keys.next();
+                            String value = json.getString(key);
+                            if (key.equals("filePath")) {
+                                loadfilepath = value;
+                                Log.e("POST", loadfilepath);
+                                Glide.with(getActivity())
+                                        .load(fileUrl + loadfilepath)
+                                        .into(choiceImage);
+                            }
+                            else {
+                                continue;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void refreshFragment() {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.containers, GroupSettingFragment.newInstance(uuid, childID));
+        transaction.commit();
     }
 }

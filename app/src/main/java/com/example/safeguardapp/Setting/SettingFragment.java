@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.example.safeguardapp.Emergency.MyEmergencyFragment;
 import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
@@ -382,12 +383,9 @@ public class SettingFragment extends Fragment {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(getActivity(), "이미지 업로드 성공!", Toast.LENGTH_SHORT).show();
-                        Log.e("POST", "이미지 전송 성공");
-                        loadImageToServer();
+                        refreshFragment();
                     } else {
-                        Toast.makeText(getActivity(), "서버 오류: " + response.message(), Toast.LENGTH_SHORT).show();
-                        Log.e("POST", "이미지 전송 실패" + response.body() + response.code());
+
                     }
                 }
 
@@ -441,5 +439,11 @@ public class SettingFragment extends Fragment {
 
             }
         });
+    }
+
+    private void refreshFragment() {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.containers, new SettingFragment()); // 여기서 R.id.containers는 프래그먼트가 들어있는 컨테이너의 ID입니다.
+        fragmentTransaction.commit();
     }
 }
