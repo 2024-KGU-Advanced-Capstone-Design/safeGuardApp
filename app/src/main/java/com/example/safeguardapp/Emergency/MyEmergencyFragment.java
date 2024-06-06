@@ -192,6 +192,7 @@ public class MyEmergencyFragment extends Fragment {
     //emergency 보내기
     private void sendEmergency() {
         String parentId = LoginPageFragment.saveID;
+        Log.e("POST", "sendEmergency 실행");
 
         EmergencyRequest emergencyRequest = new EmergencyRequest(parentId, selectedItem);
         Call<ResponseBody> call = userRetrofitInterface.sendEmergency(emergencyRequest);
@@ -199,6 +200,7 @@ public class MyEmergencyFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
+                    Log.e("POST", "emergency 전송 성공");
                     refreshFragment();
                 } else {
                     refreshFragment();
