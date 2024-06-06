@@ -2,6 +2,7 @@
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -32,9 +33,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/groupScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,13 +50,15 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <android.widget.Button
-            android:id="@+id/add_group_btn"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:background="@drawable/basic_button_design"
-            android:text="그룹 추가"
-            android:textSize="30dp" />
-
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_group_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/orange"
+        android:src="@drawable/baseline_assignment_add_24"
+        app:tint="@android:color/white"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

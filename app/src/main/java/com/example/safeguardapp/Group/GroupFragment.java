@@ -29,6 +29,7 @@ import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 
@@ -45,7 +46,7 @@ public class GroupFragment extends Fragment {
     UserRetrofitInterface userRetrofitInterface;
     private GroupRepository repository;
     private RecyclerView groupListView;
-    private Button addGroupBtn;
+    private FloatingActionButton addGroupBtn;
     private String currentGroupUuid;
     private ImageButton transformBtn;
 
