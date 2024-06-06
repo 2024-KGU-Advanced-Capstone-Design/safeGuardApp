@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.example.safeguardapp.Emergency.OtherEmergencyFragment;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;

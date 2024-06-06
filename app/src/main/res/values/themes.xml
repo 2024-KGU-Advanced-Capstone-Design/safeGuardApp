@@ -11,10 +11,10 @@
 
     <!-- 새로 만든 style -->
     <style name="Theme.customize" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/navy1</item> // 주 색상
-        <item name="colorSurface">@color/navy3</item> // 조력자 목록 chips 색상
-        <item name="colorOutline">@color/navy3</item> // 조력자 목록 chips 테두리 색상
-        <item name="colorSecondaryContainer">@color/navy2</item> // 네비게이션 선택 요소 효과
+        <item name="colorPrimary">@color/lightsteelblue</item> // 주 색상
+        <item name="colorSurface">@color/navy4</item> // 조력자 목록 chips 색상
+        <item name="colorOutline">@color/navy4</item> // 조력자 목록 chips 테두리 색상
+        <item name="colorSecondaryContainer">@color/navy3</item> // 네비게이션 선택 요소 효과
         <item name="android:windowLightStatusBar">true</item> // 상태표시줄 밝게
         <item name="android:statusBarColor">@color/white</item> // 상태표시줄 색상
     </style>

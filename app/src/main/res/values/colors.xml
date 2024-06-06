@@ -6,8 +6,21 @@
     <color name="grey">#DEE2E6</color>
     <color name="orange">#FB8C00</color>
     <color name="navy1">#00264B</color>
-    <color name="navy2">#1A4568</color>
-    <color name="navy3">#B6D0E1</color>
+    <color name="navy2">#1A3C55</color>
+    <color name="navy3">#1A4568</color>
+    <color name="navy4">#B6D0E1</color>
+
+    <color name="midnightblue">#001F3F</color>
+    <color name="deepdarkblue" >#003366</color>
+    <color name="darkblue">#004080</color>
+    <color name="darkgrey">#A9A9A9</color>
+    <color name="dartquarterize">#00CED1</color>
+    <color name="orangered">#FF4500</color>
+    <color name="blueviolet">#8A2BE2</color>
+    <color name="lightsteelblue">#B0C4DE</color>
+    <color name="steelblue">#4682B4</color>
+    <color name="lightcoral">#F08080</color>
+    <color name="cadetblue">#5F9EA0 </color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
