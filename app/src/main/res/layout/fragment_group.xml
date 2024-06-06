@@ -59,6 +59,6 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="20dp"
         android:backgroundTint="@color/orange"
-        android:src="@drawable/baseline_assignment_add_24"
+        android:src="@drawable/outline_docs_add_on_24"
         app:tint="@android:color/white"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
