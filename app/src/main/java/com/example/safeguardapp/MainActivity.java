@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 getChildLocation(childList, dynamicVariables, childMarkers); // member의 child 위치 가져오기
-                handler.postDelayed(this, 10000); // 10초마다 실행
+                handler.postDelayed(this, 3000); // 3초마다 실행
             }
         };
 
