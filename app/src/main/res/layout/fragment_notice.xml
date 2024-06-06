@@ -8,15 +8,19 @@
     android:orientation="vertical"
     tools:context=".Notice.NoticeFragment">
 
-    <TextView
-        android:id="@+id/notice_title"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/navy1"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="알림 기록"
-        android:textColor="#FFFFFF" />
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/navy1"
+            app:title="알림 기록"
+            app:titleCentered="true"
+            app:titleTextColor="@color/white"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
