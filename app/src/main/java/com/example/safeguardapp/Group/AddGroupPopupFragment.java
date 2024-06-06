@@ -1,5 +1,6 @@
 package com.example.safeguardapp.Group;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -73,6 +75,10 @@ public class AddGroupPopupFragment extends Fragment {
                 String username = nameEditText.getText().toString().trim();
                 String userid = idEditText.getText().toString().trim();
                 String userpw = passwordEditText.getText().toString().trim();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null && view != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
                 transmitChildData(username, userid,userpw);
             }
         });
