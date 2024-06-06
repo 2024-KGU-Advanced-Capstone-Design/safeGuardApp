@@ -158,7 +158,6 @@ public class GroupSettingFragment extends Fragment {
         view.findViewById(R.id.child_id_find_button).setOnClickListener(v -> findChildID());
         view.findViewById(R.id.child_pw_find_button).setOnClickListener(v -> findChildPW());
         view.findViewById(R.id.del_group_btn).setOnClickListener(v -> remove());
-        view.findViewById(R.id.confirm_button).setOnClickListener(v->confirm());
         choiceImage = view.findViewById(R.id.imageView);
         choiceImage.setOnClickListener(v -> choiceImageMethod());
 
@@ -396,60 +395,6 @@ public class GroupSettingFragment extends Fragment {
                 })
                 .setNegativeButton("취소", null);
 
-        AlertDialog msgDlg = msgBuilder.create();
-        msgDlg.show();
-    }
-
-    //확인 버튼
-    private void confirm(){
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_confirm, null);
-
-        int checknum = 0;
-
-        final String[] items = new String[typeList.size()];
-        typeList.toArray(items);
-
-        final int[] selectedPosition = {checknum};
-        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
-                .setTitle("확인")
-                .setSingleChoiceItems(items, checknum, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 사용자가 항목을 선택할 때마다 호출됨
-                        // 선택된 항목의 인덱스는 which에 저장됨
-                        selectedPosition[0] = which;
-                    }
-                })
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 사용자가 OK 버튼을 클릭할 때 호출됨
-                        // 선택된 항목의 인덱스를 가져옴
-                        if (selectedPosition[0] != -1) {
-                            selectedItem = items[selectedPosition[0]];
-
-                            ConfirmRequest confirmRequest = new ConfirmRequest(LoginPageFragment.saveID, childID, selectedItem);
-                            Call<ResponseBody> call = userRetrofitInterface.sendConfirm(confirmRequest);
-
-                            call.clone().enqueue(new Callback<ResponseBody>() {
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    if(response.isSuccessful()){
-                                        Toast.makeText(getContext(), "전송되었습니다.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                    Toast.makeText(getContext(), "통신오류", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
-                    }
-                })
-                .setNegativeButton("취소", null)
-                .setView(dialogView);
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
     }

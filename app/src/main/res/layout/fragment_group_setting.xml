@@ -109,14 +109,6 @@
                 android:text="그룹 비밀번호 변경" />
 
             <android.widget.Button
-                android:id="@+id/confirm_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/signup_button_blue_version"
-                android:text="확인 버튼" />
-
-            <android.widget.Button
                 android:id="@+id/del_group_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
