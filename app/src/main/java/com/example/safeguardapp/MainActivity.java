@@ -540,10 +540,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             childMarkersMap.put(markerName, marker);
 
                             marker.setCaptionText(getChildId);
-                            marker.setCaptionAligns(Align.Top);
-                            marker.setCaptionOffset(10);
-                            marker.setWidth(120);
-                            marker.setHeight(120);
+                            marker.setCaptionAligns(Align.Bottom);
+                            marker.setCaptionOffset(5);
+                            marker.setWidth(130);
+                            marker.setHeight(195);
                             marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
@@ -558,9 +558,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             marker.setCaptionText(getChildId);
                             marker.setCaptionAligns(Align.Bottom);
-                            marker.setCaptionOffset(10);
-                            marker.setWidth(120);
-                            marker.setHeight(120);
+                            marker.setCaptionOffset(5);
+                            marker.setWidth(130);
+                            marker.setHeight(195);
                             marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);

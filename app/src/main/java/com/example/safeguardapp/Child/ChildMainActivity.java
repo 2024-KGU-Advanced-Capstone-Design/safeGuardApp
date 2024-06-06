@@ -423,10 +423,10 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             memberMarkers.put(markerName, marker);
 
                             marker.setCaptionText(getMemberId);
-                            marker.setCaptionAligns(Align.Top);
-                            marker.setCaptionOffset(10);
-                            marker.setWidth(120);
-                            marker.setHeight(120);
+                            marker.setCaptionAligns(Align.Bottom);
+                            marker.setCaptionOffset(5);
+                            marker.setWidth(130);
+                            marker.setHeight(195);
                             marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
@@ -440,10 +440,10 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                             memberMarkers.replace(markerName, marker);
 
                             marker.setCaptionText(getMemberId);
-                            marker.setCaptionAligns(Align.Top);
-                            marker.setCaptionOffset(10);
-                            marker.setWidth(120);
-                            marker.setHeight(120);
+                            marker.setCaptionAligns(Align.Bottom);
+                            marker.setCaptionOffset(5);
+                            marker.setWidth(130);
+                            marker.setHeight(195);
                             marker.setIcon(markerIcon);
                             marker.setHideCollidedSymbols(true);
                             marker.setCaptionTextSize(16);
