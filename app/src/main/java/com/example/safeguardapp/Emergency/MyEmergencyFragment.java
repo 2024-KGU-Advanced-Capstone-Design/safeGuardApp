@@ -2,6 +2,7 @@ package com.example.safeguardapp.Emergency;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -146,6 +147,11 @@ public class MyEmergencyFragment extends Fragment {
                 .setNegativeButton("취소", null);
         AlertDialog msgDlg = builder.create();
         msgDlg.show();
+
+        msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).post(() -> {
+            msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+            msgDlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+        });
     }
 
     private void loadChildList() {

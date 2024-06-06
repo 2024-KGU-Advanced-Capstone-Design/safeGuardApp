@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -57,6 +58,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import org.checkerframework.checker.units.qual.C;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -135,9 +137,11 @@ public class SettingFragment extends Fragment {
                     dialog.dismiss();
                 });
 
-        // 다이얼로그 표시
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     private void nicknameChange() {
@@ -168,7 +172,7 @@ public class SettingFragment extends Fragment {
     }
 
     private void logoutMethod() {
-        new AlertDialog.Builder(requireContext())
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle("로그아웃")
                 .setMessage("로그아웃 하시겠습니까?")
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -187,14 +191,19 @@ public class SettingFragment extends Fragment {
                     }
                 })
                 .setNegativeButton("취소", null)
-                .show();
+                .create();
+
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     private void withdrawMethod() {
-        new AlertDialog.Builder(requireContext())
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle("회원탈퇴")
                 .setMessage("정말로 회원 탈퇴 하시겠습니까?\n탈퇴 후 복구는 불가능합니다")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                .setPositiveButton("탈퇴", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String userID = LoginPageFragment.saveID;
@@ -226,8 +235,14 @@ public class SettingFragment extends Fragment {
                     }
                 })
                 .setNegativeButton("취소", null)
-                .show();
+                .create();
+
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
+
 
     // 이미지 선택 메서드
     private void choiceImageMethod() {

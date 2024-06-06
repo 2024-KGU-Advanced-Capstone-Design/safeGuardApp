@@ -42,16 +42,6 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/safeguard_wordlogo"
                     android:layout_marginEnd="20dp"/>
-<!--                <TextView-->
-<!--                    android:id="@+id/SafeGuard_logo"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:gravity="center|start"-->
-<!--                    android:text="SafeGuard"-->
-<!--                    app:autoSizeMaxTextSize="42sp"-->
-<!--                    app:autoSizeMinTextSize="30sp"-->
-<!--                    app:autoSizeStepGranularity="1sp"-->
-<!--                    app:autoSizeTextType="uniform" />-->
             </LinearLayout>
 
             <RadioGroup
@@ -121,16 +111,29 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <android.widget.Button
-                android:id="@+id/buttonLogin"
+
+            <androidx.cardview.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/signup_button_blue_version"
-                android:layout_marginTop="18dp"
-                android:textSize="20dp"
-                android:text="로그인"
-                android:textColor="#5E53A6"/>
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="7dp">
 
+                <android.widget.Button
+                    android:id="@+id/buttonLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/navy3"
+                    android:textSize="20dp"
+                    android:text="로그인"
+                    android:textFontWeight="700"
+                    android:textColor="@color/lightsteelblue"/>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
 
@@ -142,39 +145,73 @@
         android:windowSoftInputMode="adjustPan"
         android:layout_marginTop="15dp">
 
+        <androidx.cardview.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="10dp"
+            app:cardCornerRadius="20dp"
+            android:backgroundTint="@color/steelblue"
+            android:layout_weight="1">
 
-        <android.widget.Button
-            android:id="@+id/buttonFindID"
+            <android.widget.Button
+                android:id="@+id/buttonFindID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="아이디 찾기"
+                android:textSize="12dp"
+                android:backgroundTint="@color/steelblue"
+                android:textColor="@color/white"
+                android:background="@drawable/rounded_border"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="아이디 찾기"
-            android:textSize="12dp"
-            android:background="@drawable/signup_button_blue_version"
-            />
-        <TextView
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"/>
-        <android.widget.Button
-            android:id="@+id/buttonFindPW"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="@color/steelblue"
+            app:cardCornerRadius="20dp"
+            android:layout_weight="1">
+
+            <android.widget.Button
+                android:id="@+id/buttonFindPW"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="비밀번호 찾기"
+                android:textSize="12dp"
+                android:backgroundTint="@color/steelblue"
+                android:textColor="@color/white"
+                android:background="@drawable/rounded_border" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="비밀번호 찾기"
-            android:textSize="12dp"
-            android:background="@drawable/signup_button_blue_version"
-            />
-        <TextView
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"/>
-        <android.widget.Button
-            android:id="@+id/buttonRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="회원가입"
-            android:textSize="12dp"
-            android:background="@drawable/signup_button_blue_version"
-            />
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="@color/steelblue"
+            app:cardCornerRadius="20dp"
+            android:layout_weight="1">
+
+            <android.widget.Button
+                android:id="@+id/buttonRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="회원가입"
+                android:textSize="12dp"
+                android:backgroundTint="@color/steelblue"
+                android:textColor="@color/white"
+                android:background="@drawable/rounded_border" />
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 </LinearLayout>

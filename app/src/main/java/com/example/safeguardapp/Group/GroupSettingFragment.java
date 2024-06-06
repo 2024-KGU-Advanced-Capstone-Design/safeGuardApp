@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -259,6 +260,9 @@ public class GroupSettingFragment extends Fragment {
 
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
+
+        msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        msgDlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     private void addParent() {
@@ -300,6 +304,9 @@ public class GroupSettingFragment extends Fragment {
 
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
+
+        msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        msgDlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     //아이 조력자 추가
@@ -346,6 +353,9 @@ public class GroupSettingFragment extends Fragment {
 
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
+
+        msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        msgDlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     //안전 구역 및 위험 구역 설정
@@ -370,6 +380,8 @@ public class GroupSettingFragment extends Fragment {
                 });
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
+
+        msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
     }
 
     //아이 비밀번호 찾기
@@ -383,6 +395,9 @@ public class GroupSettingFragment extends Fragment {
                 .setNegativeButton("취소", null);
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
+
+        msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);  // "확인" 버튼 텍스트 색상
+        msgDlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     //그룹 삭제
@@ -397,6 +412,11 @@ public class GroupSettingFragment extends Fragment {
 
         AlertDialog msgDlg = msgBuilder.create();
         msgDlg.show();
+
+        msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).post(() -> {
+            msgDlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+            msgDlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+        });
     }
 
     private void sendEmail(){
