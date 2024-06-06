@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 }
-                handler.postDelayed(this, 2000); // 2초마다 실행
+                handler.postDelayed(this, 10000); // 10초마다 실행
             }
         };
         handler.post(updateBatteryRunnable);

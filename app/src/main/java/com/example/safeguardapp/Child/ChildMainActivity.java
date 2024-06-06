@@ -227,7 +227,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void run() {
                 getMemberLocation();
-                handler.postDelayed(this, 2000); // 2초마다 실행
+                handler.postDelayed(this, 3000); // 3초마다 실행
             }
         };
 
@@ -299,7 +299,7 @@ public class ChildMainActivity extends AppCompatActivity implements OnMapReadyCa
                         }
                     }
                 }
-                handler.postDelayed(this, 2000); // 2초마다 실행
+                handler.postDelayed(this, 10000); // 10초마다 실행
             }
         };
         handler.post(updateBatteryRunnable);
