@@ -264,7 +264,7 @@ public class ChildSettingFragment extends Fragment {
             out.close();
             Toast.makeText(getActivity(), "이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show();
 
-            SendImageRequest sendImageRequest = new SendImageRequest("Member", LoginPageFragment.saveID);
+            SendImageRequest sendImageRequest = new SendImageRequest("Child", LoginPageFragment.saveID);
 
             Gson gson = new Gson();
             String json = gson.toJson(sendImageRequest);
@@ -300,7 +300,7 @@ public class ChildSettingFragment extends Fragment {
 
     //이미지 경로 불러오기 및 이미지 설정
     private void loadImageToServer() {
-        LoadImageRequest loadImageRequest = new LoadImageRequest("Member", LoginPageFragment.saveID);
+        LoadImageRequest loadImageRequest = new LoadImageRequest("Child", LoginPageFragment.saveID);
         Call<ResponseBody> call = userRetrofitInterface.getloadFile(loadImageRequest);
         String fileUrl = "http://223.130.152.254:8080/imagePath/";
         call.clone().enqueue(new Callback<ResponseBody>() {
@@ -340,7 +340,7 @@ public class ChildSettingFragment extends Fragment {
 
     private void refreshFragment() {
         FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.containers, new SettingFragment()); // 여기서 R.id.containers는 프래그먼트가 들어있는 컨테이너의 ID입니다.
+        fragmentTransaction.replace(R.id.containers, new ChildSettingFragment()); // 여기서 R.id.containers는 프래그먼트가 들어있는 컨테이너의 ID입니다.
         fragmentTransaction.commit();
     }
 
