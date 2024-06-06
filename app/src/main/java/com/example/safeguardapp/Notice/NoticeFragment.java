@@ -28,6 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import retrofit2.Call;
@@ -132,21 +133,22 @@ public class NoticeFragment extends Fragment {
                         // 최상위 키 순회
                         for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                             String topKey = it.next();
-                            if (topKey.equals("ARRIVED") || topKey.equals("UNCONFIRMED") || topKey.equals("DEPART")) {  // 최상위 키가 "Parenting"인 경우만 처리
-                                JSONObject innerJson = json.getJSONObject(topKey);
 
-                                String title = innerJson.getString("title");
-                                String content = innerJson.getString("content");
-                                String date = innerJson.getString("date");
-                                String child = innerJson.getString("child");
-                                String senderId = innerJson.getString("senderId");
+                            JSONObject innerJson = json.getJSONObject(topKey);
+
+                            String title = innerJson.getString("title");
+                            String content = innerJson.getString("content");
+                            String date = innerJson.getString("date");
+                            String child = innerJson.getString("child");
+                            String senderId = innerJson.getString("senderId");
 
 
-                                Notice newNotice = new Notice(title, content, date, child, senderId);
+                            Notice newNotice = new Notice(title, content, date, child, senderId);
 
-                                noticeList.add(newNotice);
-                            }
+                            noticeList.add(newNotice);
+
                         }
+                        Collections.reverse(noticeList);
                         // 어댑터에 변경 사항 알림
                         noticeAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
