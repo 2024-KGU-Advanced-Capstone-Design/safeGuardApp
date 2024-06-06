@@ -12,7 +12,7 @@ public class ConfirmRequest {
             confirmType = "ARRIVED";
         else if(confirmType.equals("출발"))
             confirmType = "DEPART";
-        else if(confirmType.equals("?"))
+        else if(confirmType.equals("미확인"))
             confirmType = "UNCONFIRMED";
 
         this.confirmType = confirmType;

@@ -104,7 +104,7 @@ public class GroupSettingFragment extends Fragment {
 
         typeList.add("도착");
         typeList.add("출발");
-        typeList.add("?");
+        typeList.add("미확인");
 
         if (getArguments() != null) {
             uuid = getArguments().getString("uuid");

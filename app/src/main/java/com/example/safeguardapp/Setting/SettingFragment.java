@@ -122,7 +122,7 @@ public class SettingFragment extends Fragment {
         EditText boxInDialog2 = dialogView2.findViewById(R.id.nickname_editText);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("작성할 내용을 입력해주세요.")
+        builder.setTitle("변경할 닉네임을 입력해주세요.")
                 .setView(dialogView2) // 커스텀 레이아웃 설정
                 .setPositiveButton("확인", (dialog, which) -> {
 
