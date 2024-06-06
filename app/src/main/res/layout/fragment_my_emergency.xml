@@ -51,13 +51,22 @@
             android:layout_weight="1"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-        <android.widget.Button
-            android:id="@+id/add_emergency_btn"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:background="@drawable/basic_button_design"
-            android:text="알림 보내기"
-            android:textSize="30dp" />
+<!--        <android.widget.Button-->
+<!--            android:id="@+id/add_emergency_btn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="72dp"-->
+<!--            android:background="@drawable/basic_button_design"-->
+<!--            android:text="알림 보내기"-->
+<!--            android:textSize="30dp" />-->
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_emergency_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/orange"
+        android:src="@drawable/outline_edit_notifications_24"
+        app:tint="@android:color/white"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

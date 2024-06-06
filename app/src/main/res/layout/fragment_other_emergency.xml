@@ -54,12 +54,5 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <android.widget.Button
-            android:id="@+id/add_emergency_btn"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:background="@drawable/basic_button_design"
-            android:text="알림 보내기"
-            android:textSize="30dp" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

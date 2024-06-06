@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.activity.OnBackPressedCallback;
@@ -19,18 +18,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safeguardapp.Group.GetChildIDRequest;
-import com.example.safeguardapp.Group.GroupSettingFragment;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
 import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
-import com.example.safeguardapp.data.model.ReceivedEmergencyItem;
 import com.example.safeguardapp.data.model.SentEmergencyItem;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -49,7 +47,7 @@ import retrofit2.Response;
 public class MyEmergencyFragment extends Fragment {
     RetrofitClient retrofitClient;
     UserRetrofitInterface userRetrofitInterface;
-    private Button addEmergencyBtn;
+    private FloatingActionButton addEmergencyBtn;
     private ImageButton transformBtn;
     private String selectedItem, currentEmergencyUuid;
     private ArrayList<String> childList = new ArrayList<>();

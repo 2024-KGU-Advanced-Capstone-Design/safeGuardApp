@@ -47,7 +47,6 @@ import retrofit2.Response;
 public class OtherEmergencyFragment extends Fragment {
     RetrofitClient retrofitClient;
     UserRetrofitInterface userRetrofitInterface;
-    private Button addEmergencyBtn;
     private ImageButton transformBtn;
     private String selectedItem, currentEmergencyUuid;
     private ArrayList<String> childList = new ArrayList<>();
@@ -98,7 +97,6 @@ public class OtherEmergencyFragment extends Fragment {
         });
         recyclerView.setAdapter(otherEmergencyAdapter);
 
-        addEmergencyBtn = view.findViewById(R.id.add_emergency_btn);
         transformBtn = view.findViewById(R.id.toolbar_image_button);
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> previous());
@@ -107,42 +105,7 @@ public class OtherEmergencyFragment extends Fragment {
     private void setupListeners() {
         loadChildList();
         receivedEmergency();
-        addEmergencyBtn.setOnClickListener(v -> addEmergency());
         transformBtn.setOnClickListener(v -> transScreenToMy());
-    }
-
-    private void addEmergency() {
-        int checknum = 0;
-
-        final String[] items = new String[childList.size()];
-        childList.toArray(items);
-
-        final int[] selectedPosition = {checknum};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("긴급 알림 전송")
-                .setSingleChoiceItems(items, checknum, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 사용자가 항목을 선택할 때마다 호출됨
-                        // 선택된 항목의 인덱스는 which에 저장됨
-                        selectedPosition[0] = which;
-                    }
-                })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 사용자가 OK 버튼을 클릭할 때 호출됨
-                        // 선택된 항목의 인덱스를 가져옴
-                        if (selectedPosition[0] != -1) {
-                            selectedItem = items[selectedPosition[0]];
-                            sendEmergency();
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", null);
-        AlertDialog msgDlg = builder.create();
-        msgDlg.show();
     }
 
     private void loadChildList() {
