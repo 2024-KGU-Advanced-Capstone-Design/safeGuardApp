@@ -2,8 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="red">#FF0000</color>
-    <color name="grey">#DEE2E6</color>
+    <color name="red">#B80606</color>
+    <color name="darkred">#B80606</color>
+    <color name="grey">#CED4DA</color>
     <color name="orange">#FB8C00</color>
     <color name="navy1">#00264B</color>
     <color name="navy2">#1A3C55</color>
