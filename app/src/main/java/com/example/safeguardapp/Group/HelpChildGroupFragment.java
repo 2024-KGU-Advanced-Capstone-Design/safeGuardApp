@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -13,7 +12,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,10 +22,7 @@ import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
-import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.model.OtherGroup;
-import com.example.safeguardapp.data.model.SentEmergencyItem;
-import com.example.safeguardapp.data.repository.GroupRepository;
 import com.example.safeguardapp.data.repository.OtherGroupRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;

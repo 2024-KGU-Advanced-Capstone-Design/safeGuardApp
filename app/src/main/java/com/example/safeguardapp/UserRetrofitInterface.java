@@ -22,7 +22,6 @@ import com.example.safeguardapp.Group.GetChildIDRequest;
 import com.example.safeguardapp.Group.GetMemberIDRequest;
 import com.example.safeguardapp.Group.GetOtherChildIDRequest;
 import com.example.safeguardapp.Group.RemoveHelperRequest;
-import com.example.safeguardapp.Group.Sector.ChildListAllRequest;
 import com.example.safeguardapp.Group.Sector.DangerSectorRequest;
 import com.example.safeguardapp.Group.GroupRemoveRequest;
 import com.example.safeguardapp.Group.MemberWithdrawRequest;
@@ -37,7 +36,6 @@ import com.example.safeguardapp.Map.LocationResponse;
 import com.example.safeguardapp.Setting.ChangeNicknameRequest;
 import com.example.safeguardapp.Setting.LoadImageRequest;
 import com.example.safeguardapp.Setting.ReturnNicknameRequest;
-import com.example.safeguardapp.Setting.SendImageRequest;
 import com.example.safeguardapp.SignUp.CheckMemberID;
 import com.example.safeguardapp.SignUp.SignUpRequestDTO;
 

@@ -1,9 +1,6 @@
 package com.example.safeguardapp.Group;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.os.Bundle;
@@ -23,11 +20,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.safeguardapp.Child.ChildMainActivity;
 import com.example.safeguardapp.LogIn.LoginInfo;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
-import com.example.safeguardapp.StartScreenActivity;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;

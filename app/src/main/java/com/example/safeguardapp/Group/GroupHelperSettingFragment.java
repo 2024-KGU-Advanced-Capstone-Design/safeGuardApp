@@ -27,16 +27,13 @@ import androidx.lifecycle.Transformations;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.safeguardapp.LogIn.LoginPageFragment;
-import com.example.safeguardapp.MainActivity;
 import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.UserRetrofitInterface;
-import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.model.OtherGroup;
 import com.example.safeguardapp.data.repository.GroupRepository;
 import com.example.safeguardapp.data.repository.OtherGroupRepository;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
 

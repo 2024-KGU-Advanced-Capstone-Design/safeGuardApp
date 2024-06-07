@@ -4,7 +4,6 @@ import static android.app.Activity.RESULT_OK;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -44,7 +43,6 @@ import com.example.safeguardapp.R;
 import com.example.safeguardapp.RetrofitClient;
 import com.example.safeguardapp.Setting.LoadImageRequest;
 import com.example.safeguardapp.Setting.SendImageRequest;
-import com.example.safeguardapp.Setting.SettingFragment;
 import com.example.safeguardapp.UserRetrofitInterface;
 import com.example.safeguardapp.data.model.Group;
 import com.example.safeguardapp.data.repository.GroupRepository;
@@ -56,7 +54,6 @@ import com.google.gson.Gson;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.io.File;
