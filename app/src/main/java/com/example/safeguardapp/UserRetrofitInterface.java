@@ -138,7 +138,7 @@ public interface UserRetrofitInterface {
     @POST("received-emergency")
     Call<ResponseBody> getEmergency(@Body ReceivedEmergencyRequset request);
 
-    @POST("received-confirm")
+    @POST("send-confirm")
     Call<ResponseBody> sendConfirm(@Body ConfirmRequest request);
 
     @POST("fatal")
