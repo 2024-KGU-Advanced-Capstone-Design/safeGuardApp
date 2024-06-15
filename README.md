@@ -13,13 +13,13 @@
   
 
 
-## :star2: About the SafeGuard
+## :star2: About the Project
 
 
 ### 📃: Tech Stack
 |   Java   |   Android SDK  |  Spring Boot  | Firebase | Retrofit | NaverMap API |
 | :------: | :------------: | :-----------: | :------: | :------: | :----------: |
-| <img src="https://github.com/cm2hcm2h/Minesweeper_Android_App/blob/2cb5c3b9e97b90856b59a9c35ca8b48d6e1aa800/javaIcon.png" height="100">  | <img src="https://github.com/cm2hcm2h/Minesweeper_Android_App/blob/2cb5c3b9e97b90856b59a9c35ca8b48d6e1aa800/android.png" height="100"> | <img src="spring.png" height="100"> | <img src="firebase.png" height="100"> | <img src="retrofit.png" height="100"> | <img src="navermap.png" height="100"> |
+| <img src="java.png" height="100">  | <img src="android.jpeg" height="100"> | <img src="spring.png" height="100"> | <img src="firebase.png" height="100"> | <img src="retrofit.png" height="100"> | <img src="navermap.png" height="100"> |
 
 <br>
 
@@ -27,7 +27,8 @@
 ### :dart: Features
 
 - 보호자와 피보호자간의 실시간 위치 공유
-- 안전 및 위험 구역 설정으로 피보호자의 위치 현황 알림
+- 피보호자의 안전 및 위험 구역를 사용자가 원하는 4개의 지점을 직접 선택하여 설정
+- 피보호자의 구역 변경 시 보호자에게 실시간 알림 전송
 - 핼퍼가 피보호자의 도착, 출발, 미확인 상태를 보호자에게 알림
 - 피보호자의 긴급 상황 발생 시, 보호자에게 SOS 요청
 
